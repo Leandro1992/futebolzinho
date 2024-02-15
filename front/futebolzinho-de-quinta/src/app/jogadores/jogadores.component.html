@@ -1,0 +1,98 @@
+<!-- src/app/jogadores/jogadores.component.html -->
+<div class="container-fluid mt-3">
+    <h2>Lista de Jogadores</h2>
+    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#criarJogadorModal"
+        (click)="novoJogador()">Novo Jogador</button>
+    <input type="text" id="filtro" [(ngModel)]="filtro" placeholder="Digite para filtrar" class="form-control mb-3" />
+    <div class="table-responsive table-players">
+
+        <table class="table ">
+            <thead>
+                <tr>
+                    <th (click)="ordenarPor('nome')">Nome</th>
+                    <th (click)="ordenarPor('mensalista')">Mensalista</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Os jogadores serão exibidos aqui -->
+                <tr *ngFor="let jog of filtrarEOrdenarJogadores()">
+                    <td>{{ jog.nome }}</td>
+                    <td>{{ jog.mensalista ? 'Sim' : 'Não' }}</td>
+                    <td>
+                        <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#editarJogadorModal"
+                            (click)="editarJogador(jog)">Editar</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal de criação de jogador -->
+    <div class="modal fade" id="criarJogadorModal" tabindex="-1" aria-labelledby="criarJogadorModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="criarJogadorModalLabel">Novo Jogador</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" id="fecharModalJogador" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form #jogadorForm="ngForm">
+                        <div class="mb-3">
+                            <label for="nome" class="form-label">Nome:</label>
+                            <input type="text" id="nome" name="nome" class="form-control" [(ngModel)]="jogador.nome"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="mensalista" class="form-label">Mensalista:</label>
+                            <select id="mensalista" name="mensalista" class="form-select"
+                                [(ngModel)]="jogador.mensalista" required>
+                                <option [ngValue]="true">Sim</option>
+                                <option [ngValue]="false">Não</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close" (click)="salvarJogador()">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de edição de jogador -->
+    <div class="modal fade" id="editarJogadorModal" tabindex="-1" aria-labelledby="editarJogadorModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editarJogadorModalLabel">Editar Jogador</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" id="fecharModalEditaJogador" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form #jogadorForm="ngForm">
+                        <div class="mb-3">
+                            <label for="nome" class="form-label">Nome:</label>
+                            <input type="text" id="nome" name="nome" class="form-control" [(ngModel)]="jogador.nome"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="mensalista" class="form-label">Mensalista:</label>
+                            <select id="mensalista" name="mensalista" class="form-select"
+                                [(ngModel)]="jogador.mensalista" required>
+                                <option [ngValue]="true">Sim</option>
+                                <option [ngValue]="false">Não</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" (click)="salvarEdicaoJogador()">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

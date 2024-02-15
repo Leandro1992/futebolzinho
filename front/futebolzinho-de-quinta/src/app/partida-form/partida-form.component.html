@@ -1,0 +1,73 @@
+<div class="container-fluid">
+  <h2>Criar nova partida</h2>
+  <form [formGroup]="partidaForm" (ngSubmit)="salvarPartida()" class="mt-4">
+    <div class="row">
+      <div class="col">
+        <div class="mb-3">
+          <label for="data" class="form-label">Data:</label>
+          <input type="date" id="data" formControlName="data" class="form-control">
+        </div>
+      </div>
+      <div class="col">
+        <div class="mb-3">
+          <label for="local" class="form-label">Local:</label>
+          <input type="text" id="local" formControlName="local" class="form-control">
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <!-- TIME a -->
+      <div class="col">
+        <div class="mb-6">
+          <label for="jogadoresTimeA" class="form-label">Jogadores Time A:</label>
+          <select id="jogadoresTimeA" class="form-select" (change)="adicionarJogadorTimeA($event)">
+            <option value=""></option>
+            <option *ngFor="let jogador of jogadores" [value]="jogador.id">{{ jogador.nome }}</option>
+          </select>
+        </div>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Nome time A</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let jogador of jogadoresTimeA">
+              <td>{{ jogador.nome }} <button style="float: right;" class="btn btn-danger btn-sm"
+                  (click)="removerJogadorTimeA(jogador)">X</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- TIME B -->
+      <div class="col">
+        <div class="mb-6">
+          <label for="jogadoresTimeB" class="form-label">Jogadores Time B:</label>
+          <select id="jogadoresTimeB" class="form-select" (change)="adicionarJogadorTimeB($event)">
+            <option value=""></option>
+            <option *ngFor="let jogador of jogadores" [value]="jogador.id">{{ jogador.nome }}</option>
+          </select>
+        </div>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Nome time B</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let jogador of jogadoresTimeB">
+              <td class="text-truncate">{{ jogador.nome }} <button style="float: right;" class="btn btn-danger btn-sm"
+                  (click)="removerJogadorTimeB(jogador)">X</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col"><button type="button" (click)="gerarTimeAleatoriamente()" class="btn btn-warning">Gerar Aleatórios</button></div>
+      <div class="col"><button type="submit" class="btn btn-primary" style="float: right;">Salvar</button></div>
+    </div>
+    
+
+  </form>
+</div>

@@ -1,0 +1,11 @@
+.detalhes {
+    background-color: #d9edf7; /* ou qualquer outra cor desejada */
+  }
+
+.bg-custom {
+    background-color: #1a8371; /* Cor de fundo personalizada */
+    color: white;
+}
+.font-custom {
+  color: rgb(117, 35, 35);
+}

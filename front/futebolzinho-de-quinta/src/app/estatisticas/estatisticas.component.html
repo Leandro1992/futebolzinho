@@ -1,0 +1,30 @@
+<div class="container">
+    <h2>Tabela de Estatísticas</h2>
+    <p>Clique no nome das colunas para ordenar</p>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th (click)="ordenarPor('jogador.nome')">Jogador</th>
+                <th (click)="ordenarPor('jogos')">Jogos</th>
+                <th (click)="ordenarPor('gols')">Gols</th>
+                <th (click)="ordenarPor('assistencia')">Assistências</th>
+                <th (click)="ordenarPor('vitorias')">Vitórias</th>
+                <th (click)="ordenarPor('derrotas')">Derrotas</th>
+                <th (click)="ordenarPor('empates')">Empates</th>
+                <th (click)="ordenarPor('destaque')">Destaques</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let estatistica of estatisticas">
+                <td>{{ estatistica.jogador.nome }}</td>
+                <td>{{ estatistica.jogos }}</td>
+                <td>{{ estatistica.gols }}</td>
+                <td>{{ estatistica.assistencia }}</td>
+                <td>{{ estatistica.vitorias }}</td>
+                <td>{{ estatistica.derrotas }}</td>
+                <td>{{ estatistica.empates }}</td>
+                <td>{{ estatistica.destaque }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

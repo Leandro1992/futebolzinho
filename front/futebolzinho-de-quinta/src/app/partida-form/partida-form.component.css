@@ -1,0 +1,12 @@
+.truncate-text {
+    max-width: 100px; /* Defina o valor máximo de largura desejado */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Adiciona "..." quando o texto é truncado */
+    white-space: nowrap; /* Impede que o texto seja quebrado em várias linhas */
+  }
+  
+  .truncate-text:hover {
+    max-width: none; /* Remove a limitação de largura em hover */
+    overflow: visible;
+    white-space: normal;
+  }

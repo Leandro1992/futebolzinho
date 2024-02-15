@@ -1,0 +1,38 @@
+<!-- app.component.html -->
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">
+      <!-- Coloque aqui a sua logo -->
+      <img src="../assets/logo.PNG" alt="Logo" height="30" class="d-inline-block align-top">
+      Futebol de 5ª
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/']">Partidas</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" [routerLink]="['/jogador']">Jogadores</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/estatistica']">Estatísticas</a>
+        </li>
+        <!-- <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/partida-form']">Criar Partida</a>
+        </li> -->
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid">
+  <router-outlet></router-outlet>
+</div>
+
+<!-- <footer class="container-fluid text-center mt-5 fixed-bottom bg-dark">
+  <p class="text-light">Criado com muito esforço por Leandro e ChatGPT.</p>
+</footer> -->

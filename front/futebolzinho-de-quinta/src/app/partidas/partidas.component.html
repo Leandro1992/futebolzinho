@@ -1,0 +1,128 @@
+<div class="container mt-4">
+  <h2>Lista de Partidas</h2>
+  <button class="btn btn-primary mb-3" (click)="criarNovaPartida()">Nova Partida</button>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Data / Status</th>
+        <th>Local</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let partida of partidas">
+        <tr>
+          <td [class.font-custom]="partida?.status == 1">{{ partida.data }} / {{partida?.status == 0 ? "Aberto" : "Encerrada"}}</td>
+          <td>{{ partida.local }}</td>
+          <td style="display: inline-grid;">
+            <button class="btn btn-info btn-sm" (click)="toggleDetalhes(partida)">Ver Detalhes</button>
+          </td>
+        </tr>
+        <tr *ngIf="partida.expandido">
+          <td colspan="3">
+            <div>
+              <!-- Detalhes da partida aqui -->
+              <h4 style="color:black">Time A</h4>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Gols Marcados ({{partida.totalGolsTimeA}})</th>
+                    <th>Assistências({{partida.totalAssistenciasTimeA}})</th>
+                  </tr>
+                </thead>
+                <tbody class="detalhes">
+                  <tr *ngFor="let jogador of partida.timeA">
+                    <td [class.bg-custom]="jogador.destaque ? true : false">{{ jogador.nome }} </td>
+                    <td>
+                      {{ jogador.gol }}
+                      <div class="btn-group">
+                        <button *ngIf="partida?.status == 0" (click)="atualizarPartidaGol(partida.id, jogador.id, 1, 'A')"
+                          class="btn btn-info btn-sm mx-1">+</button>
+                        <button *ngIf="partida?.status == 0" (click)="atualizarPartidaGol(partida.id, jogador.id, 0, 'A')"
+                          class="btn btn-danger btn-sm mx-1">-</button>
+                      </div>
+                    </td>
+                    <td>
+                      {{ jogador.assistencia }}
+                      <div class="btn-group">
+                        <button *ngIf="partida?.status == 0" (click)="atualizarPartidaAssitencia(partida.id, jogador.id, 1, 'A')"
+                          class="btn btn-info btn-sm mx-1">+</button>
+                        <button *ngIf="partida?.status == 0" (click)="atualizarPartidaAssitencia(partida.id, jogador.id, 0, 'A')"
+                          class="btn btn-danger btn-sm mx-1">-</button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <h4 style="color:black">Time B</h4>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Gols Marcados ({{partida.totalGolsTimeB}})</th>
+                    <th>Assistências ({{partida.totalAssistenciasTimeB}})</th>
+                  </tr>
+                </thead>
+                <tbody class="detalhes">
+                  <tr *ngFor="let jogador of partida.timeB">
+                    <td [class.bg-custom]="jogador.destaque ? true : false">{{ jogador.nome }}</td>
+                    <td>
+                      {{ jogador.gol }}
+                      <div class="btn-group">
+                        <button *ngIf="partida?.status == 0" (click)="atualizarPartidaGol(partida.id, jogador.id, 1, 'B')"
+                          class="btn btn-info btn-sm mx-1">+</button>
+                        <button *ngIf="partida?.status == 0" (click)="atualizarPartidaGol(partida.id, jogador.id, 0, 'B')"
+                          class="btn btn-danger btn-sm mx-1">-</button>
+                      </div>
+                    </td>
+                    <td>
+                      {{ jogador.assistencia }}
+                      <div class="btn-group">
+                        <button *ngIf="partida?.status == 0" (click)="atualizarPartidaAssitencia(partida.id, jogador.id, 1, 'B')"
+                          class="btn btn-info btn-sm mx-1">+</button>
+                        <button *ngIf="partida?.status == 0" (click)="atualizarPartidaAssitencia(partida.id, jogador.id, 0, 'B')"
+                          class="btn btn-danger btn-sm mx-1">-</button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <button (click)="selecionarPartidaEncerrar(partida)" *ngIf="partida?.status == 0" style="float:left;" class="btn btn-danger btn-sm"
+                data-bs-toggle="modal" data-bs-target="#melhorDaPartidaModal">Encerrar</button>
+              <button *ngIf="partida?.status == 0" style="float:right;" class="btn btn-success btn-sm"
+                (click)="salvarPartida(partida)">Salvar</button>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+  <!-- Modal de criação de jogador -->
+  <div class="modal fade" id="melhorDaPartidaModal" tabindex="-1" aria-labelledby="melhorDaPartidaModal"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="melhorDaPartida">Melhor da Partida</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" id="fecharMelhorDaPartidaModal"
+            aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="selectJogador" class="form-label">Selecione o melhor da partida para encerrar:</label>
+            <select class="form-select" id="selectJogador" [(ngModel)]="jogadorSelecionado">
+              <option value="">Selecione...</option>
+              <option *ngFor="let jogador of melhorDaPartidaTemp" [value]="jogador.id">{{ jogador.nome }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close"
+            (click)="salvarMelhorPartida()">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

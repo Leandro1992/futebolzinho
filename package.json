@@ -1,0 +1,21 @@
+{
+  "name": "futebolzinho",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm i",
+    "prepare-to-commit": "npm i && npm --prefix ./front/futebolzinho-de-quinta/ run build",
+    "start": "node index"
+  },
+  "keywords": [],
+  "author": "Leandro Marques <leandro1992@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "firebase": "^10.7.1",
+    "firebase-admin": "^12.0.0"
+  }
+}
