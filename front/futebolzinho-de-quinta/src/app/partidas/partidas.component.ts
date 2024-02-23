@@ -77,7 +77,6 @@ export class PartidasComponent {
 
   atualizarPartidaGol(partida: any, jogador: any, tipo: number, time: string): void {
     // Implemente a lógica para adicionar a partida
-    console.log(partida, jogador, tipo, time, "Teste");
     const partidaEncontrada = this.partidas.find(part => part.id === partida);
     if (partidaEncontrada) {
       if (time == 'A') {
@@ -101,6 +100,16 @@ export class PartidasComponent {
           }
         }
       }
+      this.partidaService.editarPartidas(partidaEncontrada).subscribe({
+        next: (partidas: any) => {
+          console.log("partidas?", partidas);
+          alert("Partida atualizada com sucesso")
+        },
+        error: (error) => {
+          console.log("erro ao carregar jogadores", error);
+          console.error('Erro ao carregar jogadores:', error);
+        }
+      });
     }
   }
 
@@ -130,6 +139,15 @@ export class PartidasComponent {
           }
         }
       }
+      this.partidaService.editarPartidas(partidaEncontrada).subscribe({
+        next: (partidas: any) => {
+          console.log("partidas?", partidas);
+        },
+        error: (error) => {
+          console.log("erro ao carregar jogadores", error);
+          console.error('Erro ao carregar jogadores:', error);
+        }
+      });
     }
   }
 
