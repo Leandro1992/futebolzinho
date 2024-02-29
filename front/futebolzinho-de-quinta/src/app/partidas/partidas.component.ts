@@ -102,8 +102,8 @@ export class PartidasComponent {
       }
       this.partidaService.editarPartidas(partidaEncontrada).subscribe({
         next: (partidas: any) => {
-          console.log("partidas?", partidas);
-          alert("Partida atualizada com sucesso")
+          console.log("atualizei gol!");
+          // alert("Partida atualizada com sucesso")
         },
         error: (error) => {
           console.log("erro ao carregar jogadores", error);
@@ -115,7 +115,7 @@ export class PartidasComponent {
 
   atualizarPartidaAssitencia(partida: any, jogador: any, tipo: number, time: string): void {
     // Implemente a lógica para adicionar a partida
-    console.log(partida, jogador, tipo, time, "Teste");
+    console.log(partida, jogador, tipo, time, "Teste console");
     const partidaEncontrada = this.partidas.find(part => part.id === partida);
     if (partidaEncontrada) {
       if (time == 'A') {
@@ -141,7 +141,7 @@ export class PartidasComponent {
       }
       this.partidaService.editarPartidas(partidaEncontrada).subscribe({
         next: (partidas: any) => {
-          console.log("partidas?", partidas);
+          console.log("atualizei assitencia!");
         },
         error: (error) => {
           console.log("erro ao carregar jogadores", error);
