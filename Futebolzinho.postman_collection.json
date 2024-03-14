@@ -1,0 +1,100 @@
+{
+	"info": {
+		"_postman_id": "db025faa-7ddd-4f91-a224-23d42921c730",
+		"name": "Futebolzinho",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "190766"
+	},
+	"item": [
+		{
+			"name": "Buscar Jogadores",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "localhost:3000/jogadores"
+			},
+			"response": []
+		},
+		{
+			"name": "Criar jogadores",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nome\":\"Gabriel Gesser\",\r\n    \"mensalista\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:3000/jogadores"
+			},
+			"response": []
+		},
+		{
+			"name": "Atualizar Jogadores",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"2VWAsjK17JQxy9r2Fzl9\" ,\r\n    \"nome\":\"Tales Ledra\",\r\n    \"mensalista\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:3000/jogadores"
+			},
+			"response": []
+		},
+		{
+			"name": "Buscar Partidas",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "localhost:3000/partidas"
+			},
+			"response": []
+		},
+		{
+			"name": "Criar Partidas",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"data\": \"2024-01-11\",\r\n  \"local\": \"Paula Ramos\",\r\n  \"timeA\": [\r\n    { \"id\": \"2VWAsjK17JQxy9r2Fzl9\", \"gol\": 0, \"assistencia\": 0 },\r\n    { \"id\": \"2VWAsjK17JQxy9r2Fzl9\", \"gol\": 0, \"assistencia\": 0 },\r\n    { \"id\": \"2VWAsjK17JQxy9r2Fzl9\", \"gol\": 0, \"assistencia\": 0 },\r\n    { \"id\": \"3aReAPygWX0I8Kd6AqWa\", \"gol\": 0, \"assistencia\": 0 },\r\n    { \"id\": \"3aReAPygWX0I8Kd6AqWa\", \"gol\": 0, \"assistencia\": 0 },\r\n    { \"id\": \"3aReAPygWX0I8Kd6AqWa\", \"gol\": 0, \"assistencia\": 0 }\r\n  ],\r\n  \"timeB\": [\r\n    { \"id\": \"kbCRz1xVOroSpBXjlGiy\", \"gol\": 0, \"assistencia\": 0 },\r\n    { \"id\": \"kbCRz1xVOroSpBXjlGiy\", \"gol\": 0, \"assistencia\": 0 },\r\n    { \"id\": \"kbCRz1xVOroSpBXjlGiy\", \"gol\": 0, \"assistencia\": 0 },\r\n    { \"id\": \"yMEI0IMZj84Ijh3MNFq5\", \"gol\": 0, \"assistencia\": 0 },\r\n    { \"id\": \"yMEI0IMZj84Ijh3MNFq5\", \"gol\": 0, \"assistencia\": 0 },\r\n    { \"id\": \"yMEI0IMZj84Ijh3MNFq5\", \"gol\": 0, \"assistencia\": 0 }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:3000/partidas"
+			},
+			"response": []
+		},
+		{
+			"name": "Atualizar dados jogador na partida",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"partidaId\": \"cmxalf0lXG1xAFTjfzga\",\r\n  \"data\": \"2024-01-11\",\r\n  \"local\": \"Paula Ramos\",\r\n  \"timeA\": [\r\n    { \"id\": \"2VWAsjK17JQxy9r2Fzl9\", \"gol\": 0, \"assistencia\": 1 },\r\n    { \"id\": \"2VWAsjK17JQxy9r2Fzl9\", \"gol\": 2, \"assistencia\": 0 },\r\n    { \"id\": \"2VWAsjK17JQxy9r2Fzl9\", \"gol\": 0, \"assistencia\": 0 },\r\n    { \"id\": \"3aReAPygWX0I8Kd6AqWa\", \"gol\": 0, \"assistencia\": 3 },\r\n    { \"id\": \"3aReAPygWX0I8Kd6AqWa\", \"gol\": 0, \"assistencia\": 0 },\r\n    { \"id\": \"3aReAPygWX0I8Kd6AqWa\", \"gol\": 4, \"assistencia\": 1 }\r\n  ],\r\n  \"timeB\": [\r\n    { \"id\": \"kbCRz1xVOroSpBXjlGiy\", \"gol\": 0, \"assistencia\": 1 },\r\n    { \"id\": \"kbCRz1xVOroSpBXjlGiy\", \"gol\": 0, \"assistencia\": 0 },\r\n    { \"id\": \"kbCRz1xVOroSpBXjlGiy\", \"gol\": 5, \"assistencia\": 0 },\r\n    { \"id\": \"yMEI0IMZj84Ijh3MNFq5\", \"gol\": 0, \"assistencia\": 3 },\r\n    { \"id\": \"yMEI0IMZj84Ijh3MNFq5\", \"gol\": 0, \"assistencia\": 0 },\r\n    { \"id\": \"yMEI0IMZj84Ijh3MNFq5\", \"gol\": 2, \"assistencia\": 1 }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:3000/partidas"
+			},
+			"response": []
+		}
+	]
+}
