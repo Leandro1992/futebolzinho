@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'; // Importe os módulos necessários
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms'; // Importe os módulos necessários
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { PartidaService } from '../partidas/partidas.service';
 
@@ -90,18 +88,18 @@ export class PartidaFormComponent implements OnInit {
   }
 
   gerarTimeAleatoriamente(): void {
-
+    let mensalistas = this.jogadores.filter(jogador => jogador.mensalista === true);
     this.resetForm(false);
-
     for (let index = 0; index < 12; index++) {
       const numeroAleatorio = Math.random();
-      const indice = Math.floor(numeroAleatorio * this.jogadores.length);
+
+      const indice = Math.floor(numeroAleatorio * mensalistas.length);
       if (index < 6) {
-        this.jogadoresTimeA.push({ ...this.jogadores[indice], "assistencia": 0, "gol": 0 });
-        this.jogadores.splice(indice, 1);
+        this.jogadoresTimeA.push({ ...mensalistas[indice], "assistencia": 0, "gol": 0 });
+        mensalistas.splice(indice, 1);
       } else {
-        this.jogadoresTimeB.push({ ...this.jogadores[indice], "assistencia": 0, "gol": 0 });
-        this.jogadores.splice(indice, 1);
+        this.jogadoresTimeB.push({ ...mensalistas[indice], "assistencia": 0, "gol": 0 });
+        mensalistas.splice(indice, 1);
       }
     }
   }
@@ -128,7 +126,6 @@ export class PartidaFormComponent implements OnInit {
         this.jogadoresTimeB.push({ ...jogador, "assistencia": 0, "gol": 0 });
       }
     }
-
   }
 
   removerJogadorTimeB(jogador: number): void {
