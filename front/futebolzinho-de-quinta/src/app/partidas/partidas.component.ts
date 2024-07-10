@@ -160,7 +160,6 @@ export class PartidasComponent {
     return jogador ? jogador.nome : undefined;
   }
 
-
   carregarPartidas(): void {
     this.partidaService.getPartidas().subscribe({
       next: (partidas: any) => {

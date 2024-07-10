@@ -1,4 +1,5 @@
 const FirebaseConnection = require('../db');
+const cache = require('./cache');
 
 class Partida {
     constructor({ data, local, timeA, timeB, status }) {
@@ -11,76 +12,91 @@ class Partida {
 
     async salvar() {
         try {
-            const db = FirebaseConnection.getInstance().db;
-
-            // Convertendo IDs de jogadores para referências
-            const timeARefs = await Promise.all(this.timeA.map(jogadorRef => db.doc(`jogadores/${jogadorRef.id}`)));
-            const timeBRefs = await Promise.all(this.timeB.map(jogadorRef => db.doc(`jogadores/${jogadorRef.id}`)));
-
-            // console.log(timeARefs, timeBRefs, "ueuwewe")
-            const partidaRef = await db.collection('partidas').add({
-                data: this.data,
-                local: this.local,
-                timeA: timeARefs.map(jogadorRef => ({ jogadorRef, gol: 0, assistencia: 0 })),
-                timeB: timeBRefs.map(jogadorRef => ({ jogadorRef, gol: 0, assistencia: 0 })),
-                status: this.status
-            });
-
-            return partidaRef.id;
+          const db = FirebaseConnection.getInstance().db;
+    
+          // Convertendo IDs de jogadores para referências
+          const timeARefs = await Promise.all(this.timeA.map(jogadorRef => db.doc(`jogadores/${jogadorRef.id}`)));
+          const timeBRefs = await Promise.all(this.timeB.map(jogadorRef => db.doc(`jogadores/${jogadorRef.id}`)));
+    
+          const partidaRef = await db.collection('partidas').add({
+            data: this.data,
+            local: this.local,
+            timeA: timeARefs.map(jogadorRef => ({ jogadorRef, gol: 0, assistencia: 0 })),
+            timeB: timeBRefs.map(jogadorRef => ({ jogadorRef, gol: 0, assistencia: 0 })),
+            status: this.status
+          });
+    
+          // Invalidar cache de partidas e estatísticas
+          cache.set('partidas', null);
+          cache.set('estatisticasPartidas', null);
+    
+          return partidaRef.id;
         } catch (error) {
-            throw new Error('Erro ao salvar partida: ' + error.message);
+          throw new Error('Erro ao salvar partida: ' + error.message);
         }
-    }
+      }
 
     static async obterTodas() {
+        const cachedPartidas = cache.get('partidas');
+        if (cachedPartidas) {
+          return cachedPartidas;
+        }
+    
         try {
-            const db = FirebaseConnection.getInstance().db;
-            const partidasSnapshot = await db.collection('partidas').get();
-
-            const partidas = await Promise.all(partidasSnapshot.docs.map(async doc => {
-                const partidaData = { id: doc.id, ...doc.data() };
-                let totalGolsTimeA = 0;
-                let totalGolsTimeB = 0;
-                let totalAssistenciasTimeB = 0;
-                let totalAssistenciasTimeA = 0;
-                // Obter dados dos jogadores usando Promise.all
-                const [timeAPlayers, timeBPlayers] = await Promise.all([
-                    Promise.all(partidaData.timeA.map(async jogador => {
-                        const jogadorData = { id: jogador.jogadorRef.id, gol: jogador.gol, assistencia: jogador.assistencia, destaque: jogador.destaque };
-                        totalGolsTimeA += jogador.gol;
-                        totalAssistenciasTimeA += jogador.assistencia;
-                        const jogadorSnapshot = await jogador.jogadorRef.get();
-                        return {...jogadorData, ...jogadorSnapshot.data() };
-                    })),
-                    Promise.all(partidaData.timeB.map(async jogador => {
-                        const jogadorData = { id: jogador.jogadorRef.id, gol: jogador.gol, assistencia: jogador.assistencia, destaque: jogador.destaque };
-                        totalGolsTimeB += jogador.gol;
-                        totalAssistenciasTimeB += jogador.assistencia;
-                        const jogadorSnapshot = await jogador.jogadorRef.get();
-                        return {...jogadorData, ...jogadorSnapshot.data() };
-                    }))
-                ]);
-
-                // Substituir as referências pelos dados reais dos jogadores
-                partidaData.timeA = timeAPlayers;
-                partidaData.timeB = timeBPlayers;
-                partidaData.totalGolsTimeA = totalGolsTimeA;
-                partidaData.totalGolsTimeB = totalGolsTimeB;
-                partidaData.totalAssistenciasTimeB = totalAssistenciasTimeB;
-                partidaData.totalAssistenciasTimeA = totalAssistenciasTimeA;
-
-                return partidaData;
-            }));
-
-            return partidas;
+          const db = FirebaseConnection.getInstance().db;
+          const partidasSnapshot = await db.collection('partidas').get();
+    
+          const partidas = await Promise.all(partidasSnapshot.docs.map(async doc => {
+            const partidaData = { id: doc.id, ...doc.data() };
+            let totalGolsTimeA = 0;
+            let totalGolsTimeB = 0;
+            let totalAssistenciasTimeB = 0;
+            let totalAssistenciasTimeA = 0;
+    
+            const [timeAPlayers, timeBPlayers] = await Promise.all([
+              Promise.all(partidaData.timeA.map(async jogador => {
+                const jogadorData = { id: jogador.jogadorRef.id, gol: jogador.gol, assistencia: jogador.assistencia, destaque: jogador.destaque };
+                totalGolsTimeA += jogador.gol;
+                totalAssistenciasTimeA += jogador.assistencia;
+                const jogadorSnapshot = await jogador.jogadorRef.get();
+                return { ...jogadorData, ...jogadorSnapshot.data() };
+              })),
+              Promise.all(partidaData.timeB.map(async jogador => {
+                const jogadorData = { id: jogador.jogadorRef.id, gol: jogador.gol, assistencia: jogador.assistencia, destaque: jogador.destaque };
+                totalGolsTimeB += jogador.gol;
+                totalAssistenciasTimeB += jogador.assistencia;
+                const jogadorSnapshot = await jogador.jogadorRef.get();
+                return { ...jogadorData, ...jogadorSnapshot.data() };
+              }))
+            ]);
+    
+            partidaData.timeA = timeAPlayers;
+            partidaData.timeB = timeBPlayers;
+            partidaData.totalGolsTimeA = totalGolsTimeA;
+            partidaData.totalGolsTimeB = totalGolsTimeB;
+            partidaData.totalAssistenciasTimeB = totalAssistenciasTimeB;
+            partidaData.totalAssistenciasTimeA = totalAssistenciasTimeA;
+    
+            return partidaData;
+          }));
+    
+          cache.set('partidas', partidas);
+          return partidas;
         } catch (error) {
-            throw new Error('Erro ao obter partidas com jogadores: ' + error.message);
+          throw new Error('Erro ao obter partidas com jogadores: ' + error.message);
         }
     }
 
     static async obterEstatisticasPartidas() {
         let partidaDados = {};
         let dadosFiltrados = [];
+
+        // Verificar cache
+        const cachedEstatisticas = cache.get('estatisticasPartidas');
+        if (cachedEstatisticas) {
+            return cachedEstatisticas;
+        }
+
         try {
             const db = FirebaseConnection.getInstance().db;
             const partidasSnapshot = await db.collection('partidas').get();
@@ -193,7 +209,9 @@ class Partida {
                     dadosFiltrados.push(partidaDados[key]);
                 }
             }
-
+            // Atualizar cache
+            cache.set('estatisticasPartidas', dadosFiltrados);  
+            
             return dadosFiltrados;
         } catch (error) {
             throw new Error('Erro ao obter partidas com jogadores: ' + error.message);
@@ -229,7 +247,8 @@ class Partida {
                 timeB: timeBRefs,
                 status: status
             });
-      
+            cache.set('estatisticasPartidas', null);
+            
             return 'Dados atualizados com sucesso';
           } catch (error) {
             throw new Error('Erro ao atualizar dados do jogador: ' + error.message);

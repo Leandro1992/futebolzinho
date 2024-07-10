@@ -6,6 +6,7 @@ const PORT = process.env.PORT || 3000;
 const Jogadores = require("./models/jogadores");
 const Partidas = require("./models/partidas");
 const cors = require('cors');
+const cache = require('./models/cache')
 
 app.listen(PORT, () => {
     console.log(`Servidor está ouvindo na porta ${PORT}`);
@@ -24,6 +25,16 @@ app.get('/jogadores', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Erro ao buscar jogadores' });
+    }
+});
+
+app.get('/cache', async (req, res) => {
+    try {
+        cache.clear()
+        res.status(200).json("cache limpinho!");
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Erro ao limpar o cache' });
     }
 });
 

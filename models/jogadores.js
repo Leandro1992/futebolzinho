@@ -1,5 +1,6 @@
 // models/Jogador.js
 const FirebaseConnection = require('../db');
+const cache = require('./cache');
 
 class Jogador {
     constructor({ nome, mensalista }) {
@@ -19,7 +20,13 @@ class Jogador {
                  const jogadorData = jogadorDoc.data();
                  jogadorData.id = jogadorRef.id;
                  console.log('Dados criados do jogador:', jogadorData);
-                 return jogadorData
+
+                // Atualizar cache
+                const jogadores = cache.get('jogadores') || [];
+                jogadores.push(jogadorData);
+                cache.set('jogadores', jogadores);
+
+                return jogadorData
              } else {
                  console.log('Documento não encontrado.');
              }
@@ -42,7 +49,15 @@ class Jogador {
             if (jogadorDoc.exists) {
                 const jogadorData = jogadorDoc.data();
                 console.log('Dados atualizados do jogador:', jogadorData);
-                return jogadorData
+                // Atualizar cache
+                const jogadores = cache.get('jogadores') || [];
+                const index = jogadores.findIndex(j => j.id === id);
+                if (index !== -1) {
+                    jogadores[index] = { id, nome, mensalista };
+                }
+                cache.set('jogadores', jogadores);
+
+                return jogadorData;
             } else {
                 console.log('Documento não encontrado.');
             }
@@ -53,10 +68,16 @@ class Jogador {
 
 
     static async obterTodos() {
+        const cachedJogadores = cache.get('jogadores');
+            if (cachedJogadores) {
+                return cachedJogadores;
+            }
         try {
             const db = FirebaseConnection.getInstance().db;
             const jogadoresSnapshot = await db.collection('jogadores').get();
-            return jogadoresSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            const jogadores = jogadoresSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            cache.set('jogadores', jogadores);
+            return jogadores
         } catch (error) {
             throw new Error('Erro ao obter jogadores: ' + error.message);
         }
@@ -64,5 +85,4 @@ class Jogador {
 
     // Adicione métodos de atualização e exclusão conforme necessário
 }
-
 module.exports = Jogador;

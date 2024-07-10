@@ -142,7 +142,7 @@ export class PartidaFormComponent implements OnInit {
     }
   }
 
-  trocarJogadorDeTime(jogador: any){
+  trocarJogadorDeTime(jogador: any): void {
     if(this.jogadoresTimeA.indexOf(jogador)!== -1){
       this.removerJogadorTime(jogador, 'a')
       this.adicionarJogadorTime(jogador.id, 'b')
