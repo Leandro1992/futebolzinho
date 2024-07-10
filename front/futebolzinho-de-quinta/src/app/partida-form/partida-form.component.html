@@ -16,11 +16,12 @@
       </div>
     </div>
     <div class="row">
-      <!-- TIME a -->
+      <!-- TIME A -->
       <div class="col">
         <div class="mb-6">
           <label for="jogadoresTimeA" class="form-label">Jogadores Time A:</label>
-          <select id="jogadoresTimeA" class="form-select" (change)="adicionarJogadorTimeA($event)">
+          <!-- <select id="jogadoresTimeA" class="form-select"> -->
+          <select id="jogadoresTimeA" class="form-select" (change)="adicionarJogadorTimePorEvento($event, 'a')">
             <option value=""></option>
             <option *ngFor="let jogador of jogadores" [value]="jogador.id">{{ jogador.nome }}</option>
           </select>
@@ -33,17 +34,19 @@
           </thead>
           <tbody>
             <tr *ngFor="let jogador of jogadoresTimeA">
-              <td>{{ jogador.nome }} <button style="float: right;" class="btn btn-danger btn-sm"
-                  (click)="removerJogadorTimeA(jogador)">X</button></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <!-- TIME B -->
-      <div class="col">
-        <div class="mb-6">
+              <td>{{ jogador.nome }}
+                <button style="float: right;" class="btn btn-danger btn-sm" (click)="removerJogadorTime(jogador, 'a')">X</button>
+                <button style="float: right;" class="btn btn-warning btn-sm" (click)="trocarJogadorDeTime(jogador)">→</button>
+              </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- TIME B -->
+        <div class="col">
+          <div class="mb-6">
           <label for="jogadoresTimeB" class="form-label">Jogadores Time B:</label>
-          <select id="jogadoresTimeB" class="form-select" (change)="adicionarJogadorTimeB($event)">
+          <select id="jogadoresTimeB" class="form-select" (change)="adicionarJogadorTimePorEvento($event, 'b')">
             <option value=""></option>
             <option *ngFor="let jogador of jogadores" [value]="jogador.id">{{ jogador.nome }}</option>
           </select>
@@ -56,8 +59,10 @@
           </thead>
           <tbody>
             <tr *ngFor="let jogador of jogadoresTimeB">
-              <td class="text-truncate">{{ jogador.nome }} <button style="float: right;" class="btn btn-danger btn-sm"
-                  (click)="removerJogadorTimeB(jogador)">X</button></td>
+              <td class="text-truncate">{{ jogador.nome }}
+                <button style="float: right;" class="btn btn-danger btn-sm" (click)="removerJogadorTime(jogador, 'b')">X</button>
+                <button style="float: right;" class="btn btn-warning btn-sm" (click)="trocarJogadorDeTime(jogador)">←</button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -67,7 +72,7 @@
       <div class="col"><button type="button" (click)="gerarTimeAleatoriamente()" class="btn btn-warning">Gerar Aleatórios</button></div>
       <div class="col"><button type="submit" class="btn btn-primary" style="float: right;">Salvar</button></div>
     </div>
-    
+
 
   </form>
 </div>

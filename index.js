@@ -63,10 +63,10 @@ app.get('/partidas', async (req, res) => {
     }
 });
 
-//CRUD partidas
 app.get('/estatisticas', async (req, res) => {
     try {
         let todos = await Partidas.obterEstatisticasPartidas()
+        console.log("todos", todos)
         res.status(200).json({ data: todos });
     } catch (error) {
         console.error(error);
@@ -74,6 +74,7 @@ app.get('/estatisticas', async (req, res) => {
     }
 });
 
+//CRUD partidas
 app.post('/partidas', async (req, res) => {
     try {
         let partida = new Partidas(req.body);

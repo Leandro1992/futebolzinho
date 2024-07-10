@@ -59,7 +59,7 @@ export class JogadoresComponent {
         this.atualizarLista();
       },
       error: (error) => {
-        console.log("erro ao carregar jogadores", error);
+        console.log("Erro ao carregar jogadores", error);
         console.error('Erro ao carregar jogadores:', error);
       }
     });
@@ -74,7 +74,7 @@ export class JogadoresComponent {
         this.atualizarLista();
       },
       error: (error) => {
-        console.log("erro ao carregar jogadores", error);
+        console.log("Erro ao carregar jogadores", error);
         console.error('Erro ao carregar jogadores:', error);
       }
     });
@@ -114,7 +114,7 @@ export class JogadoresComponent {
         this.jogadores = jogadores.data;
       },
       error: (error) => {
-        console.log("erro ao carregar jogadores", error);
+        console.log("Erro ao carregar jogadores", error);
         console.error('Erro ao carregar jogadores:', error);
       }
     });

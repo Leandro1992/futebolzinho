@@ -29,10 +29,10 @@ export class PartidaFormComponent implements OnInit {
       this.jogadores = JSON.parse(params['jogadores']);
       this.jogadoresStage = JSON.parse(params['jogadores']);
     });
+    this.ordenarJogadoresPorMensalistaNome();
   }
 
   ngOnInit(): void {
-
   }
 
   salvarPartida(): void {
@@ -60,6 +60,7 @@ export class PartidaFormComponent implements OnInit {
 
   resetForm(resetForm: boolean): void {
     this.jogadores = this.jogadoresStage.slice();
+    this.ordenarJogadoresPorMensalistaNome()
     this.jogadoresTimeA = [];
     this.jogadoresTimeB = [];
     if (resetForm) {
@@ -70,68 +71,84 @@ export class PartidaFormComponent implements OnInit {
     }
   }
 
-  // Métodos para adicionar/remover jogadores (você pode adaptar conforme necessário)
-  adicionarJogadorTimeA(event: Event): void {
-    if (this.jogadoresTimeA.length >= 10) {
-      alert("Limite máximo de jogadores por partida - 10")
-    } else {
-      const target = event.target as HTMLInputElement;
-      const jogadorId = target.value;
-
-      const jogador = this.jogadores.find(j => j.id === jogadorId);
-      if (jogador) {
-        const jogadorIndex = this.jogadores.indexOf(jogador);
-        this.jogadores.splice(jogadorIndex, 1);
-        this.jogadoresTimeA.push({ ...jogador, "assistencia": 0, "gol": 0 });
+  ordenarJogadoresPorMensalistaNome():void{
+    this.jogadores.sort((a, b) => {
+      // Primeiro, comparar a propriedade mensalista
+      if (a.mensalista !== b.mensalista) {
+        return a.mensalista ? -1 : 1;  // Os mensalistas vêm primeiro
       }
+      // Se ambos forem mensalistas ou ambos não forem, comparar pelo nome
+      return a.nome.localeCompare(b.nome);
+    });
+  }
+
+  adicionarJogadorTimePorEvento(event: Event, time : string): void {
+    const target = event.target as HTMLSelectElement;
+    const jogadorIdStr = target.value;
+      this.adicionarJogadorTime(jogadorIdStr, time);
+  }
+
+  adicionarJogadorTime(jogadorId: string, time: string): void {
+    if (this.jogadoresTimeA.length >= 10 || this.jogadoresTimeB.length >= 10) {
+      alert("Limite máximo de jogadores por partida - 10");
+    } else {
+        const jogador = this.jogadores.find(j => j.id === jogadorId);
+        if (jogador) {
+          const jogadorIndex = this.jogadores.indexOf(jogador);
+          this.jogadores.splice(jogadorIndex, 1);
+          this.ordenarJogadoresPorMensalistaNome();
+          //Coloca no time
+          if(time.toLowerCase() === 'a'){
+            this.jogadoresTimeA.push({ ...jogador, assistencia: 0, gol: 0 });
+          }else{
+            this.jogadoresTimeB.push({ ...jogador, assistencia: 0, gol: 0 });
+          }
+        }
     }
+  }
+
+  removerJogadorTime(jogador: any, time: string): void {
+    console.log("index em A",this.jogadoresTimeA.indexOf(jogador.id))
+    console.log("index em B",this.jogadoresTimeB.indexOf(jogador.id))
+    console.log("jogador", jogador)
+    console.log(this.jogadoresTimeA)
+    if(time.toLowerCase() === 'a'){
+
+      const jogadorIndex = this.jogadoresTimeA.indexOf(jogador);
+      this.jogadoresTimeA.splice(jogadorIndex, 1);
+    }else{
+      const jogadorIndex = this.jogadoresTimeB.indexOf(jogador);
+      this.jogadoresTimeB.splice(jogadorIndex, 1);
+    }
+    this.jogadores.push(jogador)
+    this.ordenarJogadoresPorMensalistaNome()
   }
 
   gerarTimeAleatoriamente(): void {
     let mensalistas = this.jogadores.filter(jogador => jogador.mensalista === true);
-    this.resetForm(false);
-    for (let index = 0; index < 12; index++) {
-      const numeroAleatorio = Math.random();
+    let mensalistasTamanho = mensalistas.length
 
+    for (let index = 0; index < mensalistasTamanho; index++) {
+      const numeroAleatorio = Math.random();
       const indice = Math.floor(numeroAleatorio * mensalistas.length);
-      if (index < 6) {
-        this.jogadoresTimeA.push({ ...mensalistas[indice], "assistencia": 0, "gol": 0 });
+
+      if ((index < 6) && (this.jogadoresTimeA.length < 6)) {
+        this.adicionarJogadorTime(mensalistas[indice].id, 'a')
         mensalistas.splice(indice, 1);
       } else {
-        this.jogadoresTimeB.push({ ...mensalistas[indice], "assistencia": 0, "gol": 0 });
+        this.adicionarJogadorTime(mensalistas[indice].id, 'b')
         mensalistas.splice(indice, 1);
       }
     }
   }
 
-  removerJogadorTimeA(jogador: any): void {
-    const jogadorIndex = this.jogadoresTimeA.indexOf(jogador);
-    this.jogadores.push(jogador)
-    this.jogadoresTimeA.splice(jogadorIndex, 1);
-  }
-
-  adicionarJogadorTimeB(event: Event): void {
-    if (this.jogadoresTimeB.length >= 10) {
-      alert("Limite máximo de jogadores por partida - 10")
-    } else {
-      const target = event.target as HTMLInputElement;
-      const jogadorId = target.value;
-
-      console.log(jogadorId);
-
-      const jogador = this.jogadores.find(j => j.id === jogadorId);
-      if (jogador) {
-        const jogadorIndex = this.jogadores.indexOf(jogador);
-        this.jogadores.splice(jogadorIndex, 1);
-        this.jogadoresTimeB.push({ ...jogador, "assistencia": 0, "gol": 0 });
-      }
+  trocarJogadorDeTime(jogador: any){
+    if(this.jogadoresTimeA.indexOf(jogador)!== -1){
+      this.removerJogadorTime(jogador, 'a')
+      this.adicionarJogadorTime(jogador.id, 'b')
+    }else{
+      this.removerJogadorTime(jogador, 'b')
+      this.adicionarJogadorTime(jogador.id, 'a')
     }
   }
-
-  removerJogadorTimeB(jogador: number): void {
-    const jogadorIndex = this.jogadoresTimeB.indexOf(jogador);
-    this.jogadores.push(jogador)
-    this.jogadoresTimeB.splice(jogadorIndex, 1);
-  }
-
 }

@@ -109,10 +109,13 @@ class Partida {
                             empates: 0
                         }
                         if(jogador.destaque) partidaDados[jogador.jogadorRef.id].destaque++;
+                        
+                        partidaDados[jogador.jogadorRef.id].jogadorId = jogador.jogadorRef.id
                         partidaDados[jogador.jogadorRef.id].jogos++
                         partidaDados[jogador.jogadorRef.id].gols += jogador.gol;
                         partidaDados[jogador.jogadorRef.id].assistencia += jogador.assistencia;
                         partidaDados[jogador.jogadorRef.id].jogador = jogadorSnapshot.data();
+                        console.log("jogador.jogadorRef.id", jogador.jogadorRef.id)
                         
                         return {...jogadorData, ...jogadorSnapshot.data() };
                     })),
@@ -121,7 +124,6 @@ class Partida {
                         totalGolsTimeB += jogador.gol;
                         totalAssistenciasTimeB += jogador.assistencia;
                         const jogadorSnapshot = await jogador.jogadorRef.get();
-
                         if(!partidaDados[jogador.jogadorRef.id]) partidaDados[jogador.jogadorRef.id] = {
                             jogos: 0,
                             gols:0,
@@ -132,11 +134,13 @@ class Partida {
                             empates: 0
                         }
                         if(jogador.destaque) partidaDados[jogador.jogadorRef.id].destaque++;
+                        partidaDados[jogador.jogadorRef.id].jogadorId = jogador.jogadorRef.id
                         partidaDados[jogador.jogadorRef.id].jogos++
                         partidaDados[jogador.jogadorRef.id].gols += jogador.gol;
                         partidaDados[jogador.jogadorRef.id].assistencia += jogador.assistencia;
                         partidaDados[jogador.jogadorRef.id].jogador = jogadorSnapshot.data();
-
+                        console.log("jogador.jogadorRef.id", jogador.jogadorRef.id)
+                        
                         return {...jogadorData, ...jogadorSnapshot.data() };
                     }))
                 ]);
