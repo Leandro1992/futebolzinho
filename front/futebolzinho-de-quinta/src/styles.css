@@ -1,2 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
 @import "bootstrap/dist/css/bootstrap.css";
+
+.centered {
+  text-align: center;      /* Centraliza horizontalmente */
+  vertical-align: middle;  /* Centraliza verticalmente */
+}
+
+.float-right {
+  float: right;
+  font-size: 14px;
+  margin-left: 20px;
+  color: blue; /* Cor do link */
+  text-decoration: underline; /* Sublinhar o link */
+}
+
+.float-right:hover {
+  color: darkblue; /* Cor ao passar o mouse */
+}
+
+.table-centered td {
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}

@@ -79,34 +79,80 @@ export class PartidasComponent {
     // Implemente a lógica para adicionar a partida
     const partidaEncontrada = this.partidas.find(part => part.id === partida);
     if (partidaEncontrada) {
-      if (time == 'A') {
+      if (time.toUpperCase() == 'A') {
         const jogadorEncontrado = partidaEncontrada.timeA.find((jog: { id: any; }) => jog.id === jogador);
-        console.log(jogadorEncontrado, "Jogador selecionado")
         if (tipo == 1) {
           jogadorEncontrado.gol += 1;
+          partidaEncontrada.totalGolsTimeA += 1;
         } else {
           if (jogadorEncontrado.gol > 0) {
             jogadorEncontrado.gol -= 1;
+            partidaEncontrada.totalGolsTimeA -= 1;
           }
         }
+
       } else {
         const jogadorEncontrado = partidaEncontrada.timeB.find((jog: { id: any; }) => jog.id === jogador);
-        console.log(jogadorEncontrado, "Jogador selecionado")
         if (tipo == 1) {
           jogadorEncontrado.gol += 1;
+          partidaEncontrada.totalGolsTimeB += 1;
         } else {
           if (jogadorEncontrado.gol > 0) {
             jogadorEncontrado.gol -= 1;
+            partidaEncontrada.totalGolsTimeB -= 1;
           }
         }
       }
       this.partidaService.editarPartidas(partidaEncontrada).subscribe({
         next: (partidas: any) => {
-          console.log("atualizei gol!");
           // alert("Partida atualizada com sucesso")
         },
         error: (error) => {
-          console.log("erro ao carregar jogadores", error);
+          console.error('Erro ao carregar jogadores:', error);
+        }
+      });
+    }
+  }
+
+  atualizarPartidaGolContra(partida: any, jogador: any, tipo: number, time: string): void {
+    // Implemente a lógica para adicionar a partida
+    const partidaEncontrada = this.partidas.find(part => part.id === partida);
+    if (partidaEncontrada) {
+      if (time.toUpperCase() == 'A') {
+        const jogadorEncontrado = partidaEncontrada.timeA.find((jog: { id: any; }) => jog.id === jogador);
+        if (tipo == 1) {
+          jogadorEncontrado.golContra += 1;
+          partidaEncontrada.totalGolsContraTimeA += 1;
+          partidaEncontrada.totalGolsTimeB += 1;
+
+        } else {
+          if (jogadorEncontrado.golContra > 0) {
+            jogadorEncontrado.golContra -= 1;
+            partidaEncontrada.totalGolsContraTimeA -= 1;
+            partidaEncontrada.totalGolsTimeB -= 1;
+          }
+        }
+
+      } else {
+        const jogadorEncontrado = partidaEncontrada.timeB.find((jog: { id: any; }) => jog.id === jogador);
+        if (tipo == 1) {
+          jogadorEncontrado.golContra += 1;
+          partidaEncontrada.totalGolsContraTimeB += 1;
+          partidaEncontrada.totalGolsTimeA += 1;
+
+        } else {
+          if (jogadorEncontrado.golContra > 0) {
+            jogadorEncontrado.golContra -= 1;
+            partidaEncontrada.totalGolsContraTimeB -= 1;
+            partidaEncontrada.totalGolsTimeA -= 1;
+          }
+        }
+      }
+      this.partidaService.editarPartidas(partidaEncontrada).subscribe({
+        next: (partidas: any) => {
+          // alert("Partida atualizada com sucesso")
+        },
+        error: (error) => {
           console.error('Erro ao carregar jogadores:', error);
         }
       });
@@ -114,34 +160,33 @@ export class PartidasComponent {
   }
 
   atualizarPartidaAssitencia(partida: any, jogador: any, tipo: number, time: string): void {
-    // Implemente a lógica para adicionar a partida
-    console.log(partida, jogador, tipo, time, "Teste console");
     const partidaEncontrada = this.partidas.find(part => part.id === partida);
     if (partidaEncontrada) {
-      if (time == 'A') {
+      if (time.toUpperCase() == 'A') {
         const jogadorEncontrado = partidaEncontrada.timeA.find((jog: { id: any; }) => jog.id === jogador);
-        console.log(jogadorEncontrado, "Jogador selecionado")
         if (tipo == 1) {
           jogadorEncontrado.assistencia += 1;
+          partidaEncontrada.totalAssistenciasTimeA +=1;
         } else {
           if (jogadorEncontrado.assistencia > 0) {
             jogadorEncontrado.assistencia -= 1;
+            partidaEncontrada.totalAssistenciasTimeA -=1;
           }
         }
       } else {
         const jogadorEncontrado = partidaEncontrada.timeB.find((jog: { id: any; }) => jog.id === jogador);
-        console.log(jogadorEncontrado, "Jogador selecionado")
         if (tipo == 1) {
           jogadorEncontrado.assistencia += 1;
+          partidaEncontrada.totalAssistenciasTimeB +=1;
         } else {
           if (jogadorEncontrado.assistencia > 0) {
             jogadorEncontrado.assistencia -= 1;
+            partidaEncontrada.totalAssistenciasTimeB -=1;
           }
         }
       }
       this.partidaService.editarPartidas(partidaEncontrada).subscribe({
         next: (partidas: any) => {
-          console.log("atualizei assitencia!");
         },
         error: (error) => {
           console.log("erro ao carregar jogadores", error);

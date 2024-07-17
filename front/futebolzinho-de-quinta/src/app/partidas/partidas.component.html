@@ -19,70 +19,86 @@
           </td>
         </tr>
         <tr *ngIf="partida.expandido">
-          <td colspan="3">
+          <td colspan="4">
             <div>
               <!-- Detalhes da partida aqui -->
-              <h4 style="color:black">Time A</h4>
-              <table class="table">
+              <h4 id="time-a" style="color:black">Time A ({{partida.totalGolsTimeA}})
+                <a href="#time-b" class="float-right" *ngIf="partida?.status == 0">Ir para Time B</a>
+              </h4>
+              <table class="table table-centered">
                 <thead>
-                  <tr>
+                  <tr class="centered">
                     <th>Nome</th>
-                    <th>Gols Marcados ({{partida.totalGolsTimeA}})</th>
-                    <th>Assistências({{partida.totalAssistenciasTimeA}})</th>
+                    <th>Gols ({{partida.totalGolsTimeA}})</th>
+                    <th>Assis ({{partida.totalAssistenciasTimeA}})</th>
+                    <th>Cont ({{partida.totalGolsContraTimeA}})</th>
+                    <th *ngIf="partida?.status == 0">Remover </th>
                   </tr>
                 </thead>
                 <tbody class="detalhes">
                   <tr *ngFor="let jogador of partida.timeA">
-                    <td [class.bg-custom]="jogador.destaque ? true : false">{{ jogador.nome }} </td>
+                    <td [class.bg-custom]="jogador.destaque ? true : false" class="centered">{{ jogador.nome }} </td>
                     <td>
-                      {{ jogador.gol }}
-                      <div class="btn-group">
+                        <button *ngIf="partida?.status == 1" class="btn btn-sm mx-1 " >{{ jogador.gol }}</button>
                         <button *ngIf="partida?.status == 0" (click)="atualizarPartidaGol(partida.id, jogador.id, 1, 'A')"
-                          class="btn btn-info btn-sm mx-1">+</button>
-                        <button *ngIf="partida?.status == 0" (click)="atualizarPartidaGol(partida.id, jogador.id, 0, 'A')"
-                          class="btn btn-danger btn-sm mx-1">-</button>
-                      </div>
+                        class="btn btn-success btn-sm mx-1 ">{{ jogador.gol }}</button>
                     </td>
                     <td>
-                      {{ jogador.assistencia }}
-                      <div class="btn-group">
+                        <button *ngIf="partida?.status == 1" class="btn btn-sm mx-1 ">{{ jogador.assistencia }}</button>
                         <button *ngIf="partida?.status == 0" (click)="atualizarPartidaAssitencia(partida.id, jogador.id, 1, 'A')"
-                          class="btn btn-info btn-sm mx-1">+</button>
-                        <button *ngIf="partida?.status == 0" (click)="atualizarPartidaAssitencia(partida.id, jogador.id, 0, 'A')"
-                          class="btn btn-danger btn-sm mx-1">-</button>
+                        class="btn btn-success btn-sm mx-1 ">{{ jogador.assistencia }}</button>
+                    </td>
+                    <td>
+                        <button *ngIf="partida?.status == 1" class="btn btn-sm mx-1 ">{{ jogador.golContra }}</button>
+                        <button *ngIf="partida?.status == 0" (click)="atualizarPartidaGolContra(partida.id, jogador.id, 1, 'A')"
+                        class="btn btn-warning btn-sm mx-1 ">{{ jogador.golContra }}</button>
+                    </td>
+                    <td>
+                      <div class="btn-group" *ngIf="partida?.status == 0" >
+                        <button class="btn btn-danger btn-sm mx-0 " (click)="atualizarPartidaGol(partida.id, jogador.id, 0, 'A')">G</button>
+                        <button class="btn btn-danger btn-sm mx-0 " (click)="atualizarPartidaAssitencia(partida.id, jogador.id, 0, 'A')">A</button>
+                        <button class="btn btn-danger btn-sm mx-0 " (click)="atualizarPartidaGolContra(partida.id, jogador.id, 0, 'A')">C</button>
                       </div>
                     </td>
                   </tr>
                 </tbody>
               </table>
-              <h4 style="color:black">Time B</h4>
-              <table class="table">
+              <h4 id="time-b" style="color:black">Time B ({{partida.totalGolsTimeB}})
+                <a href="#time-a" class="float-right" *ngIf="partida?.status == 0" >Ir para Time A</a>
+              </h4>
+              <table class="table table-centered">
                 <thead>
-                  <tr>
+                  <tr class="centered">
                     <th>Nome</th>
-                    <th>Gols Marcados ({{partida.totalGolsTimeB}})</th>
-                    <th>Assistências ({{partida.totalAssistenciasTimeB}})</th>
+                    <th>Gols ({{partida.totalGolsTimeB}})</th>
+                    <th>Assis ({{partida.totalAssistenciasTimeB}})</th>
+                    <th>Cont ({{partida.totalGolsContraTimeB}})</th>
+                    <th *ngIf="partida?.status == 0">Remover </th>
                   </tr>
                 </thead>
                 <tbody class="detalhes">
                   <tr *ngFor="let jogador of partida.timeB">
-                    <td [class.bg-custom]="jogador.destaque ? true : false">{{ jogador.nome }}</td>
+                    <td [class.bg-custom]="jogador.destaque ? true : false" class="centered">{{ jogador.nome }} </td>
                     <td>
-                      {{ jogador.gol }}
-                      <div class="btn-group">
+                        <button *ngIf="partida?.status == 1" class="btn btn-sm mx-1 " >{{ jogador.gol }}</button>
                         <button *ngIf="partida?.status == 0" (click)="atualizarPartidaGol(partida.id, jogador.id, 1, 'B')"
-                          class="btn btn-info btn-sm mx-1">+</button>
-                        <button *ngIf="partida?.status == 0" (click)="atualizarPartidaGol(partida.id, jogador.id, 0, 'B')"
-                          class="btn btn-danger btn-sm mx-1">-</button>
-                      </div>
+                        class="btn btn-success btn-sm mx-1 ">{{ jogador.gol }}</button>
                     </td>
                     <td>
-                      {{ jogador.assistencia }}
-                      <div class="btn-group">
+                        <button *ngIf="partida?.status == 1" class="btn btn-sm mx-1 ">{{ jogador.assistencia }}</button>
                         <button *ngIf="partida?.status == 0" (click)="atualizarPartidaAssitencia(partida.id, jogador.id, 1, 'B')"
-                          class="btn btn-info btn-sm mx-1">+</button>
-                        <button *ngIf="partida?.status == 0" (click)="atualizarPartidaAssitencia(partida.id, jogador.id, 0, 'B')"
-                          class="btn btn-danger btn-sm mx-1">-</button>
+                        class="btn btn-success btn-sm mx-1 ">{{ jogador.assistencia }}</button>
+                    </td>
+                    <td>
+                        <button *ngIf="partida?.status == 1" class="btn btn-sm mx-1 ">{{ jogador.golContra }}</button>
+                        <button *ngIf="partida?.status == 0" (click)="atualizarPartidaGolContra(partida.id, jogador.id, 1, 'B')"
+                        class="btn btn-warning btn-sm mx-1 ">{{ jogador.golContra }}</button>
+                    </td>
+                    <td>
+                      <div class="btn-group" *ngIf="partida?.status == 0" >
+                        <button class="btn btn-danger btn-sm mx-0 " (click)="atualizarPartidaGol(partida.id, jogador.id, 0, 'B')">G</button>
+                        <button class="btn btn-danger btn-sm mx-0 " (click)="atualizarPartidaAssitencia(partida.id, jogador.id, 0, 'B')">A</button>
+                        <button class="btn btn-danger btn-sm mx-0 " (click)="atualizarPartidaGolContra(partida.id, jogador.id, 0, 'B')">C</button>
                       </div>
                     </td>
                   </tr>

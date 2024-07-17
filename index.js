@@ -6,7 +6,8 @@ const PORT = process.env.PORT || 3000;
 const Jogadores = require("./models/jogadores");
 const Partidas = require("./models/partidas");
 const cors = require('cors');
-const cache = require('./models/cache')
+const cache = require('./models/cache');
+const Backup = require('./models/backup');
 
 app.listen(PORT, () => {
     console.log(`Servidor está ouvindo na porta ${PORT}`);
@@ -104,5 +105,49 @@ app.put('/partidas', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Erro ao criar partida ' + error.message });
+    }
+});
+
+app.get('/backup', async (req, res) => {
+    try {
+        const backup = new Backup();
+        backup.fazerBackup().then(() => {
+          console.log('Backup completo');
+        }).catch(error => {
+          console.error('Erro ao fazer backup:', error);
+        });
+        res.status(200).json("backupeou bonito!");
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Erro ao buscar jogadores' });
+    }
+});
+app.get('/restore-backup', async (req, res) => {
+    try {
+        const { data } = req.query; // Extrai o parâmetro de consulta 'data'
+        if (!data) {
+            return res.status(400).json({ error: 'O parâmetro "data" é obrigatório' });
+        }
+
+        const backup = new Backup();
+        console.log('Data específica para restauração:', data);
+
+        await backup.restaurarBackup(data);
+        console.log('Restauração completa');
+        res.status(200).json({ message: 'Restaurou o backup' });
+    } catch (error) {
+        console.error('Erro ao restaurar backup:', error);
+        res.status(500).json({ error: 'Erro ao restaurar backup' });
+    }
+});
+app.get('/list-backup', async (req, res) => {
+    try {
+        const backup = new Backup();
+        const backups = await backup.listarBackups();
+        console.log('Restauração completa');
+        res.status(200).json(backups);
+    } catch (error) {
+        console.error('Erro ao restaurar backup:', error);
+        res.status(500).json({ error: 'Erro ao restaurar backup' });
     }
 });

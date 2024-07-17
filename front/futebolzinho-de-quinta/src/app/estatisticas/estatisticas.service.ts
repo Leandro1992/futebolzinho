@@ -1,4 +1,4 @@
-// src/app/services/jogador.service.ts
+// src/app/services/estatistica.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';

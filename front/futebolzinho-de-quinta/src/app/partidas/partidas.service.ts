@@ -22,5 +22,9 @@ export class PartidaService {
     return this.http.put<any>(`${this.apiUrl}/partidas`, partida);
   }
 
+  getEstatisticas(): Observable<any> {
+    return this.http.get<any[]>(`${this.apiUrl}/estatisticas`);
+  }
+
   // Adicione mais métodos conforme necessário para atualizar, deletar, etc.
 }

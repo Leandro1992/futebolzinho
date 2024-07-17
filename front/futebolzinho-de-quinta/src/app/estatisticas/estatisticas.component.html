@@ -7,7 +7,8 @@
                 <th (click)="ordenarPor('jogador.nome')">Jogador</th>
                 <th (click)="ordenarPor('jogos')">Jogos</th>
                 <th (click)="ordenarPor('gols')">Gols</th>
-                <th (click)="ordenarPor('assistencia')">Assistências</th>
+                <th (click)="ordenarPor('assistencia')">Assis</th>
+                <th (click)="ordenarPor('golContra')">G. Contra</th>
                 <th (click)="ordenarPor('vitorias')">Vitórias</th>
                 <th (click)="ordenarPor('derrotas')">Derrotas</th>
                 <th (click)="ordenarPor('empates')">Empates</th>
@@ -20,6 +21,7 @@
                 <td>{{ estatistica.jogos }}</td>
                 <td>{{ estatistica.gols }}</td>
                 <td>{{ estatistica.assistencia }}</td>
+                <td>{{ estatistica.golContra }}</td>
                 <td>{{ estatistica.vitorias }}</td>
                 <td>{{ estatistica.derrotas }}</td>
                 <td>{{ estatistica.empates }}</td>
