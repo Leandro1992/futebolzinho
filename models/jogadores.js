@@ -65,6 +65,41 @@ class Jogador {
             throw new Error('Erro ao atualizar dados do jogador: ' + error.message);
         }
     }
+   
+    async atualizarEstatiscasJogadores({ id, jogos, gols, assistencias, vitorias, derrotas, empate, destaque }) {
+        try {
+            const db = FirebaseConnection.getInstance().db;
+            await db.collection('jogadores').doc(id).update({
+                jogos: jogos,
+                gols: gols,
+                assistencias: assistencias,
+                vitorias: vitorias,
+                derrotas: derrotas,
+                empate: empate,
+                destaque: destaque,
+            });
+
+            const jogadorDoc = await db.collection('jogadores').doc(id).get();
+
+            if (jogadorDoc.exists) {
+                const jogadorData = jogadorDoc.data();
+                console.log('Dados atualizados do jogador:', jogadorData);
+                // Atualizar cache
+                const jogadores = cache.get('jogadores') || [];
+                const index = jogadores.findIndex(j => j.id === id);
+                if (index !== -1) {
+                    jogadores[index] = { id, nome, mensalista };
+                }
+                cache.set('jogadores', jogadores);
+
+                return jogadorData;
+            } else {
+                console.log('Documento não encontrado.');
+            }
+        } catch (error) {
+            throw new Error('Erro ao atualizar dados do jogador: ' + error.message);
+        }
+    }
 
 
     static async obterTodos() {

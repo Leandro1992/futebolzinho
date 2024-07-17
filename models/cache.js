@@ -4,7 +4,9 @@ class Cache {
     }
   
     get(key) {
+      if(this.data[key] === ""){
         console.log("usou dados do cache", key)
+      }
         return this.data[key];
     }
     

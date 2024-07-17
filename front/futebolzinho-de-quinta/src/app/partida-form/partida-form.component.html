@@ -34,9 +34,28 @@
           </thead>
           <tbody>
             <tr *ngFor="let jogador of jogadoresTimeA">
-              <td>{{ jogador.nome }}
-                <button style="float: right;" class="btn btn-danger btn-sm" (click)="removerJogadorTime(jogador, 'a')">X</button>
-                <button style="float: right;" class="btn btn-warning btn-sm" (click)="trocarJogadorDeTime(jogador)">→</button>
+              <td>
+                <div>
+                  <button type="button" class="btn w-100 h-100 text-start" (click)="fixarJogadorNoTime(jogador)">{{ jogador.nome }}</button>
+                </div>
+              </td>
+              <td>
+                <div class="btn-group-vertical" *ngIf="!jogador.fixo">
+                  <button type="button" style="float: right;" class="btn btn-warning btn-sm" (click)="trocarJogadorDeTime(jogador)">
+                    <i class="bi bi-arrow-bar-right"></i>
+                  </button>
+                  <button type="button" style="float: right;" class="btn btn-danger btn-sm" (click)="removerJogadorTime(jogador, 'a')">
+                    <i class="bi bi-ban"></i>
+                  </button>
+                </div>
+                <div *ngIf="jogador.fixo" class="btn-group-vertical">
+                  <button type="button" class="btn btn-info btn-sm" (click)="fixarJogadorNoTime(jogador)">
+                    <i class="bi bi-person-fill-lock" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" class="btn btn-info btn-sm" (click)="fixarJogadorNoTime(jogador)">
+                    <i class="bi bi-person-lock" aria-hidden="true"></i>
+                  </button>
+                </div>
               </td>
               </tr>
             </tbody>
@@ -59,9 +78,28 @@
           </thead>
           <tbody>
             <tr *ngFor="let jogador of jogadoresTimeB">
-              <td class="text-truncate">{{ jogador.nome }}
-                <button style="float: right;" class="btn btn-danger btn-sm" (click)="removerJogadorTime(jogador, 'b')">X</button>
-                <button style="float: right;" class="btn btn-warning btn-sm" (click)="trocarJogadorDeTime(jogador)">←</button>
+              <td>
+                <div>
+                  <button type="button" class="btn w-100 h-109 text-start" (click)="fixarJogadorNoTime(jogador)">{{ jogador.nome }}</button>
+                </div>
+              </td>
+              <td>
+                <div class="btn-group-vertical" *ngIf="!jogador.fixo">
+                  <button type="button" style="float: right;" class="btn btn-warning btn-sm" (click)="trocarJogadorDeTime(jogador)">
+                    <i class="bi bi-arrow-bar-left"></i>
+                  </button>
+                  <button type="button" style="float: right;" class="btn btn-danger btn-sm" (click)="removerJogadorTime(jogador, 'b')">
+                    <i class="bi bi-ban"></i>
+                  </button>
+                </div>
+                <div *ngIf="jogador.fixo" class="btn-group-vertical">
+                  <button type="button" class="btn btn-info btn-sm" (click)="fixarJogadorNoTime(jogador)">
+                    <i class="bi bi-person-fill-lock" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" class="btn btn-info btn-sm" (click)="fixarJogadorNoTime(jogador)">
+                    <i class="bi bi-person-lock" aria-hidden="true"></i>
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -69,8 +107,24 @@
       </div>
     </div>
     <div class="row">
-      <div class="col"><button type="button" (click)="gerarTimeAleatoriamente()" class="btn btn-warning">Gerar Aleatórios</button></div>
-      <div class="col"><button type="submit" class="btn btn-primary" style="float: right;">Salvar</button></div>
+      <div class="col">
+        <button type="button" (click)="preencherComMensalistas()" class="btn btn-warning">
+          Preencher
+          <i class="bi bi-person-fill-down"></i>
+        </button>
+      </div>
+      <div class="col" *ngIf="jogadoresTimeA.length+jogadoresTimeB.length > 0">
+        <button type="button" (click)="equilibrarTimes()" class="btn btn-info">
+          Equilibrar
+          <i class="bi bi-fire"></i>
+        </button>
+      </div>
+      <div class="col">
+        <button type="submit" class="btn btn-primary" style="float: right;">
+          Salvar
+          <i class="bi bi-floppy"></i>
+        </button>
+      </div>
     </div>
 
 

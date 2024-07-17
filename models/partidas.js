@@ -21,8 +21,8 @@ class Partida {
           const partidaRef = await db.collection('partidas').add({
             data: this.data,
             local: this.local,
-            timeA: timeARefs.map(jogadorRef => ({ jogadorRef, gol: 0, assistencia: 0 })),
-            timeB: timeBRefs.map(jogadorRef => ({ jogadorRef, gol: 0, assistencia: 0 })),
+            timeA: timeARefs.map(jogadorRef => ({ jogadorRef, gol: 0, assistencia: 0, golContra: 0})),
+            timeB: timeBRefs.map(jogadorRef => ({ jogadorRef, gol: 0, assistencia: 0, golContra: 0})),
             status: this.status
           });
     
@@ -50,21 +50,25 @@ class Partida {
             const partidaData = { id: doc.id, ...doc.data() };
             let totalGolsTimeA = 0;
             let totalGolsTimeB = 0;
+            let totalAssistenciasTimeA = 0; 
             let totalAssistenciasTimeB = 0;
-            let totalAssistenciasTimeA = 0;
+            let totalGolsContraTimeA = 0;
+            let totalGolsContraTimeB = 0;
     
             const [timeAPlayers, timeBPlayers] = await Promise.all([
               Promise.all(partidaData.timeA.map(async jogador => {
-                const jogadorData = { id: jogador.jogadorRef.id, gol: jogador.gol, assistencia: jogador.assistencia, destaque: jogador.destaque };
-                totalGolsTimeA += jogador.gol;
-                totalAssistenciasTimeA += jogador.assistencia;
+                const jogadorData = { id: jogador.jogadorRef.id, gol: jogador.gol, assistencia: jogador.assistencia, destaque: jogador.destaque, golContra: jogador.golContra || 0 };
+                totalGolsTimeA += jogador.gol ?? 0;
+                totalAssistenciasTimeA += jogador.assistencia ?? 0;
+                totalGolsContraTimeA += jogador.golContra ?? 0;
                 const jogadorSnapshot = await jogador.jogadorRef.get();
                 return { ...jogadorData, ...jogadorSnapshot.data() };
-              })),
-              Promise.all(partidaData.timeB.map(async jogador => {
-                const jogadorData = { id: jogador.jogadorRef.id, gol: jogador.gol, assistencia: jogador.assistencia, destaque: jogador.destaque };
-                totalGolsTimeB += jogador.gol;
-                totalAssistenciasTimeB += jogador.assistencia;
+            })),
+            Promise.all(partidaData.timeB.map(async jogador => {
+                const jogadorData = { id: jogador.jogadorRef.id, gol: jogador.gol, assistencia: jogador.assistencia, destaque: jogador.destaque, golContra: jogador.golContra || 0 };
+                totalGolsTimeB += jogador.gol ?? 0;
+                totalAssistenciasTimeB += jogador.assistencia ?? 0;
+                totalGolsContraTimeB += jogador.golContra ?? 0;
                 const jogadorSnapshot = await jogador.jogadorRef.get();
                 return { ...jogadorData, ...jogadorSnapshot.data() };
               }))
@@ -72,11 +76,14 @@ class Partida {
     
             partidaData.timeA = timeAPlayers;
             partidaData.timeB = timeBPlayers;
-            partidaData.totalGolsTimeA = totalGolsTimeA;
-            partidaData.totalGolsTimeB = totalGolsTimeB;
-            partidaData.totalAssistenciasTimeB = totalAssistenciasTimeB;
+            partidaData.totalGolsTimeA = totalGolsTimeA + totalGolsContraTimeB;
+            partidaData.totalGolsTimeB = totalGolsTimeB + totalGolsContraTimeA;
+            partidaData.totalGolsContraTimeA = totalGolsContraTimeA;
+            partidaData.totalGolsContraTimeB = totalGolsContraTimeB;
             partidaData.totalAssistenciasTimeA = totalAssistenciasTimeA;
-    
+            partidaData.totalAssistenciasTimeB = totalAssistenciasTimeB;
+            
+            console.log(partidaData)
             return partidaData;
           }));
     
@@ -105,19 +112,24 @@ class Partida {
                 const partidaData = { id: doc.id, ...doc.data() };
                 let totalGolsTimeA = 0;
                 let totalGolsTimeB = 0;
-                let totalAssistenciasTimeB = 0;
+                let totalGolsContraTimeA = 0;
+                let totalGolsContraTimeB = 0;
                 let totalAssistenciasTimeA = 0;
+                let totalAssistenciasTimeB = 0;
 
                 const [timeAPlayers, timeBPlayers] = await Promise.all([
                     Promise.all(partidaData.timeA.map(async jogador => {
-                        const jogadorData = { id: jogador.jogadorRef.id, gol: jogador.gol, assistencia: jogador.assistencia, destaque: jogador.destaque };
-                        totalGolsTimeA += jogador.gol;
-                        totalAssistenciasTimeA += jogador.assistencia;
+                        const jogadorData = { id: jogador.jogadorRef.id, gol: jogador.gol, assistencia: jogador.assistencia, destaque: jogador.destaque, golContra: jogador.golContra || 0};
+                        totalGolsTimeA += jogador.gol ?? 0;
+                        totalGolsTimeB += jogador.golContra ?? 0;
+                        totalGolsContraTimeA += jogador.golContra ?? 0;
+                        totalAssistenciasTimeA += jogador.assistencia ?? 0;
                         const jogadorSnapshot = await jogador.jogadorRef.get();
 
                         if(!partidaDados[jogador.jogadorRef.id]) partidaDados[jogador.jogadorRef.id] = {
                             jogos: 0,
                             gols:0,
+                            golContra:0,
                             assistencia: 0,
                             destaque: 0,
                             vitorias: 0,
@@ -128,21 +140,23 @@ class Partida {
                         
                         partidaDados[jogador.jogadorRef.id].jogadorId = jogador.jogadorRef.id
                         partidaDados[jogador.jogadorRef.id].jogos++
-                        partidaDados[jogador.jogadorRef.id].gols += jogador.gol;
-                        partidaDados[jogador.jogadorRef.id].assistencia += jogador.assistencia;
+                        partidaDados[jogador.jogadorRef.id].gols += jogador.gol ?? 0;
+                        partidaDados[jogador.jogadorRef.id].golContra += jogador.golContra ?? 0;
+                        partidaDados[jogador.jogadorRef.id].assistencia += jogador.assistencia ?? 0;
                         partidaDados[jogador.jogadorRef.id].jogador = jogadorSnapshot.data();
-                        console.log("jogador.jogadorRef.id", jogador.jogadorRef.id)
-                        
                         return {...jogadorData, ...jogadorSnapshot.data() };
                     })),
                     Promise.all(partidaData.timeB.map(async jogador => {
-                        const jogadorData = { id: jogador.jogadorRef.id, gol: jogador.gol, assistencia: jogador.assistencia, destaque: jogador.destaque };
-                        totalGolsTimeB += jogador.gol;
-                        totalAssistenciasTimeB += jogador.assistencia;
+                        const jogadorData = { id: jogador.jogadorRef.id, gol: jogador.gol, assistencia: jogador.assistencia, destaque: jogador.destaque, golContra: jogador.golContra || 0 };
+                        totalGolsTimeB += jogador.gol ?? 0;
+                        totalGolsTimeA += jogador.golContra ?? 0;
+                        totalGolsContraTimeB += jogador.golContra ?? 0;
+                        totalAssistenciasTimeB += jogador.assistencia ?? 0;
                         const jogadorSnapshot = await jogador.jogadorRef.get();
                         if(!partidaDados[jogador.jogadorRef.id]) partidaDados[jogador.jogadorRef.id] = {
                             jogos: 0,
                             gols:0,
+                            golContra:0,
                             assistencia: 0,
                             destaque: 0,
                             vitorias: 0,
@@ -152,20 +166,22 @@ class Partida {
                         if(jogador.destaque) partidaDados[jogador.jogadorRef.id].destaque++;
                         partidaDados[jogador.jogadorRef.id].jogadorId = jogador.jogadorRef.id
                         partidaDados[jogador.jogadorRef.id].jogos++
-                        partidaDados[jogador.jogadorRef.id].gols += jogador.gol;
-                        partidaDados[jogador.jogadorRef.id].assistencia += jogador.assistencia;
+                        partidaDados[jogador.jogadorRef.id].gols += jogador.gol ?? 0;
+                        partidaDados[jogador.jogadorRef.id].golContra += jogador.golContra ?? 0;
+                        partidaDados[jogador.jogadorRef.id].assistencia += jogador.assistencia ?? 0;
                         partidaDados[jogador.jogadorRef.id].jogador = jogadorSnapshot.data();
-                        console.log("jogador.jogadorRef.id", jogador.jogadorRef.id)
                         
                         return {...jogadorData, ...jogadorSnapshot.data() };
                     }))
                 ]);
                 partidaData.timeA = timeAPlayers;
                 partidaData.timeB = timeBPlayers;
-                partidaData.totalGolsTimeA = totalGolsTimeA;
-                partidaData.totalGolsTimeB = totalGolsTimeB;
-                partidaData.totalAssistenciasTimeB = totalAssistenciasTimeB;
+                partidaData.totalGolsTimeA = totalGolsTimeA + totalGolsContraTimeB;
+                partidaData.totalGolsTimeB = totalGolsTimeB + totalGolsContraTimeA;
+                partidaData.totalGolsContraTimeA = totalGolsContraTimeA;
+                partidaData.totalGolsContraTimeB = totalGolsContraTimeB;
                 partidaData.totalAssistenciasTimeA = totalAssistenciasTimeA;
+                partidaData.totalAssistenciasTimeB = totalAssistenciasTimeB;
                 partidaData.vendedor = "Empate"
                 if(totalGolsTimeA > totalGolsTimeB) {
                     partidaData.vendedor = "A"
@@ -228,15 +244,17 @@ class Partida {
                     "jogadorRef": db.doc(`jogadores/${jogadorRef.id}`),
                     gol: jogadorRef.gol,
                     assistencia: jogadorRef.assistencia,
-                    destaque: jogadorRef?.destaque ? true : false
+                    golContra: jogadorRef.golContra,
+                    destaque: jogadorRef?.destaque ? true : false,
                 }
             }));
- 
+            
             const timeBRefs = await Promise.all(timeB.map(jogadorRef => {
                 return {
                     "jogadorRef": db.doc(`jogadores/${jogadorRef.id}`),
                     gol: jogadorRef.gol,
                     assistencia: jogadorRef.assistencia,
+                    golContra: jogadorRef.golContra,
                     destaque: jogadorRef?.destaque ? true : false
                 }
             }));
@@ -247,6 +265,7 @@ class Partida {
                 timeB: timeBRefs,
                 status: status
             });
+            cache.set('partidas', null);
             cache.set('estatisticasPartidas', null);
             
             return 'Dados atualizados com sucesso';
