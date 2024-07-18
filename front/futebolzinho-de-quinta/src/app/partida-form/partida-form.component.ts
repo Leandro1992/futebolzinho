@@ -277,4 +277,8 @@ export class PartidaFormComponent implements OnInit {
       return a.nome.localeCompare(b.nome);
     });
   }
+
+  arredondaValor(num: number): string{
+    return num.toFixed(2)
+  }
 }

@@ -23,3 +23,17 @@
   height: 100%;
   width: 100%;
 }
+
+.small-text {
+  font-size: 0.6rem; /* Ajuste o tamanho conforme necessário */
+}
+
+.justify-text {
+  text-align: justify;
+}
+
+.justify-text:after {
+  content: '';
+  display: inline-block;
+  width: 100%;
+}

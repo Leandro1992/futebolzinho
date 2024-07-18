@@ -22,7 +22,7 @@
           <label for="jogadoresTimeA" class="form-label">Jogadores Time A:</label>
           <!-- <select id="jogadoresTimeA" class="form-select"> -->
           <select id="jogadoresTimeA" class="form-select" (change)="adicionarJogadorTimePorEvento($event, 'a')">
-            <option value=""></option>
+            <option selected> Selecione o jogador</option>
             <option *ngFor="let jogador of jogadores" [value]="jogador.id">{{ jogador.nome }}</option>
           </select>
         </div>
@@ -35,9 +35,15 @@
           <tbody>
             <tr *ngFor="let jogador of jogadoresTimeA">
               <td>
-                <div>
-                  <button type="button" class="btn w-100 h-100 text-start" (click)="fixarJogadorNoTime(jogador)">{{ jogador.nome }}</button>
+                <div >
+                  <button type="button" class="btn w-100 h-100 text-start" (click)="fixarJogadorNoTime(jogador)">{{ jogador.nome }}
+                  </button>
                 </div>
+                <span class="small-text" *ngIf="jogador.jogos && !jogador.fixo">
+                  V:{{arredondaValor(jogador.vitoriaPorJogo)}}|
+                  G:{{arredondaValor(jogador.golsPorJogo)}}|
+                  A:{{arredondaValor(jogador.assistenciaPorJogo)}}
+                </span>
               </td>
               <td>
                 <div class="btn-group-vertical" *ngIf="!jogador.fixo">
@@ -57,6 +63,7 @@
                   </button>
                 </div>
               </td>
+
               </tr>
             </tbody>
           </table>
@@ -66,7 +73,7 @@
           <div class="mb-6">
           <label for="jogadoresTimeB" class="form-label">Jogadores Time B:</label>
           <select id="jogadoresTimeB" class="form-select" (change)="adicionarJogadorTimePorEvento($event, 'b')">
-            <option value=""></option>
+            <option selected> Selecione o jogador</option>
             <option *ngFor="let jogador of jogadores" [value]="jogador.id">{{ jogador.nome }}</option>
           </select>
         </div>
@@ -81,6 +88,11 @@
               <td>
                 <div>
                   <button type="button" class="btn w-100 h-109 text-start" (click)="fixarJogadorNoTime(jogador)">{{ jogador.nome }}</button>
+                  <span class="small-text" *ngIf="jogador.jogos && !jogador.fixo">
+                    V:{{arredondaValor(jogador.vitoriaPorJogo)}}|
+                    G:{{arredondaValor(jogador.golsPorJogo)}}|
+                    A:{{arredondaValor(jogador.assistenciaPorJogo)}}
+                  </span>
                 </div>
               </td>
               <td>
