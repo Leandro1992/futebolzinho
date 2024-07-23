@@ -5,9 +5,11 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const Jogadores = require("./models/jogadores");
 const Partidas = require("./models/partidas");
+const User = require("./models/user");
 const cors = require('cors');
 const cache = require('./models/cache');
 const Backup = require('./models/backup');
+const { Console } = require('console');
 
 app.listen(PORT, () => {
     console.log(`Servidor está ouvindo na porta ${PORT}`);
@@ -17,6 +19,32 @@ app.use(express.json());
 app.use(cors());
 
 app.use('/', express.static(path.resolve(__dirname + '/public/browser')));
+
+
+//LOGIN
+app.post('/login', async (req, res) => {
+    try {
+        console.log(req.body, "body")
+        const token = await User.login(req.body);
+        console.log(token, "óeqqqq")
+        res.status(200).send({ success: true, token });
+    } catch (error) {
+        res.status(400).send({ success: false, error: error.message });
+    }
+});
+
+// Rota de registro
+app.post('/register', async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        console.log(req.body, "body")
+        const token = await User.register(req.body);
+        console.log(token, "óeqqqq")
+        res.status(200).send({ success: true, token });
+    } catch (error) {
+        res.status(400).send({ success: false, error: error.message });
+    }
+});
 
 //CRUD jogadores
 app.get('/jogadores', async (req, res) => {
@@ -112,9 +140,9 @@ app.get('/backup', async (req, res) => {
     try {
         const backup = new Backup();
         backup.fazerBackup().then(() => {
-          console.log('Backup completo');
+            console.log('Backup completo');
         }).catch(error => {
-          console.error('Erro ao fazer backup:', error);
+            console.error('Erro ao fazer backup:', error);
         });
         res.status(200).json("backupeou bonito!");
     } catch (error) {

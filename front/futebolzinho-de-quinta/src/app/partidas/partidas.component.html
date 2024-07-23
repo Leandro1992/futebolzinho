@@ -46,18 +46,18 @@
                     <td>
                         <button *ngIf="partida?.status == 1" class="btn btn-sm mx-1 ">{{ jogador.assistencia }}</button>
                         <button *ngIf="partida?.status == 0" (click)="atualizarPartidaAssitencia(partida.id, jogador.id, 1, 'A')"
-                        class="btn btn-success btn-sm mx-1 ">{{ jogador.assistencia }}</button>
+                        class="btn btn-warning btn-sm mx-1 ">{{ jogador.assistencia }}</button>
                     </td>
                     <td>
                         <button *ngIf="partida?.status == 1" class="btn btn-sm mx-1 ">{{ jogador.golContra }}</button>
                         <button *ngIf="partida?.status == 0" (click)="atualizarPartidaGolContra(partida.id, jogador.id, 1, 'A')"
-                        class="btn btn-warning btn-sm mx-1 ">{{ jogador.golContra }}</button>
+                        class="btn btn-danger btn-sm mx-1 ">{{ jogador.golContra }}</button>
                     </td>
                     <td>
                       <div class="btn-group" *ngIf="partida?.status == 0" >
-                        <button class="btn btn-danger btn-sm mx-0 " (click)="atualizarPartidaGol(partida.id, jogador.id, 0, 'A')">G</button>
-                        <button class="btn btn-danger btn-sm mx-0 " (click)="atualizarPartidaAssitencia(partida.id, jogador.id, 0, 'A')">A</button>
-                        <button class="btn btn-danger btn-sm mx-0 " (click)="atualizarPartidaGolContra(partida.id, jogador.id, 0, 'A')">C</button>
+                        <button class="btn btn-success btn-sm mx-0 " (click)="atualizarPartidaGol(partida.id, jogador.id, 0, 'A')"><b>-</b></button>
+                        <button class="btn btn-warning btn-sm mx-0 " (click)="atualizarPartidaAssitencia(partida.id, jogador.id, 0, 'A')"><b>-</b></button>
+                        <button class="btn btn-danger btn-sm mx-0 " (click)="atualizarPartidaGolContra(partida.id, jogador.id, 0, 'A')"><b>-</b></button>
                       </div>
                     </td>
                   </tr>
@@ -87,18 +87,18 @@
                     <td>
                         <button *ngIf="partida?.status == 1" class="btn btn-sm mx-1 ">{{ jogador.assistencia }}</button>
                         <button *ngIf="partida?.status == 0" (click)="atualizarPartidaAssitencia(partida.id, jogador.id, 1, 'B')"
-                        class="btn btn-success btn-sm mx-1 ">{{ jogador.assistencia }}</button>
+                        class="btn btn-warning btn-sm mx-1 ">{{ jogador.assistencia }}</button>
                     </td>
                     <td>
                         <button *ngIf="partida?.status == 1" class="btn btn-sm mx-1 ">{{ jogador.golContra }}</button>
                         <button *ngIf="partida?.status == 0" (click)="atualizarPartidaGolContra(partida.id, jogador.id, 1, 'B')"
-                        class="btn btn-warning btn-sm mx-1 ">{{ jogador.golContra }}</button>
+                        class="btn btn-danger btn-sm mx-1 ">{{ jogador.golContra }}</button>
                     </td>
                     <td>
                       <div class="btn-group" *ngIf="partida?.status == 0" >
-                        <button class="btn btn-danger btn-sm mx-0 " (click)="atualizarPartidaGol(partida.id, jogador.id, 0, 'B')">G</button>
-                        <button class="btn btn-danger btn-sm mx-0 " (click)="atualizarPartidaAssitencia(partida.id, jogador.id, 0, 'B')">A</button>
-                        <button class="btn btn-danger btn-sm mx-0 " (click)="atualizarPartidaGolContra(partida.id, jogador.id, 0, 'B')">C</button>
+                        <button class="btn btn-success btn-sm mx-0 " (click)="atualizarPartidaGol(partida.id, jogador.id, 0, 'B')"><b>-</b></button>
+                        <button class="btn btn-warning btn-sm mx-0 " (click)="atualizarPartidaAssitencia(partida.id, jogador.id, 0, 'B')"><b>-</b></button>
+                        <button class="btn btn-danger btn-sm mx-0 " (click)="atualizarPartidaGolContra(partida.id, jogador.id, 0, 'B')"><b>-</b></button>
                       </div>
                     </td>
                   </tr>
