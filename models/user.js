@@ -1,6 +1,5 @@
 // models/Jogador.js
 const FirebaseConnection = require('../db');
-const { signInWithEmailAndPassword } = require('firebase/auth');
 const saltRounds = 10;
 const bcrypt = require('bcrypt');
 
@@ -8,19 +7,6 @@ class User {
     constructor() {
 
     }
-
-    // static async login({ email, password }) {
-    //     try {
-    //         const auth = FirebaseConnection.getInstance().auth;
-    //         console.log(auth)
-    //         // Verificar a senha criptografada
-    //         // const match = await bcrypt.compare(password, user.senha);
-    //         return token;
-    //     } catch (error) {
-    //         console.log(error)
-    //         return error;
-    //     }
-    // }
 
     static async login({ email, password }) {
         try {
