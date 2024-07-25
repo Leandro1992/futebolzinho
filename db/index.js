@@ -3,7 +3,7 @@ let serviceAccount = null;
 
 try {
   // Tenta ler o arquivo de configuração
-  serviceAccount = require('../credenciais-dev.json');
+  serviceAccount = require('../credenciais.json');
 } catch (error) {
   // Se o arquivo de configuração não estiver disponível, use variáveis de ambiente
   console.log('Arquivo de configuração não encontrado. Usando variáveis de ambiente.');
