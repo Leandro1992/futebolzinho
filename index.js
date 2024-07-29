@@ -118,7 +118,6 @@ app.get('/partidas', async (req, res) => {
 app.get('/estatisticas', async (req, res) => {
     try {
         let todos = await Partidas.obterEstatisticasPartidas()
-        console.log("todos", todos)
         res.status(200).json({ data: todos });
     } catch (error) {
         console.error(error);

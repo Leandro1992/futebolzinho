@@ -1,6 +1,6 @@
 <div class="container mt-4">
   <h2>Lista de Partidas</h2>
-  <button class="btn btn-primary mb-3" (click)="criarNovaPartida()">Nova Partida</button>
+  <button *ngIf="isLoggedIn" class="btn btn-primary mb-3" (click)="criarNovaPartida()">Nova Partida</button>
   <table class="table">
     <thead>
       <tr>
@@ -40,21 +40,21 @@
                     <td [class.bg-custom]="jogador.destaque ? true : false" class="centered">{{ jogador.nome }} </td>
                     <td>
                         <button *ngIf="partida?.status == 1" class="btn btn-sm mx-1 " >{{ jogador.gol }}</button>
-                        <button *ngIf="partida?.status == 0" (click)="atualizarPartidaGol(partida.id, jogador.id, 1, 'A')"
+                        <button *ngIf="partida?.status == 0 && isLoggedIn" (click)="atualizarPartidaGol(partida.id, jogador.id, 1, 'A')"
                         class="btn btn-success btn-sm mx-1 ">{{ jogador.gol }}</button>
                     </td>
                     <td>
                         <button *ngIf="partida?.status == 1" class="btn btn-sm mx-1 ">{{ jogador.assistencia }}</button>
-                        <button *ngIf="partida?.status == 0" (click)="atualizarPartidaAssitencia(partida.id, jogador.id, 1, 'A')"
+                        <button *ngIf="partida?.status == 0 && isLoggedIn" (click)="atualizarPartidaAssitencia(partida.id, jogador.id, 1, 'A')"
                         class="btn btn-warning btn-sm mx-1 ">{{ jogador.assistencia }}</button>
                     </td>
                     <td>
                         <button *ngIf="partida?.status == 1" class="btn btn-sm mx-1 ">{{ jogador.golContra }}</button>
-                        <button *ngIf="partida?.status == 0" (click)="atualizarPartidaGolContra(partida.id, jogador.id, 1, 'A')"
+                        <button *ngIf="partida?.status == 0 && isLoggedIn" (click)="atualizarPartidaGolContra(partida.id, jogador.id, 1, 'A')"
                         class="btn btn-danger btn-sm mx-1 ">{{ jogador.golContra }}</button>
                     </td>
                     <td>
-                      <div class="btn-group" *ngIf="partida?.status == 0" >
+                      <div class="btn-group" *ngIf="partida?.status == 0 && isLoggedIn" >
                         <button class="btn btn-success btn-sm mx-0 " (click)="atualizarPartidaGol(partida.id, jogador.id, 0, 'A')"><b>-</b></button>
                         <button class="btn btn-warning btn-sm mx-0 " (click)="atualizarPartidaAssitencia(partida.id, jogador.id, 0, 'A')"><b>-</b></button>
                         <button class="btn btn-danger btn-sm mx-0 " (click)="atualizarPartidaGolContra(partida.id, jogador.id, 0, 'A')"><b>-</b></button>
@@ -81,21 +81,21 @@
                     <td [class.bg-custom]="jogador.destaque ? true : false" class="centered">{{ jogador.nome }} </td>
                     <td>
                         <button *ngIf="partida?.status == 1" class="btn btn-sm mx-1 " >{{ jogador.gol }}</button>
-                        <button *ngIf="partida?.status == 0" (click)="atualizarPartidaGol(partida.id, jogador.id, 1, 'B')"
+                        <button *ngIf="partida?.status == 0 && isLoggedIn" (click)="atualizarPartidaGol(partida.id, jogador.id, 1, 'B')"
                         class="btn btn-success btn-sm mx-1 ">{{ jogador.gol }}</button>
                     </td>
                     <td>
                         <button *ngIf="partida?.status == 1" class="btn btn-sm mx-1 ">{{ jogador.assistencia }}</button>
-                        <button *ngIf="partida?.status == 0" (click)="atualizarPartidaAssitencia(partida.id, jogador.id, 1, 'B')"
+                        <button *ngIf="partida?.status == 0 && isLoggedIn" (click)="atualizarPartidaAssitencia(partida.id, jogador.id, 1, 'B')"
                         class="btn btn-warning btn-sm mx-1 ">{{ jogador.assistencia }}</button>
                     </td>
                     <td>
                         <button *ngIf="partida?.status == 1" class="btn btn-sm mx-1 ">{{ jogador.golContra }}</button>
-                        <button *ngIf="partida?.status == 0" (click)="atualizarPartidaGolContra(partida.id, jogador.id, 1, 'B')"
+                        <button *ngIf="partida?.status == 0 && isLoggedIn" (click)="atualizarPartidaGolContra(partida.id, jogador.id, 1, 'B')"
                         class="btn btn-danger btn-sm mx-1 ">{{ jogador.golContra }}</button>
                     </td>
                     <td>
-                      <div class="btn-group" *ngIf="partida?.status == 0" >
+                      <div class="btn-group" *ngIf="partida?.status == 0 && isLoggedIn" >
                         <button class="btn btn-success btn-sm mx-0 " (click)="atualizarPartidaGol(partida.id, jogador.id, 0, 'B')"><b>-</b></button>
                         <button class="btn btn-warning btn-sm mx-0 " (click)="atualizarPartidaAssitencia(partida.id, jogador.id, 0, 'B')"><b>-</b></button>
                         <button class="btn btn-danger btn-sm mx-0 " (click)="atualizarPartidaGolContra(partida.id, jogador.id, 0, 'B')"><b>-</b></button>
@@ -104,9 +104,9 @@
                   </tr>
                 </tbody>
               </table>
-              <button (click)="selecionarPartidaEncerrar(partida)" *ngIf="partida?.status == 0" style="float:left;" class="btn btn-danger btn-sm"
+              <button (click)="selecionarPartidaEncerrar(partida)" *ngIf="partida?.status == 0 && isLoggedIn" style="float:left;" class="btn btn-danger btn-sm"
                 data-bs-toggle="modal" data-bs-target="#melhorDaPartidaModal">Encerrar</button>
-              <button *ngIf="partida?.status == 0" style="float:right;" class="btn btn-success btn-sm"
+              <button *ngIf="partida?.status == 0 && isLoggedIn" style="float:right;" class="btn btn-success btn-sm"
                 (click)="salvarPartida(partida)">Salvar</button>
             </div>
           </td>

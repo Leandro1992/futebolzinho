@@ -15,7 +15,7 @@
         <li class="nav-item">
           <a class="nav-link" [routerLink]="['/']">Partidas</a>
         </li>
-        <li class="nav-item active">
+        <li *ngIf="isLoggedIn" class="nav-item active">
           <a class="nav-link" [routerLink]="['/jogador']">Jogadores</a>
         </li>
         <li class="nav-item">
@@ -25,9 +25,50 @@
           <a class="nav-link" [routerLink]="['/partida-form']">Criar Partida</a>
         </li> -->
       </ul>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item" *ngIf="!isLoggedIn">
+          <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
+        </li>
+        <li class="nav-item dropdown" *ngIf="isLoggedIn">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            {{ userEmail }}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="#" (click)="logout()">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
     </div>
   </div>
 </nav>
+
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="loginModalLabel">Login</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="email" formControlName="email">
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" formControlName="password">
+          </div>
+          <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid">Login</button>
+        </form>
+        <div *ngIf="loginError" class="alert alert-danger mt-3">
+          {{ loginError }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="container-fluid">
   <router-outlet></router-outlet>

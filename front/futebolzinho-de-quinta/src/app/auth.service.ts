@@ -1,16 +1,45 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject  } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class AuthService {
-  private baseUrl = 'http://localhost:3000';
+  private baseUrl = '';
+  private loggedIn = new BehaviorSubject<boolean>(false);
+  private userEmail = new BehaviorSubject<string | null>(null);
 
   constructor(private http: HttpClient) { }
 
+  // login(email: string, password: string): Observable<any> {
+  //   return this.http.post<any>(`${this.baseUrl}/login`, { email, password });
+  // }
+
   login(email: string, password: string): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/login`, { email, password });
+    // Simular login com uma API real
+    return this.http.post<any>(`${this.baseUrl}/login`, { email, password }).pipe(
+      tap(response => {
+        this.loggedIn.next(true);
+        this.userEmail.next(response.token.email);
+        localStorage.setItem('token', response.token);
+      })
+    );
+  }
+
+  logout() {
+    this.loggedIn.next(false);
+    this.userEmail.next(null);
+    localStorage.removeItem('token');
+  }
+
+  get isLoggedIn() {
+    return this.loggedIn.asObservable();
+  }
+
+  get getUserEmail() {
+    return this.userEmail.asObservable();
   }
 }
