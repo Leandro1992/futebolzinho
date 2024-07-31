@@ -10,7 +10,12 @@ const cors = require('cors');
 const cache = require('./models/cache');
 const Backup = require('./models/backup');
 const { Console } = require('console');
-const serviceAccount = require('./credenciais.json');
+try {
+    const serviceAccount = require('./credenciais.json');
+} catch (error) {
+    console.log("Rodando em ambiente produtivo")
+}
+
 
 app.listen(PORT, () => {
     console.log(`Servidor está ouvindo na porta ${PORT}`);
@@ -24,7 +29,7 @@ app.use('/', express.static(path.resolve(__dirname + '/public/browser')));
 const authenticate = (req, res, next) => {
     const token = req.headers['authorization'];
 
-    let key = serviceAccount.private_key_id ? serviceAccount.private_key_id : process.env.private_key_id;
+    let key = serviceAccount && serviceAccount.private_key_id ? serviceAccount.private_key_id : process.env.private_key_id;
 
     if (!token) {
       return res.status(403).send('Token não fornecido');
