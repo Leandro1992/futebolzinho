@@ -10,8 +10,9 @@ const cors = require('cors');
 const cache = require('./models/cache');
 const Backup = require('./models/backup');
 const { Console } = require('console');
+let serviceAccount;
 try {
-    const serviceAccount = require('./credenciais.json');
+    serviceAccount = require('./credenciais.json');
 } catch (error) {
     console.log("Rodando em ambiente produtivo")
 }
