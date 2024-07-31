@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { JogadorService } from '../jogadores/jogadores.service';
 import { PartidaService } from './partidas.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-partidas',
@@ -18,12 +19,22 @@ export class PartidasComponent {
   jogadorSelecionado: any;
   partidaTemp: any
   melhorDaPartidaTemp: any[] = [];
+  isLoggedIn = false;
+  userEmail: string | null = null;
 
-  constructor(private jogadorService: JogadorService, private partidaService: PartidaService, private router: Router) { }
+  constructor(private jogadorService: JogadorService, private partidaService: PartidaService, private router: Router, private authService: AuthService) { }
 
   ngOnInit(): void {
     this.carregarJogadores();
     this.carregarPartidas();
+
+    this.authService.isLoggedIn.subscribe(isLoggedIn => {
+      this.isLoggedIn = isLoggedIn;
+    });
+
+    this.authService.getUserEmail.subscribe(email => {
+      this.userEmail = email;
+    });
   }
 
   salvarMelhorPartida(): void {

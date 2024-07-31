@@ -5,9 +5,12 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const Jogadores = require("./models/jogadores");
 const Partidas = require("./models/partidas");
+const User = require("./models/user");
 const cors = require('cors');
 const cache = require('./models/cache');
 const Backup = require('./models/backup');
+const { Console } = require('console');
+const serviceAccount = require('./credenciais.json');
 
 app.listen(PORT, () => {
     console.log(`Servidor está ouvindo na porta ${PORT}`);
@@ -17,6 +20,43 @@ app.use(express.json());
 app.use(cors());
 
 app.use('/', express.static(path.resolve(__dirname + '/public/browser')));
+
+const authenticate = (req, res, next) => {
+    const token = req.headers['authorization'];
+
+    let key = serviceAccount.private_key_id ? serviceAccount.private_key_id : process.env.private_key_id;
+
+    if (!token) {
+      return res.status(403).send('Token não fornecido');
+    }
+    
+    if (token !== `Bearer ${key}`) {
+      return res.status(403).send('Token inválido');
+    }
+  
+    next();
+};
+
+
+//LOGIN
+app.post('/login', async (req, res) => {
+    try {
+        const token = await User.login(req.body);
+        res.status(200).send({ success: true, token });
+    } catch (error) {
+        res.status(400).send({ success: false, error: error.message });
+    }
+});
+
+// Rota de registro
+app.post('/register', authenticate,  async (req, res) => {
+    try {
+        const user = await User.register(req.body);
+        res.status(200).send({ success: true, user });
+    } catch (error) {
+        res.status(400).send({ success: false, error: error.message });
+    }
+});
 
 //CRUD jogadores
 app.get('/jogadores', async (req, res) => {
@@ -78,7 +118,6 @@ app.get('/partidas', async (req, res) => {
 app.get('/estatisticas', async (req, res) => {
     try {
         let todos = await Partidas.obterEstatisticasPartidas()
-        console.log("todos", todos)
         res.status(200).json({ data: todos });
     } catch (error) {
         console.error(error);
@@ -112,9 +151,9 @@ app.get('/backup', async (req, res) => {
     try {
         const backup = new Backup();
         backup.fazerBackup().then(() => {
-          console.log('Backup completo');
+            console.log('Backup completo');
         }).catch(error => {
-          console.error('Erro ao fazer backup:', error);
+            console.error('Erro ao fazer backup:', error);
         });
         res.status(200).json("backupeou bonito!");
     } catch (error) {

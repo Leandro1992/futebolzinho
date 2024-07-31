@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "db025faa-7ddd-4f91-a224-23d42921c730",
 		"name": "Futebolzinho",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "190766"
 	},
 	"item": [
@@ -11,7 +11,16 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "localhost:3000/jogadores"
+				"url": {
+					"raw": "localhost:3000/jogadores",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"jogadores"
+					]
+				}
 			},
 			"response": []
 		},
@@ -29,7 +38,16 @@
 						}
 					}
 				},
-				"url": "localhost:3000/jogadores"
+				"url": {
+					"raw": "localhost:3000/jogadores",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"jogadores"
+					]
+				}
 			},
 			"response": []
 		},
@@ -47,7 +65,16 @@
 						}
 					}
 				},
-				"url": "localhost:3000/jogadores"
+				"url": {
+					"raw": "localhost:3000/jogadores",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"jogadores"
+					]
+				}
 			},
 			"response": []
 		},
@@ -56,7 +83,16 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "localhost:3000/partidas"
+				"url": {
+					"raw": "localhost:3000/partidas",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"partidas"
+					]
+				}
 			},
 			"response": []
 		},
@@ -74,7 +110,16 @@
 						}
 					}
 				},
-				"url": "localhost:3000/partidas"
+				"url": {
+					"raw": "localhost:3000/partidas",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"partidas"
+					]
+				}
 			},
 			"response": []
 		},
@@ -92,7 +137,107 @@
 						}
 					}
 				},
-				"url": "localhost:3000/partidas"
+				"url": {
+					"raw": "localhost:3000/partidas",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"partidas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buscar Estatisticas Jogos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/estatisticas",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"estatisticas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"leandro1992@gmail.com\",\r\n    \"password\": \"Futebolzinho123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/login",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Registrar Usuários",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "private_key_id",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"value": "d14232106d9da8243b17463ff67312501cd36b37",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"leandro1992@gmail.com\",\r\n    \"password\": \"Futebolzinho123\",\r\n    \"admin\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/register",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"register"
+					]
+				}
 			},
 			"response": []
 		}

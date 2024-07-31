@@ -20,7 +20,6 @@ try {
     "client_x509_cert_url": process.env.client_x509_cert_url,
     "universe_domain": process.env.universe_domain
   }
-  console.log(serviceAccount, "Config")
 }
 
 class FirebaseConnection {
