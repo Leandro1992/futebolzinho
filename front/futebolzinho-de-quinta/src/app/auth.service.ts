@@ -12,11 +12,14 @@ export class AuthService {
   private loggedIn = new BehaviorSubject<boolean>(false);
   private userEmail = new BehaviorSubject<string | null>(null);
 
-  constructor(private http: HttpClient) { }
 
-  // login(email: string, password: string): Observable<any> {
-  //   return this.http.post<any>(`${this.baseUrl}/login`, { email, password });
-  // }
+  constructor(private http: HttpClient) {
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.loggedIn.next(true);
+      this.userEmail.next(token); // Decodifica o email do token se necessário
+    }
+  }
 
   login(email: string, password: string): Observable<any> {
     // Simular login com uma API real
@@ -24,7 +27,7 @@ export class AuthService {
       tap(response => {
         this.loggedIn.next(true);
         this.userEmail.next(response.token.email);
-        localStorage.setItem('token', response.token);
+        localStorage.setItem('token', response.token.email);
       })
     );
   }
