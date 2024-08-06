@@ -37,3 +37,8 @@
   display: inline-block;
   width: 100%;
 }
+
+.scrollable-container {
+  overflow-y: auto;
+  height: 90vh;
+}
