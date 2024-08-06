@@ -15,13 +15,14 @@ import { Alert, Modal } from 'bootstrap';
 
 export class AppComponent {
   title = 'futebolzinho-de-quinta';
-  
+
   loginForm: FormGroup;
   isLoggedIn = false;
   loginError: string | null = null;
   userEmail: string | null = null;
   private modalElement: HTMLElement | null = null;
   private modal: Modal | null = null;
+  isNavbarCollapsed: boolean = false;
 
   constructor(private fb: FormBuilder, private authService: AuthService) {
     this.loginForm = this.fb.group({
@@ -66,6 +67,11 @@ export class AppComponent {
         }
       );
     }
+  }
+
+  toggleNavbar() {
+    console.log("passou no toggle")
+    this.isNavbarCollapsed = !this.isNavbarCollapsed;
   }
 
   logout() {
