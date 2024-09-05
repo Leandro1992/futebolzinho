@@ -9,7 +9,7 @@ const PartidasAvulsas = require("./models/partida-avulsa");
 const User = require("./models/user");
 const cors = require('cors');
 const cache = require('./models/cache');
-const Backup = require('./models/backup');''
+const Backup = require('./models/backup');
 const { Console } = require('console');
 let serviceAccount;
 try {
