@@ -45,66 +45,66 @@
                   <div class="d-flex justify-content-between align-items-center mb-2">
                     <p class="card-text mb-0"><strong>Gols:</strong> {{ jogador.gols }}</p>
                     <div>
-                      <button (click)="alterarValor(jogador, 'gols', 1)" class="btn btn-sm btn-success me-1">+</button>
-                      <button (click)="alterarValor(jogador, 'gols', -1)" class="btn btn-sm btn-danger">-</button>
+                      <button (click)="alterarValor(jogador, 'gols', 1, partida)" class="btn btn-sm btn-success me-1">+</button>
+                      <button (click)="alterarValor(jogador, 'gols', -1, partida)" class="btn btn-sm btn-danger">-</button>
                     </div>
                   </div>
                   <div class="d-flex justify-content-between align-items-center mb-2">
                     <p class="card-text mb-0"><strong>Assistências:</strong> {{ jogador.assistencias }}</p>
                     <div>
-                      <button (click)="alterarValor(jogador, 'assistencias', 1)"
+                      <button (click)="alterarValor(jogador, 'assistencias', 1, partida)"
                         class="btn btn-sm btn-success me-1">+</button>
-                      <button (click)="alterarValor(jogador, 'assistencias', -1)"
+                      <button (click)="alterarValor(jogador, 'assistencias', -1, partida)"
                         class="btn btn-sm btn-danger">-</button>
                     </div>
                   </div>
                   <div class="d-flex justify-content-between align-items-center mb-2">
                     <p class="card-text mb-0"><strong>Falhas:</strong> {{ jogador.falhas }}</p>
                     <div>
-                      <button (click)="alterarValor(jogador, 'falhas', 1)"
+                      <button (click)="alterarValor(jogador, 'falhas', 1, partida)"
                         class="btn btn-sm btn-success me-1">+</button>
-                      <button (click)="alterarValor(jogador, 'falhas', -1)" class="btn btn-sm btn-danger">-</button>
+                      <button (click)="alterarValor(jogador, 'falhas', -1, partida)" class="btn btn-sm btn-danger">-</button>
                     </div>
                   </div>
                   <div class="d-flex justify-content-between align-items-center mb-2">
                     <p class="card-text mb-0"><strong>Acertos:</strong> {{ jogador.acertos }}</p>
                     <div>
-                      <button (click)="alterarValor(jogador, 'acertos', 1)"
+                      <button (click)="alterarValor(jogador, 'acertos', 1, partida)"
                         class="btn btn-sm btn-success me-1">+</button>
-                      <button (click)="alterarValor(jogador, 'acertos', -1)" class="btn btn-sm btn-danger">-</button>
+                      <button (click)="alterarValor(jogador, 'acertos', -1, partida)" class="btn btn-sm btn-danger">-</button>
                     </div>
                   </div>
                   <div class="d-flex justify-content-between align-items-center mb-2">
                     <p class="card-text mb-0"><strong>Cartão Amarelo:</strong> {{ jogador.amarelo }}</p>
                     <div>
-                      <button (click)="alterarValor(jogador, 'amarelo', 1)"
+                      <button (click)="alterarValor(jogador, 'amarelo', 1, partida)"
                         class="btn btn-sm btn-success me-1">+</button>
-                      <button (click)="alterarValor(jogador, 'amarelo', -1)" class="btn btn-sm btn-danger">-</button>
+                      <button (click)="alterarValor(jogador, 'amarelo', -1, partida)" class="btn btn-sm btn-danger">-</button>
                     </div>
                   </div>
                   <div class="d-flex justify-content-between align-items-center mb-2">
                     <p class="card-text mb-0"><strong>Cartão Vermelho:</strong> {{ jogador.vermelho }}</p>
                     <div>
-                      <button (click)="alterarValor(jogador, 'vermelho', 1)"
+                      <button (click)="alterarValor(jogador, 'vermelho', 1, partida)"
                         class="btn btn-sm btn-success me-1">+</button>
-                      <button (click)="alterarValor(jogador, 'vermelho', -1)" class="btn btn-sm btn-danger">-</button>
+                      <button (click)="alterarValor(jogador, 'vermelho', -1, partida)" class="btn btn-sm btn-danger">-</button>
                     </div>
                   </div>
                   <div class="d-flex justify-content-between align-items-center mb-2">
                     <p class="card-text mb-0"><strong>Finalizações:</strong> {{ jogador.finalizacoes }}</p>
                     <div>
-                      <button (click)="alterarValor(jogador, 'finalizacoes', 1)"
+                      <button (click)="alterarValor(jogador, 'finalizacoes', 1, partida)"
                         class="btn btn-sm btn-success me-1">+</button>
-                      <button (click)="alterarValor(jogador, 'finalizacoes', -1)"
+                      <button (click)="alterarValor(jogador, 'finalizacoes', -1, partida)"
                         class="btn btn-sm btn-danger">-</button>
                     </div>
                   </div>
                   <div class="d-flex justify-content-between align-items-center">
                     <p class="card-text mb-0"><strong>Finalizações no Alvo:</strong> {{ jogador.finalizacoesAlvo }}</p>
                     <div>
-                      <button (click)="alterarValor(jogador, 'finalizacoesAlvo', 1)"
+                      <button (click)="alterarValor(jogador, 'finalizacoesAlvo', 1, partida)"
                         class="btn btn-sm btn-success me-1">+</button>
-                      <button (click)="alterarValor(jogador, 'finalizacoesAlvo', -1)"
+                      <button (click)="alterarValor(jogador, 'finalizacoesAlvo', -1, partida)"
                         class="btn btn-sm btn-danger">-</button>
                     </div>
                   </div>
@@ -118,7 +118,7 @@
 
 
     <div class="tab-pane fade" id="cadastrar-partida" role="tabpanel" aria-labelledby="cadastrar-partida-tab">
-      <form (ngSubmit)="adicionarPartida()" class="form-container mt-4">
+      <form class="form-container mt-4">
         <h3 class="text-center">Cadastrar Partida Avulsa</h3>
     
         <div class="row">

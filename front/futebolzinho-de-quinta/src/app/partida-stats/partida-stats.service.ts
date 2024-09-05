@@ -14,30 +14,30 @@ export class PartidaStatsService {
 
   // Buscar todas as partidas
   getPartidas(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/partida-stats/`).pipe(
-      catchError(this.handleError<any[]>('getPartidas', []))
+    return this.http.get<any[]>(`${this.apiUrl}/partida-avulsa/`).pipe(
+      catchError(this.handleError<any[]>('getPartidas avulsas', []))
     );
   }
 
   // Buscar uma partida por ID
   getPartida(id: number): Observable<any> {
-    const url = `${this.apiUrl}/partida-stats/${id}`;
+    const url = `${this.apiUrl}/partida-avulsa/${id}`;
     return this.http.get<any>(url).pipe(
-      catchError(this.handleError<any>(`getPartida id=${id}`))
+      catchError(this.handleError<any>(`getPartida avulsas id=${id}`))
     );
   }
 
   // Cadastrar uma nova partida
   addPartida(partida: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/partida-stats/`, partida, this.httpOptions).pipe(
-      catchError(this.handleError<any>('addPartida'))
+    return this.http.post<any>(`${this.apiUrl}/partida-avulsa/`, partida, this.httpOptions).pipe(
+      catchError(this.handleError<any>('addPartida avulsas'))
     );
   }
 
   // Editar uma partida existente
   updatePartida(partida: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/partida-stats/`, partida, this.httpOptions).pipe(
-      catchError(this.handleError<any>('updatePartida'))
+    return this.http.put<any>(`${this.apiUrl}/partida-avulsa/`, partida, this.httpOptions).pipe(
+      catchError(this.handleError<any>('updatePartida avulsas'))
     );
   }
 

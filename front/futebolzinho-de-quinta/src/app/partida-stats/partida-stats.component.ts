@@ -1,4 +1,4 @@
-import { Component, OnInit  } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef   } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { PartidaStatsService } from './partida-stats.service';
@@ -38,9 +38,16 @@ interface Partida {
 
 export class PartidaStatsComponent implements OnInit {
 
-  isCollapsed: { [key: string]: boolean } = {};
-  isPlayerCollapsed: { [key: string]: boolean } = {};
-  novaPartida: Partida = {id:'', nome: '', local: '', data: new Date(), jogadores: [], encerrada: false };
+  isCollapsed: { [key: string]: boolean };
+  isPlayerCollapsed: { [key: string]: boolean };
+  novaPartida: Partida = {
+    id: '',
+    nome: '',
+    local: '',
+    data: new Date(),
+    jogadores: [],
+    encerrada: false
+  };
   novoJogador: Jogador = {
     nome: '',
     numero: 0,
@@ -57,25 +64,27 @@ export class PartidaStatsComponent implements OnInit {
   };
   partidas: Partida[] = [];
 
-  constructor(private partidaStatsService: PartidaStatsService) { }
+  constructor(private partidaStatsService: PartidaStatsService, private cdr: ChangeDetectorRef) {
+    this.isCollapsed = {};
+    this.isPlayerCollapsed = {};
+  }
 
   ngOnInit(): void {
     this.loadPartidas();
   }
 
   loadPartidas(): void {
-    this.partidaStatsService.getPartidas().subscribe(partidas => this.partidas = partidas);
-  }
-
-  savePartida(): void {
-    console.log(this.novaPartida, "nova partida")
-    if (this.novaPartida.id) {
-      this.partidaStatsService.updatePartida(this.novaPartida).subscribe(() => this.loadPartidas());
-    } else {
-      this.partidaStatsService.addPartida(this.novaPartida).subscribe(() => this.loadPartidas());
-    }
+    this.partidaStatsService.getPartidas().subscribe({
+      next: (partidas: any) => {
+        this.partidas = partidas.data
+      },
+      error: (error) => {
+        console.log("Erro ao buscar partidas", error);
+      }
+    });
   }
  
+  // MOCK EXEMPLO
   // partidas = [
   //   {
   //     nome: 'Final do Campeonato',
@@ -121,8 +130,26 @@ export class PartidaStatsComponent implements OnInit {
     this.novaPartida.jogadores.splice(index, 1);
   }
 
-  adicionarPartida() {
-    this.partidas.push({ ...this.novaPartida });
+  adicionarPartida(partida?: Partida) {
+    if (partida) {
+      this.partidaStatsService.updatePartida(partida).subscribe({
+        next: (partidaAtualizada: any) => {
+          this.loadPartidas()
+        },
+        error: (error) => {
+          console.log("Erro ao add partida", error);
+        }
+      });
+    } else {
+      this.partidaStatsService.addPartida(this.novaPartida).subscribe({
+        next: (partida: any) => {
+          this.loadPartidas()
+        },
+        error: (error) => {
+          console.log("Erro ao add partida", error);
+        }
+      });
+    }
     this.novaPartida = {id:'', nome: '', local: '', encerrada: false, data: new Date(), jogadores: [] };
   }
 
@@ -138,7 +165,10 @@ export class PartidaStatsComponent implements OnInit {
   }
 
   getJogadoresOrdenados(jogadores: Jogador[]): Jogador[] {
-    return jogadores.sort((a, b) => a.mando_campo.localeCompare(b.mando_campo));
+    if (jogadores.length > 0){
+      return jogadores.sort((a, b) => a.mando_campo.localeCompare(b.mando_campo));
+    }
+    return jogadores;
   }
 
   toggleCollapse(partidaId: string): void {
@@ -146,16 +176,16 @@ export class PartidaStatsComponent implements OnInit {
   }
 
   togglePlayerCollapse(jogadorId: string): void {
-    console.log(jogadorId, this.isPlayerCollapsed[jogadorId],  this.isPlayerCollapsed)
     this.isPlayerCollapsed[jogadorId] = !this.isPlayerCollapsed[jogadorId];
   }
 
-  alterarValor(jogador: Jogador, atributo: keyof Jogador, valor: number) {
+  alterarValor(jogador: Jogador, atributo: keyof Jogador, valor: number, partida: Partida) {
   if (typeof jogador[atributo] === 'number') {
     (jogador[atributo] as number) += valor;
     if ((jogador[atributo] as number) < 0) {
       (jogador[atributo] as number) = 0 as any;  // Evita valores negativos
     }
+    this.adicionarPartida(partida);
   }
 }
 }
