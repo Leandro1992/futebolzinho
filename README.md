@@ -101,6 +101,24 @@ Endpoint: `GET /estatisticas`
 
 Retorna um resumo dos jogadores, como jogos, vitorias, empates, derrotas, gols, assistencias e melhor da partida.
 
+#### 8. Buscar dados de partidas avulsas
+
+Endpoint: `GET /partida-avulsa`
+
+Retorna a lista de partidas e dados da mesma  em um array de objetos
+
+#### 9. Atualiza dados de partidas avulsas
+
+Endpoint: `PUT /partida-avulsa`
+
+Atualiza uma partida específica com dados atualizados na lista
+
+#### 10.Cria partidas avulsas
+
+Endpoint: `PUT /partida-avulsa`
+
+Cria novas partidas, jogadores de "fora" são considerados adversários e ficam destacados na lista na cor vermelha, é necessário ao menos dois jogadores cadastrados para finalizar o cadastro de uma partida avulsa
+
 ## Como Executar o Projeto
 
 1. Clone este repositório.

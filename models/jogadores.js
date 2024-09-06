@@ -19,7 +19,6 @@ class Jogador {
              if (jogadorDoc.exists) {
                  const jogadorData = jogadorDoc.data();
                  jogadorData.id = jogadorRef.id;
-                 console.log('Dados criados do jogador:', jogadorData);
 
                 // Atualizar cache
                 const jogadores = cache.get('jogadores') || [];
@@ -48,7 +47,6 @@ class Jogador {
 
             if (jogadorDoc.exists) {
                 const jogadorData = jogadorDoc.data();
-                console.log('Dados atualizados do jogador:', jogadorData);
                 // Atualizar cache
                 const jogadores = cache.get('jogadores') || [];
                 const index = jogadores.findIndex(j => j.id === id);
@@ -83,7 +81,6 @@ class Jogador {
 
             if (jogadorDoc.exists) {
                 const jogadorData = jogadorDoc.data();
-                console.log('Dados atualizados do jogador:', jogadorData);
                 // Atualizar cache
                 const jogadores = cache.get('jogadores') || [];
                 const index = jogadores.findIndex(j => j.id === id);

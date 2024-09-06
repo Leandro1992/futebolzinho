@@ -82,8 +82,7 @@ class Partida {
             partidaData.totalGolsContraTimeB = totalGolsContraTimeB;
             partidaData.totalAssistenciasTimeA = totalAssistenciasTimeA;
             partidaData.totalAssistenciasTimeB = totalAssistenciasTimeB;
-            
-            console.log(partidaData)
+        
             return partidaData;
           }));
     
