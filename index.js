@@ -126,7 +126,8 @@ app.get('/partidas', async (req, res) => {
 
 app.get('/estatisticas', async (req, res) => {
     try {
-        let todos = await Partidas.obterEstatisticasPartidas()
+        const { dataInicial, dataFim } = req.query;
+        let todos = await Partidas.obterEstatisticasPartidas(dataInicial, dataFim);
         res.status(200).json({ data: todos });
     } catch (error) {
         console.error(error);
