@@ -1,6 +1,32 @@
 <div class="container">
     <h2>Tabela de Estatísticas</h2>
     <p>Clique no nome das colunas para ordenar</p>
+
+    <div class="row mb-3">
+        <div class="col-md-6 col-sm-12 mb-2">
+            <label for="dataInicial" class="form-label">Data Inicial:</label>
+            <div class="input-group">
+                <select id="anoInicial" class="form-select" [(ngModel)]="anoInicial" (change)="atualizarDataInicial()">
+                    <option *ngFor="let ano of anos" [value]="ano">{{ ano }}</option>
+                </select>
+                <select id="mesInicial" class="form-select" [(ngModel)]="mesInicial" (change)="atualizarDataInicial()">
+                    <option *ngFor="let mes of meses" [value]="mes.valor">{{ mes.nome }}</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-12 mb-2">
+            <label for="dataFinal" class="form-label">Data Final:</label>
+            <div class="input-group">
+                <select id="anoFinal" class="form-select" [(ngModel)]="anoFinal" (change)="atualizarDataFinal()">
+                    <option *ngFor="let ano of anos" [value]="ano">{{ ano }}</option>
+                </select>
+                <select id="mesFinal" class="form-select" [(ngModel)]="mesFinal" (change)="atualizarDataFinal()">
+                    <option *ngFor="let mes of meses" [value]="mes.valor">{{ mes.nome }}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
     <table class="table table-striped">
         <thead>
             <tr>
