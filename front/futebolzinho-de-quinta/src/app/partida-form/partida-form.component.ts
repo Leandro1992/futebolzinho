@@ -20,10 +20,15 @@ export class PartidaFormComponent implements OnInit {
   jogadoresTimeB: any[] = [];
 
   constructor(private fb: FormBuilder, private route: ActivatedRoute, private partidaService: PartidaService,) {
+    // Get today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split('T')[0];
+    console.log("Constructor - today:", today);
+    
     this.partidaForm = this.fb.group({
-      data: ['', Validators.required], // Campo obrigatório
-      local: ['', Validators.required], // Campo obrigatório
+      data: [today, Validators.required],
+      local: ['Paula Ramos', Validators.required],
     });
+    console.log("Constructor - form value:", this.partidaForm.value);
 
     this.route.params.subscribe(params => {
       this.jogadores = JSON.parse(params['jogadores']);
@@ -33,6 +38,15 @@ export class PartidaFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log("ngOnInit - before patch");
+    // Get today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split('T')[0];
+    this.partidaForm.patchValue({
+      data: today,
+      local: 'Paula Ramos'
+    });
+    console.log('ngOnInit - form value after patch:', this.partidaForm.value);
+    console.log('ngOnInit - today value:', today);
   }
 
   salvarPartida(): void {
@@ -64,10 +78,12 @@ export class PartidaFormComponent implements OnInit {
     this.jogadoresTimeA = [];
     this.jogadoresTimeB = [];
     if (resetForm) {
+      const today = new Date().toISOString().split('T')[0];
       this.partidaForm = this.fb.group({
-        data: ['', Validators.required], // Campo obrigatório
-        local: ['', Validators.required], // Campo obrigatório
+        data: [today, Validators.required],
+        local: ['Paula Ramos', Validators.required],
       });
+      console.log("ResetForm - form value:", this.partidaForm.value);
     }
   }
 
