@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class JogadorService {
-  private apiUrl = ''; 
+  private apiUrl = '/api'; 
 
   constructor(private http: HttpClient) {}
 

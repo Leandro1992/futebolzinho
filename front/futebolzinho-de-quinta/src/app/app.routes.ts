@@ -10,6 +10,6 @@ export const routes: Routes = [
   { path: '', component: PartidasComponent },
   { path: 'estatistica', component: EstatisticasComponent },
   { path: 'partida-form', component: PartidaFormComponent },
-  { path: 'partida-stats', component: PartidaStatsComponent },
+  // { path: 'partida-stats', component: PartidaStatsComponent },
   // { path: '', redirectTo: '/partida', pathMatch: 'full' },
 ];

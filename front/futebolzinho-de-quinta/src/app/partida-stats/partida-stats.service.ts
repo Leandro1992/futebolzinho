@@ -8,7 +8,7 @@ import { catchError } from 'rxjs/operators';
 })
 export class PartidaStatsService {
 
-  private apiUrl = ''; // Substitua pela URL da sua API
+  private apiUrl = '/api'; // Substitua pela URL da sua API
 
   constructor(private http: HttpClient) { }
 

@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class PartidaService {
-  private apiUrl = ''; // Substitua pelo seu URL do Firebase
+  private apiUrl = '/api'; // Substitua pelo seu URL do Firebase
 
   constructor(private http: HttpClient) {}
 
@@ -23,7 +23,7 @@ export class PartidaService {
   }
 
   getEstatisticas(): Observable<any> {
-    return this.http.get<any[]>(`${this.apiUrl}/estatisticas`);
+    return this.http.get<any[]>(`${this.apiUrl}/partidas/estatisticas`);
   }
 
   // Adicione mais métodos conforme necessário para atualizar, deletar, etc.
