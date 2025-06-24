@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class EstatisticaService {
-  private apiUrl = ''; // Substitua pelo seu URL do Firebase
+  private apiUrl = '/api'; // Substitua pelo seu URL do Firebase
 
   constructor(private http: HttpClient) { }
 
@@ -15,7 +15,7 @@ export class EstatisticaService {
     const params = new HttpParams()
       .set('dataInicial', dataInicial)
       .set('dataFim', dataFim);
-    return this.http.get<any[]>(`${this.apiUrl}/estatisticas`, { params });
+    return this.http.get<any[]>(`${this.apiUrl}/partidas/estatisticas`, { params });
 
   }
 }

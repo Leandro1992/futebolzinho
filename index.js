@@ -1,13 +1,14 @@
-
 const express = require('express');
 const path = require('path');
-const app = express();
-const PORT = process.env.PORT || 3000;
+const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const logger = require('./utils/logger');
+const { errorHandler } = require('./middlewares/error');
 const Jogadores = require("./models/jogadores");
 const Partidas = require("./models/partidas");
 const PartidasAvulsas = require("./models/partida-avulsa");
 const User = require("./models/user");
-const cors = require('cors');
 const cache = require('./models/cache');
 const Backup = require('./models/backup');
 const { Console } = require('console');
@@ -18,232 +19,61 @@ try {
     console.log("Rodando em ambiente produtivo")
 }
 
+// Rotas
+const jogadoresRoutes = require('./routes/jogadores.routes');
+const partidasRoutes = require('./routes/partidas.routes');
+const partidasAvulsasRoutes = require('./routes/partidas-avulsas.routes');
+const authRoutes = require('./routes/auth.routes');
+const backupRoutes = require('./routes/backup.routes');
+const cacheRoutes = require('./routes/cache.routes');
 
-app.listen(PORT, () => {
-    console.log(`Servidor está ouvindo na porta ${PORT}`);
-});
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
+// Middlewares de segurança
+app.use(helmet({
+    contentSecurityPolicy: false, // Desabilita temporariamente para desenvolvimento
+    crossOriginEmbedderPolicy: false // Permite carregamento de recursos cross-origin
+}));
 app.use(cors());
+app.use(express.json());
 
-app.use('/', express.static(path.resolve(__dirname + '/public/browser')));
+// Rate limiting
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    max: 100 // limite de 100 requisições por IP
+});
+app.use(limiter);
 
-// app.get('/*', function(req, res) {
-//     res.sendFile(path.join(__dirname, '/public/browser'));
-// });
+// Servir arquivos estáticos
+app.use(express.static(path.join(__dirname, 'public/browser')));
 
-const authenticate = (req, res, next) => {
-    const token = req.headers['authorization'];
+// Rotas da API
+app.use('/api/auth', authRoutes);
+app.use('/api/jogadores', jogadoresRoutes);
+app.use('/api/partidas', partidasRoutes);
+app.use('/api/partidas-avulsas', partidasAvulsasRoutes);
+app.use('/api/backup', backupRoutes);
+app.use('/api/cache', cacheRoutes);
 
-    let key = serviceAccount && serviceAccount.private_key_id ? serviceAccount.private_key_id : process.env.private_key_id;
-
-    if (!token) {
-      return res.status(403).send('Token não fornecido');
-    }
-    
-    if (token !== `Bearer ${key}`) {
-      return res.status(403).send('Token inválido');
-    }
-  
-    next();
-};
-
-
-//LOGIN / REGISTRO
-
-//==============================================================================================================================//
-app.post('/login', async (req, res) => {
-    try {
-        const token = await User.login(req.body);
-        res.status(200).send({ success: true, token });
-    } catch (error) {
-        res.status(400).send({ success: false, error: error.message });
-    }
+// Rota para servir o app Angular em qualquer URL não encontrada
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public/browser/index.html'));
 });
 
+// Middleware de tratamento de erros
+app.use(errorHandler);
 
-app.post('/register', authenticate,  async (req, res) => {
-    try {
-        const user = await User.register(req.body);
-        res.status(200).send({ success: true, user });
-    } catch (error) {
-        res.status(400).send({ success: false, error: error.message });
-    }
+// Inicialização do servidor
+app.listen(PORT, () => {
+    logger.info(`Servidor iniciado na porta ${PORT}`);
 });
 
-//CRUD jogadores
-
-//==============================================================================================================================//
-app.get('/jogadores', async (req, res) => {
-    try {
-        let todos = await Jogadores.obterTodos()
-        res.status(200).json({ data: todos });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro ao buscar jogadores' });
-    }
+// Tratamento de erros não capturados
+process.on('unhandledRejection', (err) => {
+    logger.error('Erro não tratado:', err);
+    // Em produção, você pode querer fazer algo mais gracioso
+    process.exit(1);
 });
 
-app.post('/jogadores', async (req, res) => {
-    try {
-        let jogador = new Jogadores(req.body);
-        const data = await jogador.salvar();
-        res.status(201).json({ data });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro ao criar jogador ' + error.message });
-    }
-});
-
-
-app.put('/jogadores', async (req, res) => {
-    const jogador = new Jogadores(req.body); // ou obtenha a instância de outra forma
-    jogador.atualizarDados(req.body)
-        .then((mensagem) => {
-            res.status(201).json({ data: mensagem });
-        })
-        .catch((error) => {
-            console.error('Erro ao atualizar dados do jogador:', error.message);
-            res.status(500).json({ error: error.message });
-        });
-});
-
-//==============================================================================================================================//
-
-
-//CRUD partidas
-
-//==============================================================================================================================//
-app.get('/partidas', async (req, res) => {
-    try {
-        let todos = await Partidas.obterTodas()
-        res.status(200).json({ data: todos });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro ao buscar jogadores' });
-    }
-});
-
-app.get('/estatisticas', async (req, res) => {
-    try {
-        const { dataInicial, dataFim } = req.query;
-        let todos = await Partidas.obterEstatisticasPartidas(dataInicial, dataFim);
-        res.status(200).json({ data: todos });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro ao buscar jogadores' });
-    }
-});
-
-app.post('/partidas', async (req, res) => {
-    try {
-        let partida = new Partidas(req.body);
-        partida.salvar();
-        res.status(201).json({ data: partida });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro ao criar partida ' + error.message });
-    }
-});
-
-app.put('/partidas', async (req, res) => {
-    try {
-        let partida = Partidas.atualizarPartida(req.body);
-        res.status(201).json({ data: partida });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro ao criar partida ' + error.message });
-    }
-});
-
-//CRUD partidas avulsas
-
-//==============================================================================================================================//
-app.get('/partida-avulsa', async (req, res) => {
-    try {
-        let todos = await PartidasAvulsas.obterTodas()
-        res.status(200).json({ data: todos });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro ao buscar jogadores' });
-    }
-});
-
-app.post('/partida-avulsa', async (req, res) => {
-    try {
-        let partida = new PartidasAvulsas(req.body);
-        partida.salvar();
-        res.status(201).json({ data: partida });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro ao criar partida ' + error.message });
-    }
-});
-
-app.put('/partida-avulsa', async (req, res) => {
-    try {
-        let partida = PartidasAvulsas.atualizarPartida(req.body);
-        res.status(201).json({ data: partida });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro ao criar partida ' + error.message });
-    }
-});
-
-//==============================================================================================================================//
-
-//BACKUPS /RESTORE
-
-app.get('/backup', async (req, res) => {
-    try {
-        const backup = new Backup();
-        backup.fazerBackup().then(() => {
-            console.log('Backup completo');
-        }).catch(error => {
-            console.error('Erro ao fazer backup:', error);
-        });
-        res.status(200).json("backupeou bonito!");
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro ao buscar jogadores' });
-    }
-});
-app.get('/restore-backup', async (req, res) => {
-    try {
-        const { data } = req.query; // Extrai o parâmetro de consulta 'data'
-        if (!data) {
-            return res.status(400).json({ error: 'O parâmetro "data" é obrigatório' });
-        }
-
-        const backup = new Backup();
-        console.log('Data específica para restauração:', data);
-
-        await backup.restaurarBackup(data);
-        console.log('Restauração completa');
-        res.status(200).json({ message: 'Restaurou o backup' });
-    } catch (error) {
-        console.error('Erro ao restaurar backup:', error);
-        res.status(500).json({ error: 'Erro ao restaurar backup' });
-    }
-});
-app.get('/list-backup', async (req, res) => {
-    try {
-        const backup = new Backup();
-        const backups = await backup.listarBackups();
-        console.log('Restauração completa');
-        res.status(200).json(backups);
-    } catch (error) {
-        console.error('Erro ao restaurar backup:', error);
-        res.status(500).json({ error: 'Erro ao restaurar backup' });
-    }
-});
-
-app.get('/cache', async (req, res) => {
-    try {
-        cache.clear()
-        res.status(200).json("cache limpinho!");
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro ao limpar o cache' });
-    }
-});
+module.exports = app;
