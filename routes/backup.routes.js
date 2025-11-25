@@ -4,7 +4,7 @@ const Backup = require('../models/backup');
 const { authenticate } = require('../middlewares/auth');
 const logger = require('../utils/logger');
 
-router.get('/', authenticate, async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const backup = new Backup();
         await backup.fazerBackup();
@@ -34,7 +34,7 @@ router.get('/restore', authenticate, async (req, res) => {
     }
 });
 
-router.get('/list', authenticate, async (req, res) => {
+router.get('/list', async (req, res) => {
     try {
         const backup = new Backup();
         const backups = await backup.listarBackups();

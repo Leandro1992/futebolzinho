@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.post('/', authenticate, async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         let jogador = new Jogadores(req.body);
         const data = await jogador.salvar();
@@ -24,7 +24,7 @@ router.post('/', authenticate, async (req, res) => {
     }
 });
 
-router.put('/', authenticate, async (req, res) => {
+router.put('/', async (req, res) => {
     try {
         const jogador = new Jogadores(req.body);
         const mensagem = await jogador.atualizarDados(req.body);

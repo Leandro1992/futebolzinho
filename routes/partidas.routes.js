@@ -24,7 +24,7 @@ router.get('/estatisticas', async (req, res) => {
     }
 });
 
-router.post('/', authenticate, async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         let partida = new Partidas(req.body);
         const data = await partida.salvar();
@@ -35,7 +35,7 @@ router.post('/', authenticate, async (req, res) => {
     }
 });
 
-router.put('/', authenticate, async (req, res) => {
+router.put('/', async (req, res) => {
     try {
         let partida = await Partidas.atualizarPartida(req.body);
         res.status(201).json({ data: partida });

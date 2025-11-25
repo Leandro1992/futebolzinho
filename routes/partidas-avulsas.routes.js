@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.post('/', authenticate, async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         let partida = new PartidasAvulsas(req.body);
         await partida.salvar();
@@ -24,7 +24,7 @@ router.post('/', authenticate, async (req, res) => {
     }
 });
 
-router.put('/', authenticate, async (req, res) => {
+router.put('/', async (req, res) => {
     try {
         let partida = await PartidasAvulsas.atualizarPartida(req.body);
         res.status(200).json({ data: partida });
