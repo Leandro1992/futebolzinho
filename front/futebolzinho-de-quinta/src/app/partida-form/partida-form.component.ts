@@ -95,8 +95,8 @@ export class PartidaFormComponent implements OnInit {
   }
 
   adicionarJogadorTime(jogadorId: string, time: string): void {
-    if (this.jogadoresTimeA.length >= 10 || this.jogadoresTimeB.length >= 10) {
-      alert("Limite máximo de jogadores por partida - 10");
+    if (this.jogadoresTimeA.length >= 16 || this.jogadoresTimeB.length >= 16) {
+      alert("Limite máximo de jogadores por partida - 16");
     } else {
       const jogador = this.jogadores.find(j => j.id === jogadorId);
       if (jogador) {
