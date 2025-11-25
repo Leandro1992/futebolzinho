@@ -8,13 +8,14 @@ import { tap } from 'rxjs/operators';
 })
 
 export class AuthService {
-  private baseUrl = '';
+  private baseUrl = 'api/auth';
   private loggedIn = new BehaviorSubject<boolean>(false);
   private userEmail = new BehaviorSubject<string | null>(null);
 
 
   constructor(private http: HttpClient) {
     const token = localStorage.getItem('token');
+    console.log(token, "iniciei?")
     if (token) {
       this.loggedIn.next(true);
       this.userEmail.next(token); // Decodifica o email do token se necessário

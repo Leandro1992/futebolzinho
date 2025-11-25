@@ -4,7 +4,7 @@ const cache = require('../models/cache');
 const { authenticate } = require('../middlewares/auth');
 const logger = require('../utils/logger');
 
-router.get('/clear', authenticate, async (req, res) => {
+router.get('/clear', async (req, res) => {
     try {
         await cache.clear();
         logger.info('Cache limpo com sucesso');
