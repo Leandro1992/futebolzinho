@@ -15,7 +15,6 @@ export class AuthService {
 
   constructor(private http: HttpClient) {
     const token = localStorage.getItem('token');
-    console.log(token, "iniciei?")
     if (token) {
       this.loggedIn.next(true);
       this.userEmail.next(token); // Decodifica o email do token se necessário

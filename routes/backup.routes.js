@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/restore', authenticate, async (req, res) => {
+router.get('/restore', async (req, res) => {
     try {
         const { data } = req.query;
         if (!data) {
