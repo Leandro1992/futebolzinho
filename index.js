@@ -28,6 +28,7 @@ const backupRoutes = require('./routes/backup.routes');
 const cacheRoutes = require('./routes/cache.routes');
 
 const app = express();
+app.set('trust proxy', 1); // Corrige erro do express-rate-limit no Heroku
 const PORT = process.env.PORT || 3000;
 
 // Middlewares de segurança
