@@ -23,7 +23,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.post('/', authenticate, async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const time = new Times(req.body);
         const data = await time.salvar();
@@ -34,7 +34,7 @@ router.post('/', authenticate, async (req, res) => {
     }
 });
 
-router.put('/', authenticate, async (req, res) => {
+router.put('/', async (req, res) => {
     try {
         const time = new Times(req.body);
         const mensagem = await time.atualizarDados(req.body);
@@ -45,7 +45,7 @@ router.put('/', authenticate, async (req, res) => {
     }
 });
 
-router.delete('/:id', authenticate, async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
         const resultado = await Times.excluir(req.params.id);
         res.status(200).json(resultado);
