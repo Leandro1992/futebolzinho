@@ -1,0 +1,116 @@
+<div class="container mt-4">
+  <h2>Gerenciar Times</h2>
+
+  <!-- Mensagens de sucesso/erro -->
+  <div *ngIf="mensagemSucesso" class="alert alert-success alert-dismissible fade show" role="alert">
+    {{ mensagemSucesso }}
+    <button type="button" class="btn-close" (click)="mensagemSucesso = ''" aria-label="Close"></button>
+  </div>
+  
+  <div *ngIf="mensagemErro" class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ mensagemErro }}
+    <button type="button" class="btn-close" (click)="mensagemErro = ''" aria-label="Close"></button>
+  </div>
+
+  <!-- Formulário -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">{{ editando ? 'Editar Time' : 'Novo Time' }}</h5>
+      <form (ngSubmit)="salvarTime()">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="nome" class="form-label">Nome do Time *</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="nome" 
+              [(ngModel)]="timeForm.nome" 
+              name="nome" 
+              required>
+          </div>
+          
+          <div class="col-md-3 mb-3">
+            <label for="cor" class="form-label">Cor</label>
+            <input 
+              type="color" 
+              class="form-control form-control-color" 
+              id="cor" 
+              [(ngModel)]="timeForm.cor" 
+              name="cor">
+          </div>
+
+          <div class="col-md-3 mb-3">
+            <label for="escudo" class="form-label">URL do Escudo</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="escudo" 
+              [(ngModel)]="timeForm.escudo" 
+              name="escudo"
+              placeholder="https://...">
+          </div>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-primary">
+            {{ editando ? 'Atualizar' : 'Cadastrar' }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="resetarFormulario()" *ngIf="editando">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Lista de times -->
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Times Cadastrados</h5>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Cor</th>
+              <th>Escudo</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let time of times">
+              <td>{{ time.nome }}</td>
+              <td>
+                <span 
+                  class="badge" 
+                  [style.background-color]="time.cor"
+                  [style.color]="time.cor === '#000000' ? '#fff' : '#000'">
+                  {{ time.cor }}
+                </span>
+              </td>
+              <td>
+                <img 
+                  *ngIf="time.escudo" 
+                  [src]="time.escudo" 
+                  alt="Escudo" 
+                  style="max-width: 40px; max-height: 40px;">
+                <span *ngIf="!time.escudo">-</span>
+              </td>
+              <td>
+                <button class="btn btn-sm btn-warning me-2" (click)="editarTime(time)">
+                  Editar
+                </button>
+                <button class="btn btn-sm btn-danger" (click)="excluirTime(time.id)">
+                  Excluir
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="times.length === 0">
+              <td colspan="4" class="text-center text-muted">Nenhum time cadastrado</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

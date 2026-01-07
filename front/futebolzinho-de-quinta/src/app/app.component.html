@@ -18,6 +18,9 @@
         <li *ngIf="isLoggedIn" class="nav-item active">
           <a class="nav-link" [routerLink]="['/jogador']">Jogadores</a>
         </li>
+        <li *ngIf="isLoggedIn" class="nav-item">
+          <a class="nav-link" [routerLink]="['/times']">Times</a>
+        </li>
         <li class="nav-item">
           <a class="nav-link" [routerLink]="['/estatistica']">Estatísticas</a>
         </li>
@@ -27,7 +30,10 @@
       </ul>
       <ul class="navbar-nav ms-auto">
         <li class="nav-item" *ngIf="!isLoggedIn">
-          <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
+          <a class="nav-link" [routerLink]="['/login-jogador']">Login Jogador</a>
+        </li>
+        <li class="nav-item" *ngIf="!isLoggedIn">
+          <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login Admin</a>
         </li>
         <li class="nav-item dropdown" *ngIf="isLoggedIn">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">

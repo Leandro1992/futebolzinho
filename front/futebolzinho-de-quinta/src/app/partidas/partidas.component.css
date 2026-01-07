@@ -3,9 +3,16 @@
   }
 
 .bg-custom {
-    background-color: #1a8371; /* Cor de fundo personalizada */
+    background-color: #1a8371; /* Cor de fundo personalizada - Melhor da partida */
     color: white;
 }
+
+.bg-bola-murcha {
+    background-color: #dc3545; /* Cor vermelha para bola murcha */
+    color: white;
+    opacity: 0.8;
+}
+
 .font-custom {
   color: rgb(117, 35, 35);
 }

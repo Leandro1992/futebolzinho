@@ -17,6 +17,7 @@ export class PartidasComponent {
   jogadores: any[] = [];
   partidas: any[] = [];
   jogadorSelecionado: any;
+  bolaMurchaSelecionado: any;
   partidaTemp: any
   melhorDaPartidaTemp: any[] = [];
   isLoggedIn = false;
@@ -38,11 +39,13 @@ export class PartidasComponent {
   }
 
   salvarMelhorPartida(): void {
-    console.log(this.jogadorSelecionado);
+    console.log('Melhor:', this.jogadorSelecionado);
+    console.log('Bola Murcha:', this.bolaMurchaSelecionado);
     console.log(this.partidaTemp);
 
     const partidaEncontrada = this.partidas.find(part => part.id === this.partidaTemp.id);
     if (partidaEncontrada) {
+      // Marcar o melhor da partida
       let jogadorEncontrado = partidaEncontrada.timeA.find((jog: { id: any; }) => jog.id === this.jogadorSelecionado);
       if (jogadorEncontrado) {
         jogadorEncontrado.destaque = true;
@@ -51,6 +54,11 @@ export class PartidasComponent {
         if (jogadorEncontrado) {
           jogadorEncontrado.destaque = true;
         }
+      }
+
+      // Adicionar o bola murcha na partida
+      if (this.bolaMurchaSelecionado) {
+        partidaEncontrada.bolaMurcha = this.bolaMurchaSelecionado;
       }
 
       partidaEncontrada.status = 1;

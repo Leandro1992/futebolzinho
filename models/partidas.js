@@ -23,7 +23,8 @@ class Partida {
                 local: this.local,
                 timeA: timeARefs.map(jogadorRef => ({ jogadorRef, gol: 0, assistencia: 0, golContra: 0 })),
                 timeB: timeBRefs.map(jogadorRef => ({ jogadorRef, gol: 0, assistencia: 0, golContra: 0 })),
-                status: this.status
+                status: this.status,
+                bolaMurcha: null // Será definido ao encerrar a partida
             });
 
             // Invalidar cache de partidas e estatísticas
@@ -82,6 +83,19 @@ class Partida {
                 partidaData.totalGolsContraTimeB = totalGolsContraTimeB;
                 partidaData.totalAssistenciasTimeA = totalAssistenciasTimeA;
                 partidaData.totalAssistenciasTimeB = totalAssistenciasTimeB;
+
+                // Buscar dados do jogador bola murcha se existir
+                if (partidaData.bolaMurcha) {
+                    const bolaMurchaSnapshot = await partidaData.bolaMurcha.get();
+                    if (bolaMurchaSnapshot.exists) {
+                        partidaData.bolaMurchaJogador = { 
+                            id: bolaMurchaSnapshot.id, 
+                            ...bolaMurchaSnapshot.data() 
+                        };
+                        delete partidaData.bolaMurchaJogador.senhaHash;
+                    }
+                    delete partidaData.bolaMurcha;
+                }
 
                 return partidaData;
             }));
@@ -242,7 +256,7 @@ class Partida {
         }
     }
 
-    static async atualizarPartida({ id, data, local, timeA, timeB, status }) {
+    static async atualizarPartida({ id, data, local, timeA, timeB, status, bolaMurcha }) {
         try {
             const db = FirebaseConnection.getInstance().db;
 
@@ -266,13 +280,21 @@ class Partida {
                     destaque: jogadorRef?.destaque ? true : false
                 }
             }));
-            await db.collection('partidas').doc(id).update({
+            
+            const updateData = {
                 data: data,
                 local: local,
                 timeA: timeARefs,
                 timeB: timeBRefs,
                 status: status
-            });
+            };
+
+            // Adicionar referência ao jogador bola murcha se fornecido
+            if (bolaMurcha) {
+                updateData.bolaMurcha = db.doc(`jogadores/${bolaMurcha}`);
+            }
+
+            await db.collection('partidas').doc(id).update(updateData);
             cache.set('partidas', null);
             cache.set('estatisticasPartidas', null);
 

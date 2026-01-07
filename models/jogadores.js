@@ -1,20 +1,43 @@
 // models/Jogador.js
 const FirebaseConnection = require('../db');
 const cache = require('./cache');
+const bcrypt = require('bcrypt');
 
 class Jogador {
-    constructor({ nome, mensalista }) {
+    constructor({ nome, mensalista, email, senha, timeId }) {
         this.nome = nome;
         this.mensalista = mensalista;
+        this.email = email || null;
+        this.senha = senha || null;
+        this.timeId = timeId || null;
     }
 
     async salvar() {
         try {
             const db = FirebaseConnection.getInstance().db;
-            const jogadorRef = await db.collection('jogadores').add({
+            
+            const jogadorData = {
                 nome: this.nome,
                 mensalista: this.mensalista
-            });
+            };
+
+            // Adicionar email se fornecido
+            if (this.email) {
+                jogadorData.email = this.email;
+            }
+
+            // Hash da senha se fornecida
+            if (this.senha) {
+                const saltRounds = 10;
+                jogadorData.senhaHash = await bcrypt.hash(this.senha, saltRounds);
+            }
+
+            // Adicionar referência ao time se fornecido
+            if (this.timeId) {
+                jogadorData.timeRef = db.doc(`times/${this.timeId}`);
+            }
+
+            const jogadorRef = await db.collection('jogadores').add(jogadorData);
              const jogadorDoc = await jogadorRef.get();
              if (jogadorDoc.exists) {
                  const jogadorData = jogadorDoc.data();
@@ -35,13 +58,36 @@ class Jogador {
         }
     }
 
-    async atualizarDados({ id, nome, mensalista }) {
+    async atualizarDados({ id, nome, mensalista, email, senha, timeId }) {
         try {
             const db = FirebaseConnection.getInstance().db;
-            await db.collection('jogadores').doc(id).update({
+            
+            const updateData = {
                 nome: nome,
                 mensalista: mensalista
-            });
+            };
+
+            // Atualizar email se fornecido
+            if (email !== undefined) {
+                updateData.email = email;
+            }
+
+            // Atualizar senha se fornecida
+            if (senha) {
+                const saltRounds = 10;
+                updateData.senhaHash = await bcrypt.hash(senha, saltRounds);
+            }
+
+            // Atualizar referência ao time se fornecido
+            if (timeId !== undefined) {
+                if (timeId) {
+                    updateData.timeRef = db.doc(`times/${timeId}`);
+                } else {
+                    updateData.timeRef = null;
+                }
+            }
+
+            await db.collection('jogadores').doc(id).update(updateData);
 
             const jogadorDoc = await db.collection('jogadores').doc(id).get();
 
@@ -107,11 +153,88 @@ class Jogador {
         try {
             const db = FirebaseConnection.getInstance().db;
             const jogadoresSnapshot = await db.collection('jogadores').get();
-            const jogadores = jogadoresSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            
+            // Resolver referências de times
+            const jogadores = await Promise.all(jogadoresSnapshot.docs.map(async doc => {
+                const jogadorData = { id: doc.id, ...doc.data() };
+                
+                // Se tiver referência ao time, buscar dados do time
+                if (jogadorData.timeRef) {
+                    const timeSnapshot = await jogadorData.timeRef.get();
+                    if (timeSnapshot.exists) {
+                        jogadorData.time = { id: timeSnapshot.id, ...timeSnapshot.data() };
+                    }
+                    // Remover a referência do objeto retornado
+                    delete jogadorData.timeRef;
+                }
+                
+                // Remover senhaHash do objeto retornado por segurança
+                delete jogadorData.senhaHash;
+                
+                return jogadorData;
+            }));
+            
             cache.set('jogadores', jogadores);
-            return jogadores
+            return jogadores;
         } catch (error) {
             throw new Error('Erro ao obter jogadores: ' + error.message);
+        }
+    }
+
+    static async buscarPorEmail(email) {
+        try {
+            const db = FirebaseConnection.getInstance().db;
+            const jogadoresSnapshot = await db.collection('jogadores')
+                .where('email', '==', email)
+                .limit(1)
+                .get();
+
+            if (jogadoresSnapshot.empty) {
+                return null;
+            }
+
+            const jogadorDoc = jogadoresSnapshot.docs[0];
+            const jogadorData = { id: jogadorDoc.id, ...jogadorDoc.data() };
+
+            // Buscar dados do time se houver referência
+            if (jogadorData.timeRef) {
+                const timeSnapshot = await jogadorData.timeRef.get();
+                if (timeSnapshot.exists) {
+                    jogadorData.time = { id: timeSnapshot.id, ...timeSnapshot.data() };
+                }
+                delete jogadorData.timeRef;
+            }
+
+            return jogadorData;
+        } catch (error) {
+            throw new Error('Erro ao buscar jogador por email: ' + error.message);
+        }
+    }
+
+    static async autenticar(email, senha) {
+        try {
+            const jogador = await this.buscarPorEmail(email);
+            
+            if (!jogador) {
+                return null;
+            }
+
+            if (!jogador.senhaHash) {
+                throw new Error('Jogador não possui senha cadastrada.');
+            }
+
+            const senhaValida = await bcrypt.compare(senha, jogador.senhaHash);
+            
+            if (!senhaValida) {
+                return null;
+            }
+
+            // Remover senhaHash antes de retornar
+            delete jogador.senhaHash;
+            
+            return jogador;
+        } catch (error) {
+            throw new Error('Erro ao autenticar jogador: ' + error.message);
         }
     }
 

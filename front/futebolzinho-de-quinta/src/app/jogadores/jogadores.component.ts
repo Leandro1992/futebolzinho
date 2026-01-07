@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { JogadorService } from './jogadores.service';
+import { TimesService } from '../times/times.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -12,16 +13,21 @@ import { FormsModule } from '@angular/forms';
 })
 export class JogadoresComponent {
   jogadores: any[] = [];
-  jogador: any = { nome: "", mensalista: true }; // Objeto para armazenar dados do jogador
+  times: any[] = [];
+  jogador: any = { nome: "", mensalista: true, email: "", senha: "", timeId: null };
   filtro: string = '';
   campoOrdenacao: string = 'nome';
   direcaoOrdenacao: string = 'asc';
 
-  constructor(private jogadorService: JogadorService) { }
+  constructor(
+    private jogadorService: JogadorService,
+    private timesService: TimesService
+  ) { }
 
   ngOnInit(): void {
     // Carregar a lista de jogadores ao inicializar o componente
     this.carregarJogadores();
+    this.carregarTimes();
   }
 
   ordenarPor(campo: string): void {
@@ -42,11 +48,26 @@ export class JogadoresComponent {
 
 
   novoJogador(): void {
-    this.jogador = {}; // Limpa os dados existentes antes de abrir o modal
+    this.jogador = { nome: "", mensalista: true, email: "", senha: "", timeId: null }; // Limpa os dados existentes antes de abrir o modal
   }
 
   editarJogador(jogador: any): void {
-    this.jogador = { ...jogador }; // Clona os dados do jogador antes de abrir o modal
+    this.jogador = { 
+      ...jogador, 
+      timeId: jogador.time?.id || null,
+      senha: "" // Não preencher senha ao editar
+    };
+  }
+
+  carregarTimes(): void {
+    this.timesService.getTimes().subscribe({
+      next: (response) => {
+        this.times = response.data || [];
+      },
+      error: (error) => {
+        console.error('Erro ao carregar times:', error);
+      }
+    });
   }
 
 

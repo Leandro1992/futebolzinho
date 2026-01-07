@@ -1,0 +1,57 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow">
+        <div class="card-body">
+          <h2 class="card-title text-center mb-4">Login de Jogador</h2>
+
+          <div *ngIf="jogadorLogado" class="text-center">
+            <div class="alert alert-success">
+              Você já está logado como <strong>{{ jogadorLogado.nome }}</strong>
+            </div>
+            <button class="btn btn-primary" routerLink="/">Ir para Partidas</button>
+            <button class="btn btn-secondary ms-2" (click)="logout()">Sair</button>
+          </div>
+
+          <form *ngIf="!jogadorLogado" (ngSubmit)="login()">
+            <div *ngIf="mensagemErro" class="alert alert-danger" role="alert">
+              {{ mensagemErro }}
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input 
+                type="email" 
+                class="form-control" 
+                id="email" 
+                [(ngModel)]="loginData.email" 
+                name="email"
+                required
+                [disabled]="carregando">
+            </div>
+
+            <div class="mb-3">
+              <label for="senha" class="form-label">Senha</label>
+              <input 
+                type="password" 
+                class="form-control" 
+                id="senha" 
+                [(ngModel)]="loginData.senha" 
+                name="senha"
+                required
+                [disabled]="carregando">
+            </div>
+
+            <button 
+              type="submit" 
+              class="btn btn-primary w-100"
+              [disabled]="carregando">
+              <span *ngIf="carregando" class="spinner-border spinner-border-sm me-2" role="status"></span>
+              {{ carregando ? 'Entrando...' : 'Entrar' }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

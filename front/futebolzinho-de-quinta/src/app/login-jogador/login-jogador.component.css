@@ -1,0 +1,8 @@
+.card {
+  border-radius: 10px;
+}
+
+.card-title {
+  color: #333;
+  font-weight: 600;
+}

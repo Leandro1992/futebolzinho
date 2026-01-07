@@ -4,12 +4,16 @@ import { JogadoresComponent } from './jogadores/jogadores.component';
 import { EstatisticasComponent } from './estatisticas/estatisticas.component';
 import { PartidaFormComponent } from './partida-form/partida-form.component';
 import { PartidaStatsComponent } from './partida-stats/partida-stats.component';
+import { TimesComponent } from './times/times.component';
+import { LoginJogadorComponent } from './login-jogador/login-jogador.component';
 
 export const routes: Routes = [
   { path: 'jogador', component: JogadoresComponent },
   { path: '', component: PartidasComponent },
   { path: 'estatistica', component: EstatisticasComponent },
   { path: 'partida-form', component: PartidaFormComponent },
+  { path: 'times', component: TimesComponent },
+  { path: 'login-jogador', component: LoginJogadorComponent },
   // { path: 'partida-stats', component: PartidaStatsComponent },
   // { path: '', redirectTo: '/partida', pathMatch: 'full' },
 ];

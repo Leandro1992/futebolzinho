@@ -11,6 +11,8 @@
                 <tr>
                     <th (click)="ordenarPor('nome')">Nome</th>
                     <th (click)="ordenarPor('mensalista')">Mensalista</th>
+                    <th>Time</th>
+                    <th>Email</th>
                     <th>Ações</th>
                 </tr>
             </thead>
@@ -19,6 +21,8 @@
                 <tr *ngFor="let jog of filtrarEOrdenarJogadores()">
                     <td>{{ jog.nome }}</td>
                     <td>{{ jog.mensalista ? 'Sim' : 'Não' }}</td>
+                    <td>{{ jog.time?.nome || '-' }}</td>
+                    <td>{{ jog.email || '-' }}</td>
                     <td>
                         <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#editarJogadorModal"
                             (click)="editarJogador(jog)">Editar</button>
@@ -51,6 +55,23 @@
                                 <option [ngValue]="true">Sim</option>
                                 <option [ngValue]="false">Não</option>
                             </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="time_form" class="form-label">Time:</label>
+                            <select id="time_form" name="timeId" class="form-select"
+                                [(ngModel)]="jogador.timeId">
+                                <option [ngValue]="null">Sem time</option>
+                                <option *ngFor="let time of times" [ngValue]="time.id">{{ time.nome }}</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email_form" class="form-label">Email (opcional):</label>
+                            <input type="email" id="email_form" name="email" class="form-control" [(ngModel)]="jogador.email">
+                        </div>
+                        <div class="mb-3">
+                            <label for="senha_form" class="form-label">Senha (opcional):</label>
+                            <input type="password" id="senha_form" name="senha" class="form-control" [(ngModel)]="jogador.senha">
+                            <small class="form-text text-muted">Deixe em branco se não quiser definir senha</small>
                         </div>
                     </form>
                 </div>
@@ -85,6 +106,23 @@
                                 <option [ngValue]="true">Sim</option>
                                 <option [ngValue]="false">Não</option>
                             </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="time_edit" class="form-label">Time:</label>
+                            <select id="time_edit" name="timeId" class="form-select"
+                                [(ngModel)]="jogador.timeId">
+                                <option [ngValue]="null">Sem time</option>
+                                <option *ngFor="let time of times" [ngValue]="time.id">{{ time.nome }}</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email_edit" class="form-label">Email (opcional):</label>
+                            <input type="email" id="email_edit" name="email" class="form-control" [(ngModel)]="jogador.email">
+                        </div>
+                        <div class="mb-3">
+                            <label for="senha_edit" class="form-label">Nova Senha (opcional):</label>
+                            <input type="password" id="senha_edit" name="senha" class="form-control" [(ngModel)]="jogador.senha">
+                            <small class="form-text text-muted">Deixe em branco para não alterar a senha</small>
                         </div>
                     </form>
                 </div>
