@@ -1,0 +1,176 @@
+<div class="container mt-4">
+  <h2 class="text-center mb-4">Desculpas dos Jogadores</h2>
+
+  <ul class="nav nav-tabs" id="desculpasTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="listar-tab" data-bs-toggle="tab" data-bs-target="#listar"
+        type="button" role="tab" aria-controls="listar" aria-selected="true">
+        Listar Desculpas
+      </button>
+    </li>
+    <li class="nav-item" role="presentation" *ngIf="isLoggedIn">
+      <button class="nav-link" id="cadastrar-tab" data-bs-toggle="tab" data-bs-target="#cadastrar"
+        type="button" role="tab" aria-controls="cadastrar" aria-selected="false">
+        Registrar Desculpa
+      </button>
+    </li>
+  </ul>
+
+  <div class="tab-content" id="desculpasTabContent">
+    <!-- Aba de Listagem -->
+    <div class="tab-pane fade show active" id="listar" role="tabpanel" aria-labelledby="listar-tab">
+      <!-- Filtros -->
+      <div class="card mt-3 mb-3">
+        <div class="card-header">
+          <h5>Filtros</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4 mb-2">
+              <label for="filtroJogador" class="form-label">Jogador</label>
+              <select id="filtroJogador" class="form-select" [(ngModel)]="filtroJogadorId">
+                <option value="">Todos os jogadores</option>
+                <option *ngFor="let jogador of jogadores" [value]="jogador.id">{{ jogador.nome }}</option>
+              </select>
+            </div>
+            <div class="col-md-3 mb-2">
+              <label for="filtroDataInicial" class="form-label">Data Inicial</label>
+              <input type="date" id="filtroDataInicial" class="form-control" [(ngModel)]="filtroDataInicial">
+            </div>
+            <div class="col-md-3 mb-2">
+              <label for="filtroDataFinal" class="form-label">Data Final</label>
+              <input type="date" id="filtroDataFinal" class="form-control" [(ngModel)]="filtroDataFinal">
+            </div>
+            <div class="col-md-2 mb-2 d-flex align-items-end">
+              <button class="btn btn-primary me-2" (click)="aplicarFiltros()">
+                <i class="bi bi-funnel"></i> Filtrar
+              </button>
+              <button class="btn btn-secondary" (click)="limparFiltros()">
+                <i class="bi bi-x-circle"></i> Limpar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lista de Desculpas -->
+      <div class="row">
+        <div class="col-12">
+          <div *ngIf="desculpas.length === 0" class="alert alert-info">
+            Nenhuma desculpa encontrada.
+          </div>
+
+          <div *ngFor="let desculpa of desculpas" class="card mb-3">
+            <div class="card-body">
+              <!-- Modo visualização -->
+              <div *ngIf="!desculpaEmEdicao || desculpaEmEdicao.id !== desculpa.id">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div class="flex-grow-1">
+                    <h5 class="card-title">{{ desculpa.jogadorNome }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                      <i class="bi bi-calendar"></i> {{ formatarData(desculpa.data) }}
+                    </h6>
+                    <p class="card-text">{{ desculpa.descricao }}</p>
+                  </div>
+                  <div class="btn-group-vertical" *ngIf="isLoggedIn">
+                    <button class="btn btn-sm btn-warning mb-1" (click)="editarDesculpa(desculpa)">
+                      <i class="bi bi-pencil"></i> Editar
+                    </button>
+                    <button class="btn btn-sm btn-danger" (click)="excluirDesculpa(desculpa.id)">
+                      <i class="bi bi-trash"></i> Excluir
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Modo edição -->
+              <div *ngIf="desculpaEmEdicao && desculpaEmEdicao.id === desculpa.id">
+                <div class="mb-3">
+                  <label class="form-label">Jogador</label>
+                  <select class="form-select" [(ngModel)]="desculpaEmEdicao.jogadorId">
+                    <option value="">Selecione um jogador</option>
+                    <option *ngFor="let jogador of jogadores" [value]="jogador.id">{{ jogador.nome }}</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Data</label>
+                  <input type="date" class="form-control" [(ngModel)]="desculpaEmEdicao.data">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Descrição</label>
+                  <textarea class="form-control" rows="3" [(ngModel)]="desculpaEmEdicao.descricao"></textarea>
+                </div>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-success" (click)="salvarEdicao()">
+                    <i class="bi bi-check-lg"></i> Salvar
+                  </button>
+                  <button class="btn btn-secondary" (click)="cancelarEdicao()">
+                    <i class="bi bi-x-lg"></i> Cancelar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aba de Cadastro -->
+    <div class="tab-pane fade" id="cadastrar" role="tabpanel" aria-labelledby="cadastrar-tab">
+      <div class="card mt-3">
+        <div class="card-header">
+          <h5>Registrar Nova Desculpa</h5>
+        </div>
+        <div class="card-body">
+          <form (ngSubmit)="salvarDesculpa()">
+            <div class="mb-3">
+              <label for="jogador" class="form-label">Jogador *</label>
+              <select 
+                id="jogador" 
+                class="form-select" 
+                [(ngModel)]="novaDesculpa.jogadorId"
+                (change)="onJogadorSelecionado()"
+                name="jogador"
+                required>
+                <option value="">Selecione um jogador</option>
+                <option *ngFor="let jogador of jogadores" [value]="jogador.id">{{ jogador.nome }}</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="data" class="form-label">Data *</label>
+              <input 
+                type="date" 
+                id="data" 
+                class="form-control" 
+                [(ngModel)]="novaDesculpa.data"
+                name="data"
+                required>
+            </div>
+
+            <div class="mb-3">
+              <label for="descricao" class="form-label">Descrição da Desculpa *</label>
+              <textarea 
+                id="descricao" 
+                class="form-control" 
+                rows="4" 
+                [(ngModel)]="novaDesculpa.descricao"
+                name="descricao"
+                placeholder="Descreva o motivo da ausência..."
+                required></textarea>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-secondary" (click)="resetarFormulario()">
+                <i class="bi bi-arrow-counterclockwise"></i> Limpar
+              </button>
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save"></i> Salvar Desculpa
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

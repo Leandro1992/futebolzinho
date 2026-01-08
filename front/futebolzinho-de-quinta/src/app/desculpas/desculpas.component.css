@@ -1,0 +1,29 @@
+.card {
+  transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+  color: #333;
+  font-weight: bold;
+}
+
+.card-subtitle {
+  font-size: 0.9rem;
+}
+
+.btn-group-vertical {
+  min-width: 80px;
+}
+
+.alert-info {
+  text-align: center;
+  padding: 2rem;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}

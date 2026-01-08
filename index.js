@@ -26,6 +26,7 @@ const partidasAvulsasRoutes = require('./routes/partidas-avulsas.routes');
 const authRoutes = require('./routes/auth.routes');
 const backupRoutes = require('./routes/backup.routes');
 const cacheRoutes = require('./routes/cache.routes');
+const desculpasRoutes = require('./routes/desculpas.routes');
 
 const app = express();
 app.set('trust proxy', 1); // Corrige erro do express-rate-limit no Heroku
@@ -56,6 +57,7 @@ app.use('/api/partidas', partidasRoutes);
 app.use('/api/partidas-avulsas', partidasAvulsasRoutes);
 app.use('/api/backup', backupRoutes);
 app.use('/api/cache', cacheRoutes);
+app.use('/api/desculpas', desculpasRoutes);
 
 // Rota para servir o app Angular em qualquer URL não encontrada
 app.get('*', (req, res) => {
