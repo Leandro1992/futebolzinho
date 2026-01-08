@@ -15,9 +15,10 @@ export class AuthService {
 
   constructor(private http: HttpClient) {
     const token = localStorage.getItem('token');
+    const email = localStorage.getItem('userEmail');
     if (token) {
       this.loggedIn.next(true);
-      this.userEmail.next(token); // Decodifica o email do token se necessário
+      this.userEmail.next(email);
     }
   }
 
@@ -25,9 +26,16 @@ export class AuthService {
     // Simular login com uma API real
     return this.http.post<any>(`${this.baseUrl}/login`, { email, password }).pipe(
       tap(response => {
-        this.loggedIn.next(true);
-        this.userEmail.next(response.token.email);
-        localStorage.setItem('token', response.token.email);
+        console.log('Resposta do login:', response);
+        if (response.success && response.token) {
+          this.loggedIn.next(true);
+          this.userEmail.next(email);
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('userEmail', email);
+          console.log('Token salvo:', response.token);
+        } else {
+          console.error('Token não encontrado na resposta:', response);
+        }
       })
     );
   }
@@ -36,6 +44,11 @@ export class AuthService {
     this.loggedIn.next(false);
     this.userEmail.next(null);
     localStorage.removeItem('token');
+    localStorage.removeItem('userEmail');
+  }
+
+  register(userData: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/register`, userData);
   }
 
   get isLoggedIn() {

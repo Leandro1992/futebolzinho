@@ -1,0 +1,101 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow">
+        <div class="card-body">
+          <h2 class="card-title text-center mb-4">Meu Perfil</h2>
+
+          <!-- Mensagens de sucesso/erro -->
+          <div *ngIf="mensagemSucesso" class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ mensagemSucesso }}
+            <button type="button" class="btn-close" (click)="mensagemSucesso = ''" aria-label="Close"></button>
+          </div>
+          
+          <div *ngIf="mensagemErro" class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ mensagemErro }}
+            <button type="button" class="btn-close" (click)="mensagemErro = ''" aria-label="Close"></button>
+          </div>
+
+          <form (ngSubmit)="atualizarPerfil()">
+            <!-- Email Atual -->
+            <div class="mb-3">
+              <label for="emailAtual" class="form-label">Email Atual</label>
+              <input 
+                type="email" 
+                class="form-control" 
+                id="emailAtual" 
+                [value]="userEmail"
+                disabled>
+            </div>
+
+            <!-- Novo Email -->
+            <div class="mb-3">
+              <label for="emailNovo" class="form-label">Novo Email (opcional)</label>
+              <input 
+                type="email" 
+                class="form-control" 
+                id="emailNovo" 
+                [(ngModel)]="perfilForm.emailNovo" 
+                name="emailNovo"
+                placeholder="Deixe em branco para não alterar"
+                [disabled]="carregando">
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Senha Atual -->
+            <div class="mb-3">
+              <label for="password" class="form-label">Senha Atual *</label>
+              <input 
+                type="password" 
+                class="form-control" 
+                id="password" 
+                [(ngModel)]="perfilForm.password" 
+                name="password"
+                required
+                placeholder="Digite sua senha atual"
+                [disabled]="carregando">
+              <small class="form-text text-muted">
+                Obrigatório para qualquer alteração
+              </small>
+            </div>
+
+            <!-- Nova Senha -->
+            <div class="mb-3">
+              <label for="passwordNova" class="form-label">Nova Senha (opcional)</label>
+              <input 
+                type="password" 
+                class="form-control" 
+                id="passwordNova" 
+                [(ngModel)]="perfilForm.passwordNova" 
+                name="passwordNova"
+                placeholder="Deixe em branco para não alterar"
+                [disabled]="carregando">
+            </div>
+
+            <!-- Confirmar Nova Senha -->
+            <div class="mb-3">
+              <label for="passwordNovaConfirm" class="form-label">Confirmar Nova Senha</label>
+              <input 
+                type="password" 
+                class="form-control" 
+                id="passwordNovaConfirm" 
+                [(ngModel)]="perfilForm.passwordNovaConfirm" 
+                name="passwordNovaConfirm"
+                placeholder="Confirme a nova senha"
+                [disabled]="carregando || !perfilForm.passwordNova">
+            </div>
+
+            <button 
+              type="submit" 
+              class="btn btn-primary w-100 mt-3"
+              [disabled]="carregando">
+              <span *ngIf="carregando" class="spinner-border spinner-border-sm me-2" role="status"></span>
+              {{ carregando ? 'Atualizando...' : 'Atualizar Perfil' }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

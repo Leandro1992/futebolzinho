@@ -21,6 +21,9 @@
         <li *ngIf="isLoggedIn" class="nav-item">
           <a class="nav-link" [routerLink]="['/times']">Times</a>
         </li>
+        <li *ngIf="isLoggedIn" class="nav-item">
+          <a class="nav-link" [routerLink]="['/users']">Usuários</a>
+        </li>
         <li class="nav-item">
           <a class="nav-link" [routerLink]="['/estatistica']">Estatísticas</a>
         </li>
@@ -40,6 +43,8 @@
             {{ userEmail }}
           </a>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" [routerLink]="['/perfil']">Meu Perfil</a></li>
+            <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="#" (click)="logout()">Logout</a></li>
           </ul>
         </li>

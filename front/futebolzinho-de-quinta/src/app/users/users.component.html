@@ -1,0 +1,134 @@
+<div class="container mt-4">
+  <h2>Gerenciar Usuários</h2>
+
+  <!-- Mensagens de sucesso/erro -->
+  <div *ngIf="mensagemSucesso" class="alert alert-success alert-dismissible fade show" role="alert">
+    {{ mensagemSucesso }}
+    <button type="button" class="btn-close" (click)="mensagemSucesso = ''" aria-label="Close"></button>
+  </div>
+  
+  <div *ngIf="mensagemErro" class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ mensagemErro }}
+    <button type="button" class="btn-close" (click)="mensagemErro = ''" aria-label="Close"></button>
+  </div>
+
+  <!-- Formulário -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">{{ editando ? 'Editar Usuário' : 'Novo Usuário' }}</h5>
+      <form (ngSubmit)="salvarUser()">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="email" class="form-label">Email *</label>
+            <input 
+              type="email" 
+              class="form-control" 
+              id="email" 
+              [(ngModel)]="userForm.email" 
+              name="email" 
+              required>
+          </div>
+          
+          <div class="col-md-6 mb-3">
+            <label for="password" class="form-label">
+              {{ editando ? 'Nova Senha (deixe em branco para não alterar)' : 'Senha *' }}
+            </label>
+            <input 
+              type="password" 
+              class="form-control" 
+              id="password" 
+              [(ngModel)]="userForm.password" 
+              name="password"
+              [required]="!editando">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <div class="form-check">
+              <input 
+                type="checkbox" 
+                class="form-check-input" 
+                id="admin" 
+                [(ngModel)]="userForm.admin" 
+                name="admin">
+              <label class="form-check-label" for="admin">
+                Administrador
+              </label>
+            </div>
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <div class="form-check">
+              <input 
+                type="checkbox" 
+                class="form-check-input" 
+                id="status" 
+                [(ngModel)]="userForm.status" 
+                name="status">
+              <label class="form-check-label" for="status">
+                Ativo
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-primary">
+            {{ editando ? 'Atualizar' : 'Cadastrar' }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="resetarFormulario()" *ngIf="editando">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Lista de usuários -->
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Usuários Cadastrados</h5>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Tipo</th>
+              <th>Status</th>
+              <th>Data Cadastro</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of users">
+              <td>{{ user.email }}</td>
+              <td>
+                <span class="badge" [class.bg-danger]="user.admin" [class.bg-secondary]="!user.admin">
+                  {{ user.admin ? 'Admin' : 'Usuário' }}
+                </span>
+              </td>
+              <td>
+                <span class="badge" [class.bg-success]="user.status" [class.bg-warning]="!user.status">
+                  {{ user.status ? 'Ativo' : 'Inativo' }}
+                </span>
+              </td>
+              <td>{{ user.data | date: 'dd/MM/yyyy' }}</td>
+              <td>
+                <button class="btn btn-sm btn-warning me-2" (click)="editarUser(user)">
+                  Editar
+                </button>
+                <button class="btn btn-sm btn-danger" (click)="excluirUser(user.id)">
+                  Excluir
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="users.length === 0">
+              <td colspan="5" class="text-center text-muted">Nenhum usuário cadastrado</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

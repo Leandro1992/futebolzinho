@@ -6,6 +6,8 @@ import { PartidaFormComponent } from './partida-form/partida-form.component';
 import { PartidaStatsComponent } from './partida-stats/partida-stats.component';
 import { TimesComponent } from './times/times.component';
 import { LoginJogadorComponent } from './login-jogador/login-jogador.component';
+import { UsersComponent } from './users/users.component';
+import { PerfilComponent } from './perfil/perfil.component';
 
 export const routes: Routes = [
   { path: 'jogador', component: JogadoresComponent },
@@ -14,6 +16,8 @@ export const routes: Routes = [
   { path: 'partida-form', component: PartidaFormComponent },
   { path: 'times', component: TimesComponent },
   { path: 'login-jogador', component: LoginJogadorComponent },
+  { path: 'users', component: UsersComponent },
+  { path: 'perfil', component: PerfilComponent },
   // { path: 'partida-stats', component: PartidaStatsComponent },
   // { path: '', redirectTo: '/partida', pathMatch: 'full' },
 ];

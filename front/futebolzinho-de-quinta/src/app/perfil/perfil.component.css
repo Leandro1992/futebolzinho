@@ -1,0 +1,13 @@
+.card {
+  border-radius: 10px;
+}
+
+.card-title {
+  color: #333;
+  font-weight: 600;
+}
+
+hr {
+  margin: 1.5rem 0;
+  border-top: 2px solid #eee;
+}
