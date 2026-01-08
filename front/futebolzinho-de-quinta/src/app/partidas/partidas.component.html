@@ -37,7 +37,11 @@
                 </thead>
                 <tbody class="detalhes">
                   <tr *ngFor="let jogador of partida.timeA">
-                    <td [class.bg-custom]="jogador.destaque ? true : false" class="centered">{{ jogador.nome }} </td>
+                    <td [class.bg-custom]="jogador.destaque ? true : false" [class.bg-bola-murcha]="jogador.bolaMurcha ? true : false" class="centered">
+                      {{ jogador.nome }}
+                      <span *ngIf="jogador.destaque" title="Melhor da Partida"> ⭐</span>
+                      <span *ngIf="jogador.bolaMurcha" title="Bola Murcha"> 🎈</span>
+                    </td>
                     <td>
                         <button *ngIf="partida?.status == 1" class="btn btn-sm mx-1 " >{{ jogador.gol }}</button>
                         <button *ngIf="partida?.status == 0 && isLoggedIn" (click)="atualizarPartidaGol(partida.id, jogador.id, 1, 'A')"
@@ -78,7 +82,11 @@
                 </thead>
                 <tbody class="detalhes">
                   <tr *ngFor="let jogador of partida.timeB">
-                    <td [class.bg-custom]="jogador.destaque ? true : false" class="centered">{{ jogador.nome }} </td>
+                    <td [class.bg-custom]="jogador.destaque ? true : false" [class.bg-bola-murcha]="jogador.bolaMurcha ? true : false" class="centered">
+                      {{ jogador.nome }}
+                      <span *ngIf="jogador.destaque" title="Melhor da Partida"> ⭐</span>
+                      <span *ngIf="jogador.bolaMurcha" title="Bola Murcha"> 🎈</span>
+                    </td>
                     <td>
                         <button *ngIf="partida?.status == 1" class="btn btn-sm mx-1 " >{{ jogador.gol }}</button>
                         <button *ngIf="partida?.status == 0 && isLoggedIn" (click)="atualizarPartidaGol(partida.id, jogador.id, 1, 'B')"
@@ -120,14 +128,21 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="melhorDaPartida">Melhor da Partida</h5>
+          <h5 class="modal-title" id="melhorDaPartida">Encerrar Partida</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" id="fecharMelhorDaPartidaModal"
             aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <div class="form-group">
-            <label for="selectJogador" class="form-label">Selecione o melhor da partida para encerrar:</label>
+          <div class="form-group mb-3">
+            <label for="selectJogador" class="form-label">Selecione o melhor da partida:</label>
             <select class="form-select" id="selectJogador" [(ngModel)]="jogadorSelecionado">
+              <option value="">Selecione...</option>
+              <option *ngFor="let jogador of melhorDaPartidaTemp" [value]="jogador.id">{{ jogador.nome }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="selectBolaMurcha" class="form-label">Selecione o "Bola Murcha" (pior da partida):</label>
+            <select class="form-select" id="selectBolaMurcha" [(ngModel)]="jogadorBolaMurchaSelecionado">
               <option value="">Selecione...</option>
               <option *ngFor="let jogador of melhorDaPartidaTemp" [value]="jogador.id">{{ jogador.nome }}</option>
             </select>

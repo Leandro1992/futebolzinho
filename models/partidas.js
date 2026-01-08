@@ -57,7 +57,7 @@ class Partida {
 
                 const [timeAPlayers, timeBPlayers] = await Promise.all([
                     Promise.all(partidaData.timeA.map(async jogador => {
-                        const jogadorData = { id: jogador.jogadorRef.id, gol: jogador.gol, assistencia: jogador.assistencia, destaque: jogador.destaque, golContra: jogador.golContra || 0 };
+                        const jogadorData = { id: jogador.jogadorRef.id, gol: jogador.gol, assistencia: jogador.assistencia, destaque: jogador.destaque, bolaMurcha: jogador.bolaMurcha, golContra: jogador.golContra || 0 };
                         totalGolsTimeA += jogador.gol ?? 0;
                         totalAssistenciasTimeA += jogador.assistencia ?? 0;
                         totalGolsContraTimeA += jogador.golContra ?? 0;
@@ -65,7 +65,7 @@ class Partida {
                         return { ...jogadorData, ...jogadorSnapshot.data() };
                     })),
                     Promise.all(partidaData.timeB.map(async jogador => {
-                        const jogadorData = { id: jogador.jogadorRef.id, gol: jogador.gol, assistencia: jogador.assistencia, destaque: jogador.destaque, golContra: jogador.golContra || 0 };
+                        const jogadorData = { id: jogador.jogadorRef.id, gol: jogador.gol, assistencia: jogador.assistencia, destaque: jogador.destaque, bolaMurcha: jogador.bolaMurcha, golContra: jogador.golContra || 0 };
                         totalGolsTimeB += jogador.gol ?? 0;
                         totalAssistenciasTimeB += jogador.assistencia ?? 0;
                         totalGolsContraTimeB += jogador.golContra ?? 0;
@@ -127,7 +127,7 @@ class Partida {
 
                 const [timeAPlayers, timeBPlayers] = await Promise.all([
                     Promise.all(partidaData.timeA.map(async jogador => {
-                        const jogadorData = { id: jogador.jogadorRef.id, gol: jogador.gol, assistencia: jogador.assistencia, destaque: jogador.destaque, golContra: jogador.golContra || 0 };
+                        const jogadorData = { id: jogador.jogadorRef.id, gol: jogador.gol, assistencia: jogador.assistencia, destaque: jogador.destaque, bolaMurcha: jogador.bolaMurcha, golContra: jogador.golContra || 0 };
                         totalGolsTimeA += jogador.gol ?? 0;
                         totalGolsTimeB += jogador.golContra ?? 0;
                         totalGolsContraTimeA += jogador.golContra ?? 0;
@@ -140,11 +140,13 @@ class Partida {
                             golContra: 0,
                             assistencia: 0,
                             destaque: 0,
+                            bolaMurcha: 0,
                             vitorias: 0,
                             derrotas: 0,
                             empates: 0
                         }
                         if (jogador.destaque) partidaDados[jogador.jogadorRef.id].destaque++;
+                        if (jogador.bolaMurcha) partidaDados[jogador.jogadorRef.id].bolaMurcha++;
 
                         partidaDados[jogador.jogadorRef.id].jogadorId = jogador.jogadorRef.id
                         partidaDados[jogador.jogadorRef.id].jogos++
@@ -155,7 +157,7 @@ class Partida {
                         return { ...jogadorData, ...jogadorSnapshot.data() };
                     })),
                     Promise.all(partidaData.timeB.map(async jogador => {
-                        const jogadorData = { id: jogador.jogadorRef.id, gol: jogador.gol, assistencia: jogador.assistencia, destaque: jogador.destaque, golContra: jogador.golContra || 0 };
+                        const jogadorData = { id: jogador.jogadorRef.id, gol: jogador.gol, assistencia: jogador.assistencia, destaque: jogador.destaque, bolaMurcha: jogador.bolaMurcha, golContra: jogador.golContra || 0 };
                         totalGolsTimeB += jogador.gol ?? 0;
                         totalGolsTimeA += jogador.golContra ?? 0;
                         totalGolsContraTimeB += jogador.golContra ?? 0;
@@ -167,11 +169,13 @@ class Partida {
                             golContra: 0,
                             assistencia: 0,
                             destaque: 0,
+                            bolaMurcha: 0,
                             vitorias: 0,
                             derrotas: 0,
                             empates: 0
                         }
                         if (jogador.destaque) partidaDados[jogador.jogadorRef.id].destaque++;
+                        if (jogador.bolaMurcha) partidaDados[jogador.jogadorRef.id].bolaMurcha++;
                         partidaDados[jogador.jogadorRef.id].jogadorId = jogador.jogadorRef.id
                         partidaDados[jogador.jogadorRef.id].jogos++
                         partidaDados[jogador.jogadorRef.id].gols += jogador.gol ?? 0;
@@ -254,6 +258,7 @@ class Partida {
                     assistencia: jogadorRef.assistencia,
                     golContra: jogadorRef.golContra,
                     destaque: jogadorRef?.destaque ? true : false,
+                    bolaMurcha: jogadorRef?.bolaMurcha ? true : false,
                 }
             }));
 
@@ -263,7 +268,8 @@ class Partida {
                     gol: jogadorRef.gol,
                     assistencia: jogadorRef.assistencia,
                     golContra: jogadorRef.golContra,
-                    destaque: jogadorRef?.destaque ? true : false
+                    destaque: jogadorRef?.destaque ? true : false,
+                    bolaMurcha: jogadorRef?.bolaMurcha ? true : false
                 }
             }));
             await db.collection('partidas').doc(id).update({
