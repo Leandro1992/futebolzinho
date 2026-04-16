@@ -1,0 +1,437 @@
+:root {
+  --bg: #f3f5ef;
+  --card: #ffffff;
+  --text: #17221f;
+  --muted: #5f6a66;
+  --brand: #0f6f4b;
+  --brand-soft: #d5efe4;
+  --line: #d9e0dc;
+  --danger: #b2372f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: radial-gradient(circle at top, #eaf7f0, #f3f5ef 45%);
+  color: var(--text);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.app-root {
+  min-height: 100vh;
+  padding-bottom: 82px;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-logo {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  border-radius: 12px;
+  border: 1px solid #dce7e2;
+  background: #fff;
+}
+
+.topbar-title {
+  margin: 0;
+  font-weight: 700;
+}
+
+.topbar-subtitle {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.content {
+  padding: 14px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--card);
+  border-top: 1px solid var(--line);
+  display: flex;
+  overflow-x: auto;
+  z-index: 30;
+}
+
+.nav-item {
+  flex: 1;
+  min-width: 110px;
+  text-align: center;
+  padding: 12px 8px;
+  color: var(--muted);
+  font-size: 13px;
+  border-bottom: 3px solid transparent;
+}
+
+.nav-item.active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+  font-weight: 600;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 8px 24px rgba(27, 44, 37, 0.06);
+}
+
+.card + .card {
+  margin-top: 12px;
+}
+
+.section-title {
+  margin: 0 0 12px;
+  font-size: 19px;
+}
+
+.meta {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.grid {
+  display: grid;
+  gap: 10px;
+}
+
+.grid.two {
+  grid-template-columns: 1fr;
+}
+
+.form-grid {
+  display: grid;
+  gap: 10px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px;
+  background: #fff;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.btn {
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.btn.primary {
+  background: var(--brand);
+  color: white;
+}
+
+.btn.ghost {
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+.btn.danger {
+  background: #fee7e5;
+  color: var(--danger);
+}
+
+.inline-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.team-box {
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.team-title {
+  margin: 0 0 10px;
+  font-size: 15px;
+}
+
+.list-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 0;
+  border-top: 1px solid #edf1ee;
+}
+
+.list-row:first-child {
+  border-top: 0;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--brand-soft);
+  color: var(--brand);
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.status-badge {
+  min-width: 88px;
+  font-weight: 700;
+}
+
+.status-badge.open {
+  background: #fff5d8;
+  color: #996c00;
+}
+
+.status-badge.closed {
+  background: #dff4e8;
+  color: #11603f;
+}
+
+.match-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.scoreline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0 4px;
+}
+
+.score-separator {
+  color: #6d7773;
+  font-weight: 700;
+}
+
+.team-score {
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  font-weight: 700;
+}
+
+.team-score.team-a {
+  background: #e8f1ff;
+  color: #1d4f99;
+}
+
+.team-score.team-b {
+  background: #ffeceb;
+  color: #90362d;
+}
+
+.team-score.winner {
+  border-color: #1d7b55;
+  box-shadow: inset 0 0 0 1px #8ee0bc;
+}
+
+.winner-caption {
+  margin: 0 0 10px;
+}
+
+.error-msg {
+  color: var(--danger);
+  margin: 0;
+  font-size: 13px;
+}
+
+.user-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 12, 10, 0.55);
+  display: grid;
+  place-items: center;
+  z-index: 60;
+  padding: 12px;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 16px;
+  background: #fff;
+  padding: 16px;
+  border: 1px solid var(--line);
+}
+
+.modal-card h2 {
+  margin-top: 0;
+  margin-bottom: 2px;
+}
+
+.login-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.login-logo {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  border-radius: 12px;
+  border: 1px solid #dce7e2;
+  background: #fff;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.score-stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.score-stepper button {
+  border: 0;
+  background: #fff;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.score-stepper span {
+  width: 28px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.score-stepper.team-a button {
+  background: #edf4ff;
+  color: #1f4e93;
+}
+
+.score-stepper.team-b button {
+  background: #fff0ef;
+  color: #8f3b32;
+}
+
+.score-stepper.field-goal {
+  border-color: #99bef1;
+}
+
+.score-stepper.field-goal span {
+  background: #d9e9ff;
+  color: #174684;
+}
+
+.score-stepper.field-assist {
+  border-color: #9fd8b8;
+}
+
+.score-stepper.field-assist span {
+  background: #def6e8;
+  color: #0f6f4b;
+}
+
+.score-stepper.field-own-goal {
+  border-color: #f0b0aa;
+}
+
+.score-stepper.field-own-goal span {
+  background: #ffe4e1;
+  color: #9a3a31;
+}
+
+.score-stepper button:hover {
+  filter: brightness(0.96);
+}
+
+@media (min-width: 768px) {
+  .app-root {
+    padding-bottom: 24px;
+  }
+
+  .bottom-nav {
+    position: static;
+    max-width: 1000px;
+    margin: 0 auto;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .grid.two {
+    grid-template-columns: 1fr 1fr;
+  }
+}
