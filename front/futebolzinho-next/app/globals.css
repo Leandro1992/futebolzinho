@@ -328,6 +328,46 @@ textarea {
   margin: 0 0 10px;
 }
 
+.award-inline-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 0;
+}
+
+.award-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.award-chip.best {
+  background: #d9f7e7;
+  color: #0d6b44;
+  border: 1px solid #8cdcb7;
+}
+
+.award-chip.worst {
+  background: #fff0dd;
+  color: #8a5300;
+  border: 1px solid #f1c992;
+}
+
+.award-details-box {
+  margin-top: 10px;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.award-details-box h4 {
+  margin: 0;
+  font-size: 14px;
+}
+
 .error-msg {
   color: var(--danger);
   margin: 0;

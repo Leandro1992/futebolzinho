@@ -40,6 +40,13 @@ function getWinner(partida: Partida): "A" | "B" | "E" {
   return "E";
 }
 
+function getPremiacoes(partida: Partida) {
+  const jogadores = [...partida.timeA, ...partida.timeB];
+  const destaque = jogadores.find((jogador) => jogador.destaque);
+  const bolaMurcha = jogadores.find((jogador) => jogador.bolaMurcha);
+  return { destaque, bolaMurcha };
+}
+
 export default function PartidasPage() {
   const { isLoggedIn } = useAuth();
   const [partidas, setPartidas] = useState<Partida[]>([]);
@@ -162,6 +169,7 @@ export default function PartidasPage() {
       {partidas.map((partida) => {
         const winner = getWinner(partida);
         const expanded = expandedPartidaId === partida.id;
+        const { destaque, bolaMurcha } = getPremiacoes(partida);
         return (
         <section key={partida.id} className="card">
           <button
@@ -198,6 +206,13 @@ export default function PartidasPage() {
             ) : (
               <p className="meta winner-caption">Vencedor parcial: Time {winner}</p>
             )}
+
+            {partida.status === 1 && (destaque || bolaMurcha) ? (
+              <div className="award-inline-row">
+                {destaque ? <span className="award-chip best">Melhor: {destaque.nome}</span> : null}
+                {bolaMurcha ? <span className="award-chip worst">Bola murcha: {bolaMurcha.nome}</span> : null}
+              </div>
+            ) : null}
           </button>
 
           {expanded ? <div id={`partida-panel-${partida.id}`} className="accordion-panel"><div className="grid two">
@@ -263,6 +278,16 @@ export default function PartidasPage() {
               ))}
             </div>
           </div>
+
+          {partida.status === 1 && (destaque || bolaMurcha) ? (
+            <div className="award-details-box">
+              <h4>Premiacao da partida</h4>
+              <div className="award-inline-row">
+                {destaque ? <span className="award-chip best">Melhor da partida: {destaque.nome}</span> : null}
+                {bolaMurcha ? <span className="award-chip worst">Bola murcha: {bolaMurcha.nome}</span> : null}
+              </div>
+            </div>
+          ) : null}
 
           {isLoggedIn && partida.status === 0 ? (
             <div style={{ marginTop: 12 }}>
