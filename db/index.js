@@ -1,4 +1,5 @@
-const admin = require('firebase-admin');
+const { initializeApp, cert, getApps } = require('firebase-admin/app');
+const { getFirestore } = require('firebase-admin/firestore');
 let serviceAccount = null;
 
 try {
@@ -25,11 +26,14 @@ try {
 class FirebaseConnection {
   constructor() {
     const firebaseConfig = {
-        credential: admin.credential.cert(serviceAccount)
+        credential: cert(serviceAccount)
     };
 
-    admin.initializeApp(firebaseConfig);
-    this.db = admin.firestore();
+    if (!getApps().length) {
+      initializeApp(firebaseConfig);
+    }
+
+    this.db = getFirestore();
   }
 
   static getInstance() {

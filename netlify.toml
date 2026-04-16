@@ -1,7 +1,7 @@
 [build]
   base = "front/futebolzinho-next"
-  command = "npm run build"
-  publish = "out"
+  command = "npm --prefix ../.. install && npm run build"
+  publish = ".next"
 
 [build.environment]
   NEXT_TELEMETRY_DISABLED = "1"

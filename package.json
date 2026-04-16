@@ -21,8 +21,10 @@
     "express": "^4.17.1",
     "express-rate-limit": "^6.7.0",
     "firebase-admin": "^11.0.0",
+    "futebolzinho-next": "file:front/futebolzinho-next",
     "helmet": "^7.0.0",
     "protobufjs": "^7.5.4",
+    "request": "^2.88.2",
     "winston": "^3.8.2"
   },
   "devDependencies": {
