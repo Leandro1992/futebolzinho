@@ -1,6 +1,6 @@
 # Futebolzinho Next
 
-Nova interface web em Next.js + React para o projeto Futebolzinho, mantendo compatibilidade com os mesmos endpoints da API atual e persistencia no Firestore.
+Nova interface web em Next.js + React para o projeto Futebolzinho, com API integrada no proprio Next e persistencia no Firestore.
 
 ## Funcionalidades cobertas
 - Login (mesma rota `/api/auth/login`).
@@ -12,16 +12,16 @@ Nova interface web em Next.js + React para o projeto Futebolzinho, mantendo comp
 - Partidas avulsas: listagem, criacao e alternancia de encerrada.
 
 ## Compatibilidade de API
-Por padrao, a app chama:
-- `http://localhost:3000/api/...`
+Por padrao, a app chama os endpoints locais do proprio Next:
+- `/api/...`
 
-Voce pode alterar via variavel:
+Opcionalmente, voce ainda pode apontar para uma API externa via variavel:
 - `NEXT_PUBLIC_API_BASE_URL`
 
 Exemplo em `.env.local`:
 
 ```
-NEXT_PUBLIC_API_BASE_URL=http://localhost:3000
+NEXT_PUBLIC_API_BASE_URL=https://seu-backend.com
 ```
 
 ## Como rodar
@@ -45,7 +45,7 @@ npm run start
 ```
 
 ## Observacoes
-- O backend existente continua sendo a fonte de verdade dos dados.
+- A pasta `app/api` replica os contratos do backend legado para permitir rodar tudo no Next sem Express externo.
 - A autenticacao segue o comportamento atual do projeto legado para manter compatibilidade funcional.
 
 ## Publicar no Netlify
@@ -54,9 +54,9 @@ npm run start
 3. Configure (se precisar sobrescrever no painel):
 - Base directory: `front/futebolzinho-next`
 - Build command: `npm run build`
-- Publish directory: `out`
+- Publish directory: `.next`
 4. Em Environment variables, configure:
-- `NEXT_PUBLIC_API_BASE_URL` com a URL publica da API backend (exemplo: `https://seu-backend.com`).
+- `NEXT_PUBLIC_API_BASE_URL` somente se quiser usar backend externo.
 5. Faça o primeiro deploy.
 
 Opcional (via CLI):
@@ -69,4 +69,4 @@ npm run deploy:netlify:prod
 ```
 
 Nota:
-- Se o backend nao estiver publico com HTTPS, o frontend no Netlify nao conseguira consumir a API corretamente no navegador.
+- Com a API integrada, nao ha necessidade de subir um backend separado para os endpoints usados pela aplicacao.
