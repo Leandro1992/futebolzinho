@@ -54,7 +54,7 @@ npm run start
 3. Configure (se precisar sobrescrever no painel):
 - Base directory: `front/futebolzinho-next`
 - Build command: `npm run build`
-- Publish directory: `.next`
+- Publish directory: `out`
 4. Em Environment variables, configure:
 - `NEXT_PUBLIC_API_BASE_URL` com a URL publica da API backend (exemplo: `https://seu-backend.com`).
 5. Faça o primeiro deploy.
