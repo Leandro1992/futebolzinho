@@ -46,6 +46,7 @@ export default function PartidasPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<Partida | null>(null);
+  const [expandedPartidaId, setExpandedPartidaId] = useState<string | null>(null);
   const [destaqueId, setDestaqueId] = useState("");
   const [bolaMurchaId, setBolaMurchaId] = useState("");
 
@@ -160,34 +161,46 @@ export default function PartidasPage() {
 
       {partidas.map((partida) => {
         const winner = getWinner(partida);
+        const expanded = expandedPartidaId === partida.id;
         return (
         <section key={partida.id} className="card">
-          <div className="match-header">
-            <div>
-              <strong>{formatDate(partida.data)}</strong>
-              <p className="meta" style={{ margin: 0 }}>{partida.local}</p>
+          <button
+            type="button"
+            className="accordion-trigger"
+            onClick={() => setExpandedPartidaId((prev) => (prev === partida.id ? null : partida.id))}
+            aria-expanded={expanded}
+            aria-controls={`partida-panel-${partida.id}`}
+          >
+            <div className="match-header">
+              <div>
+                <strong>{formatDate(partida.data)}</strong>
+                <p className="meta" style={{ margin: 0 }}>{partida.local}</p>
+              </div>
+              <div className="accordion-summary-right">
+                <span className={`badge status-badge ${partida.status === 1 ? "closed" : "open"}`}>
+                  {partida.status === 1 ? "Encerrada" : "Em aberto"}
+                </span>
+                <span className="accordion-chevron" aria-hidden="true">{expanded ? "−" : "+"}</span>
+              </div>
             </div>
-            <span className={`badge status-badge ${partida.status === 1 ? "closed" : "open"}`}>
-              {partida.status === 1 ? "Encerrada" : "Em aberto"}
-            </span>
-          </div>
 
-          <div className="scoreline">
-            <span className={`team-score team-a ${winner === "A" ? "winner" : ""}`}>
-              Time A {partida.totalGolsTimeA}
-            </span>
-            <span className="score-separator">x</span>
-            <span className={`team-score team-b ${winner === "B" ? "winner" : ""}`}>
-              {partida.totalGolsTimeB} Time B
-            </span>
-          </div>
-          {winner === "E" ? (
-            <p className="meta winner-caption">Partida empatada.</p>
-          ) : (
-            <p className="meta winner-caption">Vencedor parcial: Time {winner}</p>
-          )}
+            <div className="scoreline">
+              <span className={`team-score team-a ${winner === "A" ? "winner" : ""}`}>
+                Time A {partida.totalGolsTimeA}
+              </span>
+              <span className="score-separator">x</span>
+              <span className={`team-score team-b ${winner === "B" ? "winner" : ""}`}>
+                {partida.totalGolsTimeB} Time B
+              </span>
+            </div>
+            {winner === "E" ? (
+              <p className="meta winner-caption">Partida empatada.</p>
+            ) : (
+              <p className="meta winner-caption">Vencedor parcial: Time {winner}</p>
+            )}
+          </button>
 
-          <div className="grid two">
+          {expanded ? <div id={`partida-panel-${partida.id}`} className="accordion-panel"><div className="grid two">
             <div className="team-box">
               <h3 className="team-title">Time A</h3>
               {partida.timeA.map((jog) => (
@@ -257,7 +270,7 @@ export default function PartidasPage() {
                 Encerrar Partida
               </button>
             </div>
-          ) : null}
+          ) : null}</div> : null}
         </section>
       )})}
 
