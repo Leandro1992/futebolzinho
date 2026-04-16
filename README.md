@@ -140,3 +140,12 @@ Para publicar sem build de frontend no servidor:
 4. Configure as variaveis de ambiente do Firebase (`type`, `project_id`, `private_key_id`, etc.).
 
 Arquivo de exemplo para Render: `render.yaml`.
+
+## Deploy Unificado (Back + Front)
+Para provedores com fases de Build e Start (Render/Railway/Fly), use:
+
+- Build command: `npm install && npm run build`
+- Start command: `npm run start`
+
+O `npm run build` da raiz compila o frontend Next em `front/futebolzinho-next/out`.
+O backend Express detecta automaticamente o build do frontend e serve a SPA junto com as rotas `/api`.

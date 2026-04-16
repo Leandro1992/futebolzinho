@@ -4,6 +4,8 @@
   "description": "API para gerenciamento de partidas de futebol",
   "main": "index.js",
   "scripts": {
+    "build": "npm run build:front",
+    "build:front": "npm --prefix front/futebolzinho-next install && npm --prefix front/futebolzinho-next run build",
     "start": "node index.js",
     "dev": "nodemon index.js",
     "lint": "eslint .",
