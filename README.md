@@ -128,3 +128,15 @@ Cria novas partidas, jogadores de "fora" são considerados adversários e ficam 
 5. O sistema estará disponível em `http://localhost:3000`.
 
 Lembre-se de substituir as informações específicas, como IDs e chaves, pelos valores reais correspondentes ao seu ambiente.
+
+## Deploy Server-Only (npm install + npm run start)
+Para publicar sem build de frontend no servidor:
+
+1. Garanta que o frontend exportado esteja versionado em `public/front-next`.
+2. O `index.js` ja serve a SPA a partir de `public/front-next`.
+3. No provedor de deploy Node (ex: Render):
+  - Build command: `npm install --omit=dev`
+  - Start command: `npm run start`
+4. Configure as variaveis de ambiente do Firebase (`type`, `project_id`, `private_key_id`, etc.).
+
+Arquivo de exemplo para Render: `render.yaml`.

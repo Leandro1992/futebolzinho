@@ -47,8 +47,8 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// Servir arquivos estáticos
-app.use(express.static(path.join(__dirname, 'front/futebolzinho-next/out')));
+// Servir arquivos estáticos do build exportado do novo frontend
+app.use(express.static(path.join(__dirname, 'public/front-next')));
 
 // Rotas da API
 app.use('/api/auth', authRoutes);
@@ -59,9 +59,9 @@ app.use('/api/backup', backupRoutes);
 app.use('/api/cache', cacheRoutes);
 app.use('/api/desculpas', desculpasRoutes);
 
-// Rota para servir o app Angular em qualquer URL não encontrada
+// Rota fallback para SPA do novo frontend
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'front/futebolzinho-next/out/index.html'));
+    res.sendFile(path.join(__dirname, 'public/front-next/index.html'));
 });
 
 // Middleware de tratamento de erros
