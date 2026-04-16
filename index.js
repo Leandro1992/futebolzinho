@@ -48,7 +48,7 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // Servir arquivos estáticos
-app.use(express.static(path.join(__dirname, 'public/browser')));
+app.use(express.static(path.join(__dirname, 'front/futebolzinho-next/out')));
 
 // Rotas da API
 app.use('/api/auth', authRoutes);
@@ -61,7 +61,7 @@ app.use('/api/desculpas', desculpasRoutes);
 
 // Rota para servir o app Angular em qualquer URL não encontrada
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public/browser/index.html'));
+    res.sendFile(path.join(__dirname, 'front/futebolzinho-next/out/index.html'));
 });
 
 // Middleware de tratamento de erros

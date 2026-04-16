@@ -387,21 +387,21 @@ textarea {
 }
 
 .score-stepper.field-goal {
-  border-color: #99bef1;
-}
-
-.score-stepper.field-goal span {
-  background: #d9e9ff;
-  color: #174684;
-}
-
-.score-stepper.field-assist {
   border-color: #9fd8b8;
 }
 
-.score-stepper.field-assist span {
+.score-stepper.field-goal span {
   background: #def6e8;
   color: #0f6f4b;
+}
+
+.score-stepper.field-assist {
+  border-color: #99bef1;
+}
+
+.score-stepper.field-assist span {
+  background: #d9e9ff;
+  color: #174684;
 }
 
 .score-stepper.field-own-goal {
