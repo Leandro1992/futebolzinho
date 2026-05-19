@@ -52,6 +52,10 @@ export const api = {
       method: "PUT",
       body: JSON.stringify(payload),
     }),
+  excluirPartida: (id: string) =>
+    request<{ message: string }>(`/api/partidas/${id}`, {
+      method: "DELETE",
+    }),
   getEstatisticas: (dataInicial: string, dataFim: string) =>
     request<Envelope<any[]>>(
       `/api/partidas/estatisticas?dataInicial=${encodeURIComponent(dataInicial)}&dataFim=${encodeURIComponent(dataFim)}`

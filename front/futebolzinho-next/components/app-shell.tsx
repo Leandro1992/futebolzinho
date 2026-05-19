@@ -23,6 +23,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
 
+  const userLabel = userEmail
+    ? userEmail.split("@")[0].replace(/[._-]+/g, " ").trim().slice(0, 16) || "Usuario"
+    : "Usuario";
+
   async function handleLogin(event: FormEvent) {
     event.preventDefault();
     setSending(true);
@@ -50,39 +54,48 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {/* <p className="topbar-subtitle">Gestao de partidas e desempenho</p> */}
           </div>
         </div>
+
+        <nav className="top-nav">
+          {navItems
+            .filter((item) => !item.requiresAuth || isLoggedIn)
+            .map((item) => (
+              <Link
+                key={item.href}
+                className={pathname === item.href ? "nav-item active" : "nav-item"}
+                href={item.href}
+              >
+                {item.label}
+              </Link>
+            ))}
+        </nav>
+
         {!loading && (
-          <div>
+          <div className="topbar-auth">
             {!isLoggedIn ? (
               <button className="btn primary" onClick={() => setShowLogin(true)}>
                 Login
               </button>
             ) : (
-              <div className="user-box">
-                <span>{userEmail}</span>
-                <button className="btn ghost" onClick={logout}>
-                  Sair
-                </button>
-              </div>
+              <details className="user-menu">
+                <summary className="user-menu-trigger">
+                  <span className="user-avatar" aria-hidden="true">
+                    {userLabel.charAt(0).toUpperCase()}
+                  </span>
+                  <span className="user-menu-label">{userLabel}</span>
+                </summary>
+                <div className="user-menu-panel">
+                  <p className="user-menu-email">{userEmail}</p>
+                  <button className="btn ghost user-menu-logout" onClick={logout}>
+                    Sair
+                  </button>
+                </div>
+              </details>
             )}
           </div>
         )}
       </header>
 
       <main className="content">{children}</main>
-
-      <nav className="bottom-nav">
-        {navItems
-          .filter((item) => !item.requiresAuth || isLoggedIn)
-          .map((item) => (
-            <Link
-              key={item.href}
-              className={pathname === item.href ? "nav-item active" : "nav-item"}
-              href={item.href}
-            >
-              {item.label}
-            </Link>
-          ))}
-      </nav>
 
       {showLogin ? (
         <div className="modal-backdrop" onClick={() => setShowLogin(false)}>

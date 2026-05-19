@@ -17,9 +17,10 @@ export default function PartidaFormPage() {
   const [timeB, setTimeB] = useState<Jogador[]>([]);
   const [data, setData] = useState(hoje());
   const [local, setLocal] = useState("Paula Ramos");
-  const [selectedJogador, setSelectedJogador] = useState("");
   const [selectedTime, setSelectedTime] = useState<"A" | "B">("A");
   const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [success, setSuccess] = useState<string | null>(null);
 
   async function carregarJogadores() {
     try {
@@ -58,6 +59,17 @@ export default function PartidaFormPage() {
     if (time === "A") setTimeA((prev) => prev.filter((j) => j.id !== jogador.id));
     else setTimeB((prev) => prev.filter((j) => j.id !== jogador.id));
     setDisponiveis((prev) => [...prev, jogador].sort((a, b) => a.nome.localeCompare(b.nome)));
+  }
+
+  function moverJogador(jogador: Jogador, de: "A" | "B", para: "A" | "B") {
+    if (de === para) return;
+    if (de === "A") {
+      setTimeA((prev) => prev.filter((j) => j.id !== jogador.id));
+      setTimeB((prev) => [...prev, jogador]);
+    } else {
+      setTimeB((prev) => prev.filter((j) => j.id !== jogador.id));
+      setTimeA((prev) => [...prev, jogador]);
+    }
   }
 
   function preencherMensalistas() {
@@ -135,6 +147,7 @@ export default function PartidaFormPage() {
       return;
     }
 
+    setSaving(true);
     try {
       await api.criarPartida({
         data,
@@ -150,9 +163,12 @@ export default function PartidaFormPage() {
       setData(hoje());
       setLocal("Paula Ramos");
       setError(null);
-      alert("Partida criada com sucesso.");
+      setSuccess("Partida criada com sucesso! Os times foram redefinidos.");
+      setTimeout(() => setSuccess(null), 5000);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro ao criar partida");
+    } finally {
+      setSaving(false);
     }
   }
 
@@ -174,6 +190,13 @@ export default function PartidaFormPage() {
 
       {error ? <section className="card error-msg">{error}</section> : null}
 
+      {success ? (
+        <section className="card toast-success">
+          <span className="toast-icon">✓</span>
+          <span>{success}</span>
+        </section>
+      ) : null}
+
       <section className="card">
         <div className="grid two">
           <label>
@@ -189,8 +212,13 @@ export default function PartidaFormPage() {
         <div className="grid two" style={{ marginTop: 10 }}>
           <label>
             Jogador
-            <select value={selectedJogador} onChange={(e) => setSelectedJogador(e.target.value)}>
-              <option value="">Selecione...</option>
+            <select
+              value=""
+              onChange={(e) => {
+                if (e.target.value) adicionarJogador(e.target.value, selectedTime);
+              }}
+            >
+              <option value="">Selecione para adicionar...</option>
               {sortedDisponiveis.map((jogador) => (
                 <option key={jogador.id} value={jogador.id}>
                   {jogador.nome} {jogador.mensalista ? "(M)" : ""}
@@ -208,22 +236,19 @@ export default function PartidaFormPage() {
         </div>
 
         <div className="inline-actions" style={{ marginTop: 10 }}>
-          <button
-            className="btn ghost"
-            onClick={() => {
-              if (selectedJogador) adicionarJogador(selectedJogador, selectedTime);
-            }}
-          >
-            Adicionar
-          </button>
-          <button className="btn ghost" onClick={preencherMensalistas}>
+          <button className="btn ghost" onClick={preencherMensalistas} disabled={saving}>
             Preencher com mensalistas
           </button>
-          <button className="btn ghost" onClick={() => void equilibrar()}>
+          <button className="btn ghost" onClick={() => void equilibrar()} disabled={saving}>
             Equilibrar times
           </button>
-          <button className="btn primary" onClick={() => void salvar()}>
-            Salvar partida
+          <button className="btn primary" onClick={() => void salvar()} disabled={saving}>
+            {saving ? (
+              <span className="btn-loading">
+                <span className="spinner" />
+                Salvando...
+              </span>
+            ) : "Salvar partida"}
           </button>
         </div>
       </section>
@@ -239,6 +264,9 @@ export default function PartidaFormPage() {
               <div className="inline-actions">
                 <button className="btn ghost" onClick={() => setTimeA((prev) => prev.map((j) => j.id === jogador.id ? { ...j, fixo: !j.fixo } : j))}>
                   Fixar
+                </button>
+                <button className="btn ghost" onClick={() => moverJogador(jogador, "A", "B")}>
+                  → B
                 </button>
                 <button className="btn danger" onClick={() => removerJogador(jogador, "A")}>
                   Remover
@@ -256,6 +284,9 @@ export default function PartidaFormPage() {
                 {jogador.nome} {jogador.fixo ? "[FIXO]" : ""}
               </div>
               <div className="inline-actions">
+                <button className="btn ghost" onClick={() => moverJogador(jogador, "B", "A")}>
+                  A →
+                </button>
                 <button className="btn ghost" onClick={() => setTimeB((prev) => prev.map((j) => j.id === jogador.id ? { ...j, fixo: !j.fixo } : j))}>
                   Fixar
                 </button>

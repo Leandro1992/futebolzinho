@@ -53,9 +53,11 @@ export default function PartidasPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<Partida | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<Partida | null>(null);
   const [expandedPartidaId, setExpandedPartidaId] = useState<string | null>(null);
   const [destaqueId, setDestaqueId] = useState("");
   const [bolaMurchaId, setBolaMurchaId] = useState("");
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   async function carregarPartidas() {
     try {
@@ -154,6 +156,23 @@ export default function PartidasPage() {
     await persistir(clone);
   }
 
+  async function excluirPartida(partidaId: string) {
+    if (!isLoggedIn) return;
+
+    try {
+      setDeletingId(partidaId);
+      await api.excluirPartida(partidaId);
+      setPartidas((prev) => prev.filter((partida) => partida.id !== partidaId));
+      if (expandedPartidaId === partidaId) setExpandedPartidaId(null);
+      if (selected?.id === partidaId) setSelected(null);
+      if (pendingDelete?.id === partidaId) setPendingDelete(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Falha ao excluir partida");
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
   return (
     <div>
       <section className="card">
@@ -218,62 +237,72 @@ export default function PartidasPage() {
           {expanded ? <div id={`partida-panel-${partida.id}`} className="accordion-panel"><div className="grid two">
             <div className="team-box">
               <h3 className="team-title">Time A</h3>
-              {partida.timeA.map((jog) => (
-                <div className="list-row" key={jog.id}>
-                  <div>
-                    <strong>{jog.nome}</strong>
-                    <div className="meta">Gols: {jog.gol ?? 0} | Assist: {jog.assistencia ?? 0} | GC: {jog.golContra ?? 0}</div>
-                  </div>
+            {partida.timeA.map((jog) => (
+                <div className="jog-row" key={jog.id}>
+                  <span className="jog-name">{jog.nome}</span>
                   {isLoggedIn && partida.status === 0 ? (
-                    <div className="inline-actions">
-                      <div className="score-stepper team-a field-goal">
-                        <button onClick={() => updateJogador(partida, "A", jog.id, "gol", -1)}>-</button>
-                        <span>G</span>
-                        <button onClick={() => updateJogador(partida, "A", jog.id, "gol", 1)}>+</button>
+                    <div className="stat-grid">
+                      <div className="stat-block stat-goal">
+                        <button className="stat-inc" onClick={() => updateJogador(partida, "A", jog.id, "gol", 1)}>
+                          <span className="stat-val">{jog.gol ?? 0}</span>
+                          <span className="stat-lbl">Gol</span>
+                        </button>
+                        <button className="stat-dec" onClick={() => updateJogador(partida, "A", jog.id, "gol", -1)}>−</button>
                       </div>
-                      <div className="score-stepper team-a field-assist">
-                        <button onClick={() => updateJogador(partida, "A", jog.id, "assistencia", -1)}>-</button>
-                        <span>A</span>
-                        <button onClick={() => updateJogador(partida, "A", jog.id, "assistencia", 1)}>+</button>
+                      <div className="stat-block stat-assist">
+                        <button className="stat-inc" onClick={() => updateJogador(partida, "A", jog.id, "assistencia", 1)}>
+                          <span className="stat-val">{jog.assistencia ?? 0}</span>
+                          <span className="stat-lbl">Ass</span>
+                        </button>
+                        <button className="stat-dec" onClick={() => updateJogador(partida, "A", jog.id, "assistencia", -1)}>−</button>
                       </div>
-                      <div className="score-stepper team-a field-own-goal">
-                        <button onClick={() => updateJogador(partida, "A", jog.id, "golContra", -1)}>-</button>
-                        <span>GC</span>
-                        <button onClick={() => updateJogador(partida, "A", jog.id, "golContra", 1)}>+</button>
+                      <div className="stat-block stat-own">
+                        <button className="stat-inc" onClick={() => updateJogador(partida, "A", jog.id, "golContra", 1)}>
+                          <span className="stat-val">{jog.golContra ?? 0}</span>
+                          <span className="stat-lbl">GC</span>
+                        </button>
+                        <button className="stat-dec" onClick={() => updateJogador(partida, "A", jog.id, "golContra", -1)}>−</button>
                       </div>
                     </div>
-                  ) : null}
+                  ) : (
+                    <span className="jog-stats-ro">{jog.gol ?? 0}G · {jog.assistencia ?? 0}A · {jog.golContra ?? 0}GC</span>
+                  )}
                 </div>
               ))}
             </div>
 
             <div className="team-box">
               <h3 className="team-title">Time B</h3>
-              {partida.timeB.map((jog) => (
-                <div className="list-row" key={jog.id}>
-                  <div>
-                    <strong>{jog.nome}</strong>
-                    <div className="meta">Gols: {jog.gol ?? 0} | Assist: {jog.assistencia ?? 0} | GC: {jog.golContra ?? 0}</div>
-                  </div>
+            {partida.timeB.map((jog) => (
+                <div className="jog-row" key={jog.id}>
+                  <span className="jog-name">{jog.nome}</span>
                   {isLoggedIn && partida.status === 0 ? (
-                    <div className="inline-actions">
-                      <div className="score-stepper team-b field-goal">
-                        <button onClick={() => updateJogador(partida, "B", jog.id, "gol", -1)}>-</button>
-                        <span>G</span>
-                        <button onClick={() => updateJogador(partida, "B", jog.id, "gol", 1)}>+</button>
+                    <div className="stat-grid">
+                      <div className="stat-block stat-goal">
+                        <button className="stat-inc" onClick={() => updateJogador(partida, "B", jog.id, "gol", 1)}>
+                          <span className="stat-val">{jog.gol ?? 0}</span>
+                          <span className="stat-lbl">Gol</span>
+                        </button>
+                        <button className="stat-dec" onClick={() => updateJogador(partida, "B", jog.id, "gol", -1)}>−</button>
                       </div>
-                      <div className="score-stepper team-b field-assist">
-                        <button onClick={() => updateJogador(partida, "B", jog.id, "assistencia", -1)}>-</button>
-                        <span>A</span>
-                        <button onClick={() => updateJogador(partida, "B", jog.id, "assistencia", 1)}>+</button>
+                      <div className="stat-block stat-assist">
+                        <button className="stat-inc" onClick={() => updateJogador(partida, "B", jog.id, "assistencia", 1)}>
+                          <span className="stat-val">{jog.assistencia ?? 0}</span>
+                          <span className="stat-lbl">Ass</span>
+                        </button>
+                        <button className="stat-dec" onClick={() => updateJogador(partida, "B", jog.id, "assistencia", -1)}>−</button>
                       </div>
-                      <div className="score-stepper team-b field-own-goal">
-                        <button onClick={() => updateJogador(partida, "B", jog.id, "golContra", -1)}>-</button>
-                        <span>GC</span>
-                        <button onClick={() => updateJogador(partida, "B", jog.id, "golContra", 1)}>+</button>
+                      <div className="stat-block stat-own">
+                        <button className="stat-inc" onClick={() => updateJogador(partida, "B", jog.id, "golContra", 1)}>
+                          <span className="stat-val">{jog.golContra ?? 0}</span>
+                          <span className="stat-lbl">GC</span>
+                        </button>
+                        <button className="stat-dec" onClick={() => updateJogador(partida, "B", jog.id, "golContra", -1)}>−</button>
                       </div>
                     </div>
-                  ) : null}
+                  ) : (
+                    <span className="jog-stats-ro">{jog.gol ?? 0}G · {jog.assistencia ?? 0}A · {jog.golContra ?? 0}GC</span>
+                  )}
                 </div>
               ))}
             </div>
@@ -296,6 +325,18 @@ export default function PartidasPage() {
               </button>
             </div>
           ) : null}</div> : null}
+
+          {isLoggedIn ? (
+            <div style={{ marginTop: 10 }}>
+              <button
+                className="btn subtle-danger"
+                onClick={() => setPendingDelete(partida)}
+                disabled={deletingId === partida.id}
+              >
+                {deletingId === partida.id ? "Excluindo..." : "Excluir"}
+              </button>
+            </div>
+          ) : null}
         </section>
       )})}
 
@@ -335,6 +376,29 @@ export default function PartidasPage() {
                   Confirmar
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {pendingDelete ? (
+        <div className="modal-backdrop" onClick={() => setPendingDelete(null)}>
+          <div className="modal-card" onClick={(event) => event.stopPropagation()}>
+            <h2>Excluir partida</h2>
+            <p className="meta">
+              Confirma a exclusao da partida de {formatDate(pendingDelete.data)} em {pendingDelete.local}?
+            </p>
+            <div className="modal-actions">
+              <button className="btn ghost" onClick={() => setPendingDelete(null)}>
+                Cancelar
+              </button>
+              <button
+                className="btn danger"
+                onClick={() => void excluirPartida(pendingDelete.id)}
+                disabled={deletingId === pendingDelete.id}
+              >
+                {deletingId === pendingDelete.id ? "Excluindo..." : "Confirmar exclusao"}
+              </button>
             </div>
           </div>
         </div>
