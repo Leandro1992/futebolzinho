@@ -32,6 +32,13 @@ const app = express();
 app.set('trust proxy', 1); // Corrige erro do express-rate-limit no Heroku
 const PORT = process.env.PORT || 3000;
 
+const staticCandidates = [
+    path.join(__dirname, 'front/futebolzinho-next/out'),
+    path.join(__dirname, 'public/front-next'),
+    path.join(__dirname, 'public/browser')
+];
+const staticDir = staticCandidates.find((dir) => require('fs').existsSync(dir));
+
 // Middlewares de segurança
 app.use(helmet({
     contentSecurityPolicy: false, // Desabilita temporariamente para desenvolvimento
@@ -47,8 +54,12 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// Servir arquivos estáticos
-app.use(express.static(path.join(__dirname, 'public/browser')));
+// Servir frontend estático (Next export/legacy build)
+if (staticDir) {
+    app.use(express.static(staticDir));
+} else {
+    logger.warn('Nenhum build de frontend encontrado.');
+}
 
 // Rotas da API
 app.use('/api/auth', authRoutes);
@@ -59,9 +70,12 @@ app.use('/api/backup', backupRoutes);
 app.use('/api/cache', cacheRoutes);
 app.use('/api/desculpas', desculpasRoutes);
 
-// Rota para servir o app Angular em qualquer URL não encontrada
+// Rota fallback para SPA
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public/browser/index.html'));
+    if (!staticDir) {
+        return res.status(500).json({ error: 'Build do frontend nao encontrado' });
+    }
+    res.sendFile(path.join(staticDir, 'index.html'));
 });
 
 // Middleware de tratamento de erros

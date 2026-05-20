@@ -128,3 +128,24 @@ Cria novas partidas, jogadores de "fora" são considerados adversários e ficam 
 5. O sistema estará disponível em `http://localhost:3000`.
 
 Lembre-se de substituir as informações específicas, como IDs e chaves, pelos valores reais correspondentes ao seu ambiente.
+
+## Deploy Server-Only (npm install + npm run start)
+Para publicar sem build de frontend no servidor:
+
+1. Garanta que o frontend exportado esteja versionado em `public/front-next`.
+2. O `index.js` ja serve a SPA a partir de `public/front-next`.
+3. No provedor de deploy Node (ex: Render):
+  - Build command: `npm install --omit=dev`
+  - Start command: `npm run start`
+4. Configure as variaveis de ambiente do Firebase (`type`, `project_id`, `private_key_id`, etc.).
+
+Arquivo de exemplo para Render: `render.yaml`.
+
+## Deploy Unificado (Back + Front)
+Para provedores com fases de Build e Start (Render/Railway/Fly), use:
+
+- Build command: `npm install && npm run build`
+- Start command: `npm run start`
+
+O `npm run build` da raiz compila o frontend Next em `front/futebolzinho-next/out`.
+O backend Express detecta automaticamente o build do frontend e serve a SPA junto com as rotas `/api`.
