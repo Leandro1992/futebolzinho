@@ -24,6 +24,13 @@ Exemplo em `.env.local`:
 NEXT_PUBLIC_API_BASE_URL=https://seu-backend.com
 ```
 
+## Persistencia Firestore
+O backend integrado do Next usa implementacoes locais em `server/legacy/**` (sem depender de `../../models` ou `../../db`).
+
+Para conectar no Firestore, voce pode usar uma destas opcoes:
+- Criar `credenciais.json` na raiz de `front/futebolzinho-next`.
+- Ou definir as variaveis no `.env.local` (veja `.env.example`).
+
 ## Como rodar
 1. Instalar dependencias:
 
@@ -47,6 +54,7 @@ npm run start
 ## Observacoes
 - A pasta `app/api` replica os contratos do backend legado para permitir rodar tudo no Next sem Express externo.
 - A autenticacao segue o comportamento atual do projeto legado para manter compatibilidade funcional.
+- A pasta agora esta pronta para ser portada para um repositorio proprio sem dependencia de arquivos fora de `front/futebolzinho-next`.
 
 ## Publicar no Netlify
 1. No Netlify, crie um novo site a partir do repositorio.

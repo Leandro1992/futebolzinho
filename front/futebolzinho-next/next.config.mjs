@@ -7,7 +7,6 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   experimental: {
-    externalDir: true,
     serverComponentsExternalPackages: ["firebase-admin"],
   },
 };

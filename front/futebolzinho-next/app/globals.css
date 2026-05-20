@@ -1,3 +1,69 @@
+@media (max-width: 600px) {
+  .registro-shell {
+    gap: 4px;
+  }
+  .registro-header {
+    padding: 4px 5px;
+  }
+  .registro-scoreline,
+  .registro-wakelock-meta {
+    padding: 3px 5px;
+    font-size: 11px;
+  }
+  .registro-team-box {
+    padding: 3px;
+  }
+  .registro-team-box .jog-row {
+    padding: 1px 0;
+    gap: 1px;
+  }
+  .registro-team-box .jog-name {
+    font-size: 10px;
+  }
+  .registro-team-box .stat-grid {
+    gap: 1px;
+  }
+  .registro-team-box .stat-inc {
+    min-height: 28px;
+    padding: 2px 1px;
+    font-size: 11px;
+  }
+  .registro-team-box .stat-val {
+    font-size: 12px;
+  }
+  .registro-team-box .stat-lbl {
+    font-size: 7px;
+    margin-top: 0;
+  }
+  .registro-team-box .stat-dec {
+    padding: 1px;
+    font-size: 10px;
+  }
+  .registro-team-box .team-title {
+    font-size: 11px;
+    margin-bottom: 2px;
+  }
+  .registro-shell .btn {
+    padding: 4px 7px;
+    font-size: 10px;
+  }
+  .registro-shell .meta {
+    font-size: 10px;
+  }
+  .registro-shell .badge {
+    font-size: 9px;
+    padding: 0 5px;
+  }
+  .registro-shell .team-score {
+    padding: 2px 5px;
+    font-size: 11px;
+  }
+  .registro-search {
+    min-width: 90px;
+    font-size: 10px;
+    padding: 3px 5px;
+  }
+}
 :root {
   --bg: #eef0f8;
   --card: #ffffff;
@@ -361,11 +427,20 @@ textarea {
 
 .accordion-trigger {
   width: 100%;
+}
+
+.accordion-main-toggle {
+  width: 100%;
   border: 0;
   background: transparent;
   text-align: left;
   padding: 0;
   cursor: pointer;
+}
+
+.registro-inline-btn {
+  padding: 5px 9px;
+  font-size: 11px;
 }
 
 .accordion-summary-right {
@@ -676,9 +751,208 @@ textarea {
   color: #c41e2a;
 }
 
+.registro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: #f2f5fc;
+  padding: 8px;
+  overflow: auto;
+}
+
+.registro-shell {
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: auto auto auto 1fr;
+  gap: 8px;
+}
+
+.registro-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 7px 9px;
+}
+
+.registro-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.registro-scoreline {
+  margin: 0;
+  padding: 5px 8px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.registro-wakelock-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 5px 8px;
+}
+
+.registro-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  align-items: start;
+}
+
+@media (orientation: landscape) and (max-width: 900px) {
+  .registro-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+}
+
+.registro-team-box {
+  background: #fff;
+  border-style: solid;
+  padding: 6px;
+}
+
+.registro-team-box.time-a {
+  background: #f1f9ff;
+  border-color: #c6e0f8;
+}
+
+.registro-team-box.time-b {
+  background: #fff7ef;
+  border-color: #f4d7b7;
+}
+
+.registro-team-box .jog-row {
+  padding: 3px 0;
+  gap: 3px;
+  border-top-width: 1px;
+}
+
+.registro-team-box .jog-name {
+  font-size: 12px;
+  line-height: 1.15;
+  font-weight: 600;
+}
+
+.registro-team-box .stat-grid {
+  gap: 3px;
+}
+
+.registro-team-box .stat-block.stat-goal .stat-inc {
+  background: #dcf5e4;
+  color: #1e7b3c;
+}
+
+.registro-team-box .stat-inc {
+  min-height: 38px;
+  padding: 4px 2px;
+  border-radius: 8px;
+}
+
+.registro-team-box .stat-val {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.registro-team-box .stat-lbl {
+  font-size: 9px;
+  margin-top: 1px;
+}
+
+.registro-team-box .stat-dec {
+  padding: 3px;
+  font-size: 13px;
+  border-radius: 6px;
+  line-height: 1;
+}
+
+.registro-team-box .team-title {
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.registro-shell .btn {
+  padding: 7px 10px;
+  font-size: 12px;
+}
+
+.registro-shell .meta {
+  font-size: 12px;
+}
+
+.registro-shell .badge {
+  font-size: 11px;
+  padding: 1px 7px;
+}
+
+.registro-shell .team-score {
+  padding: 4px 8px;
+  font-size: 14px;
+}
+
+.registro-search-wrap {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.registro-search-wrap .meta {
+  white-space: nowrap;
+}
+
+.registro-search {
+  min-width: 148px;
+  max-width: 220px;
+  padding: 5px 8px;
+  font-size: 12px;
+}
+
 @media (min-width: 768px) {
   .grid.two {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .registro-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .registro-team-box .jog-name {
+    font-size: 11px;
+  }
+
+  .registro-search {
+    min-width: 180px;
+  }
+
+  .registro-team-box .stat-inc {
+    min-height: 34px;
+    padding: 3px 2px;
+  }
+
+  .registro-team-box .stat-val {
+    font-size: 14px;
+  }
+
+  .registro-team-box .stat-lbl {
+    font-size: 8px;
+  }
+
+  .registro-team-box .stat-dec {
+    padding: 2px;
+    font-size: 12px;
   }
 
   .stat-inc {

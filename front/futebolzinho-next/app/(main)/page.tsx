@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { api } from "@/lib/api";
 import type { Jogador, Partida } from "@/lib/types";
 import { useAuth } from "@/components/auth-context";
@@ -58,6 +58,12 @@ export default function PartidasPage() {
   const [destaqueId, setDestaqueId] = useState("");
   const [bolaMurchaId, setBolaMurchaId] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [registroPartidaId, setRegistroPartidaId] = useState<string | null>(null);
+  const [registroBusca, setRegistroBusca] = useState("");
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [, setWakeLockAtivo] = useState(false);
+  const [, setWakeLockErro] = useState<string | null>(null);
+  const wakeLockRef = useRef<{ release: () => Promise<void> } | null>(null);
 
   async function carregarPartidas() {
     try {
@@ -78,6 +84,70 @@ export default function PartidasPage() {
   useEffect(() => {
     void carregarPartidas();
   }, []);
+
+  useEffect(() => {
+    const onFullscreenChange = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+    };
+
+    document.addEventListener("fullscreenchange", onFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", onFullscreenChange);
+    };
+  }, []);
+
+  const wakeLockSuportado =
+    typeof navigator !== "undefined" && "wakeLock" in navigator && typeof document !== "undefined";
+
+  async function solicitarWakeLock() {
+    if (!wakeLockSuportado) return;
+
+    try {
+      const wakeLockApi = navigator as Navigator & {
+        wakeLock?: { request: (type: "screen") => Promise<{ release: () => Promise<void> }> };
+      };
+
+      if (!wakeLockApi.wakeLock) return;
+      wakeLockRef.current = await wakeLockApi.wakeLock.request("screen");
+      setWakeLockAtivo(true);
+      setWakeLockErro(null);
+    } catch {
+      setWakeLockAtivo(false);
+      setWakeLockErro("Nao foi possivel manter a tela ativa neste dispositivo.");
+    }
+  }
+
+  async function liberarWakeLock() {
+    if (!wakeLockRef.current) return;
+    try {
+      await wakeLockRef.current.release();
+    } finally {
+      wakeLockRef.current = null;
+      setWakeLockAtivo(false);
+    }
+  }
+
+  useEffect(() => {
+    if (!registroPartidaId) {
+      void liberarWakeLock();
+      return;
+    }
+
+    void solicitarWakeLock();
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible" && registroPartidaId) {
+        void solicitarWakeLock();
+      }
+    };
+
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      void liberarWakeLock();
+    };
+  }, [registroPartidaId]);
 
   async function persistir(partida: Partida) {
     setPartidas((prev) => prev.map((item) => (item.id === partida.id ? partida : item)));
@@ -173,6 +243,60 @@ export default function PartidasPage() {
     }
   }
 
+  const partidaRegistro = useMemo(
+    () => partidas.find((partida) => partida.id === registroPartidaId) ?? null,
+    [partidas, registroPartidaId]
+  );
+
+  async function alternarFullscreen() {
+    if (!document.fullscreenElement) {
+      await document.documentElement.requestFullscreen();
+      return;
+    }
+
+    await document.exitFullscreen();
+  }
+
+  async function abrirModoRegistro(partidaId: string) {
+    setRegistroBusca("");
+    setWakeLockErro(null);
+    setRegistroPartidaId(partidaId);
+    try {
+      await alternarFullscreen();
+    } catch {
+      // Mantem o modo de registro aberto mesmo sem fullscreen nativo.
+    }
+  }
+
+  async function fecharModoRegistro() {
+    setRegistroBusca("");
+    setRegistroPartidaId(null);
+    if (document.fullscreenElement) {
+      try {
+        await document.exitFullscreen();
+      } catch {
+        // Ignora erro de saida de fullscreen.
+      }
+    }
+  }
+
+  const termoBuscaRegistro = registroBusca.trim().toLowerCase();
+  const jogadoresRegistroA = useMemo(() => {
+    if (!partidaRegistro) return [];
+    if (!termoBuscaRegistro) return partidaRegistro.timeA;
+    return partidaRegistro.timeA.filter((jogador) =>
+      jogador.nome.toLowerCase().includes(termoBuscaRegistro)
+    );
+  }, [partidaRegistro, termoBuscaRegistro]);
+
+  const jogadoresRegistroB = useMemo(() => {
+    if (!partidaRegistro) return [];
+    if (!termoBuscaRegistro) return partidaRegistro.timeB;
+    return partidaRegistro.timeB.filter((jogador) =>
+      jogador.nome.toLowerCase().includes(termoBuscaRegistro)
+    );
+  }, [partidaRegistro, termoBuscaRegistro]);
+
   return (
     <div>
       <section className="card">
@@ -191,13 +315,21 @@ export default function PartidasPage() {
         const { destaque, bolaMurcha } = getPremiacoes(partida);
         return (
         <section key={partida.id} className="card">
-          <button
-            type="button"
-            className="accordion-trigger"
-            onClick={() => setExpandedPartidaId((prev) => (prev === partida.id ? null : partida.id))}
-            aria-expanded={expanded}
-            aria-controls={`partida-panel-${partida.id}`}
-          >
+          <div className="accordion-trigger">
+            <div
+              className="accordion-main-toggle"
+              onClick={() => setExpandedPartidaId((prev) => (prev === partida.id ? null : partida.id))}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  setExpandedPartidaId((prev) => (prev === partida.id ? null : partida.id));
+                }
+              }}
+              aria-expanded={expanded}
+              aria-controls={`partida-panel-${partida.id}`}
+              role="button"
+              tabIndex={0}
+            >
             <div className="match-header">
               <div>
                 <strong>{formatDate(partida.data)}</strong>
@@ -207,6 +339,19 @@ export default function PartidasPage() {
                 <span className={`badge status-badge ${partida.status === 1 ? "closed" : "open"}`}>
                   {partida.status === 1 ? "Encerrada" : "Em aberto"}
                 </span>
+                {isLoggedIn && partida.status === 0 ? (
+                  <span
+                    className="btn ghost registro-inline-btn"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      void abrirModoRegistro(partida.id);
+                    }}
+                    role="button"
+                  >
+                    Modo Registro
+                  </span>
+                ) : null}
                 <span className="accordion-chevron" aria-hidden="true">{expanded ? "−" : "+"}</span>
               </div>
             </div>
@@ -232,7 +377,8 @@ export default function PartidasPage() {
                 {bolaMurcha ? <span className="award-chip worst">Bola murcha: {bolaMurcha.nome}</span> : null}
               </div>
             ) : null}
-          </button>
+            </div>
+          </div>
 
           {expanded ? <div id={`partida-panel-${partida.id}`} className="accordion-panel"><div className="grid two">
             <div className="team-box">
@@ -320,6 +466,9 @@ export default function PartidasPage() {
 
           {isLoggedIn && partida.status === 0 ? (
             <div style={{ marginTop: 12 }}>
+              <button className="btn ghost" onClick={() => void abrirModoRegistro(partida.id)}>
+                Modo Registro
+              </button>{" "}
               <button className="btn primary" onClick={() => setSelected(partida)}>
                 Encerrar Partida
               </button>
@@ -399,6 +548,112 @@ export default function PartidasPage() {
               >
                 {deletingId === pendingDelete.id ? "Excluindo..." : "Confirmar exclusao"}
               </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {partidaRegistro && isLoggedIn && partidaRegistro.status === 0 ? (
+        <div className="registro-overlay">
+          <div className="registro-shell">
+            <div className="registro-header">
+              <div>
+                <strong>{formatDate(partidaRegistro.data)}</strong>
+                <p className="meta" style={{ margin: 0 }}>{partidaRegistro.local}</p>
+              </div>
+              <div className="registro-actions">
+                <button className="btn ghost" onClick={() => void alternarFullscreen()}>
+                  {isFullscreen ? "Sair da tela cheia" : "Tela cheia"}
+                </button>
+                <button className="btn danger" onClick={() => void fecharModoRegistro()}>
+                  Fechar registro
+                </button>
+              </div>
+            </div>
+
+            <div className="scoreline registro-scoreline">
+              <span className="team-score team-a">Time A {partidaRegistro.totalGolsTimeA}</span>
+              <span className="score-separator">x</span>
+              <span className="team-score team-b">{partidaRegistro.totalGolsTimeB} Time B</span>
+            </div>
+
+            <div className="registro-wakelock-meta">
+              <label className="registro-search-wrap">
+                <span className="meta">Buscar jogador</span>
+                <input
+                  className="registro-search"
+                  type="text"
+                  value={registroBusca}
+                  onChange={(e) => setRegistroBusca(e.target.value)}
+                  placeholder="Digite um nome"
+                />
+              </label>
+            </div>
+
+            <div className="registro-grid">
+              <div className="team-box registro-team-box time-a">
+                <h3 className="team-title">Time A</h3>
+                {jogadoresRegistroA.map((jog) => (
+                  <div className="jog-row" key={jog.id}>
+                    <span className="jog-name">{jog.nome}</span>
+                    <div className="stat-grid">
+                      <div className="stat-block stat-goal">
+                        <button className="stat-inc" onClick={() => updateJogador(partidaRegistro, "A", jog.id, "gol", 1)}>
+                          <span className="stat-val">{jog.gol ?? 0}</span>
+                          <span className="stat-lbl">Gol</span>
+                        </button>
+                        <button className="stat-dec" onClick={() => updateJogador(partidaRegistro, "A", jog.id, "gol", -1)}>−</button>
+                      </div>
+                      <div className="stat-block stat-assist">
+                        <button className="stat-inc" onClick={() => updateJogador(partidaRegistro, "A", jog.id, "assistencia", 1)}>
+                          <span className="stat-val">{jog.assistencia ?? 0}</span>
+                          <span className="stat-lbl">Ass</span>
+                        </button>
+                        <button className="stat-dec" onClick={() => updateJogador(partidaRegistro, "A", jog.id, "assistencia", -1)}>−</button>
+                      </div>
+                      <div className="stat-block stat-own">
+                        <button className="stat-inc" onClick={() => updateJogador(partidaRegistro, "A", jog.id, "golContra", 1)}>
+                          <span className="stat-val">{jog.golContra ?? 0}</span>
+                          <span className="stat-lbl">GC</span>
+                        </button>
+                        <button className="stat-dec" onClick={() => updateJogador(partidaRegistro, "A", jog.id, "golContra", -1)}>−</button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="team-box registro-team-box time-b">
+                <h3 className="team-title">Time B</h3>
+                {jogadoresRegistroB.map((jog) => (
+                  <div className="jog-row" key={jog.id}>
+                    <span className="jog-name">{jog.nome}</span>
+                    <div className="stat-grid">
+                      <div className="stat-block stat-goal">
+                        <button className="stat-inc" onClick={() => updateJogador(partidaRegistro, "B", jog.id, "gol", 1)}>
+                          <span className="stat-val">{jog.gol ?? 0}</span>
+                          <span className="stat-lbl">Gol</span>
+                        </button>
+                        <button className="stat-dec" onClick={() => updateJogador(partidaRegistro, "B", jog.id, "gol", -1)}>−</button>
+                      </div>
+                      <div className="stat-block stat-assist">
+                        <button className="stat-inc" onClick={() => updateJogador(partidaRegistro, "B", jog.id, "assistencia", 1)}>
+                          <span className="stat-val">{jog.assistencia ?? 0}</span>
+                          <span className="stat-lbl">Ass</span>
+                        </button>
+                        <button className="stat-dec" onClick={() => updateJogador(partidaRegistro, "B", jog.id, "assistencia", -1)}>−</button>
+                      </div>
+                      <div className="stat-block stat-own">
+                        <button className="stat-inc" onClick={() => updateJogador(partidaRegistro, "B", jog.id, "golContra", 1)}>
+                          <span className="stat-val">{jog.golContra ?? 0}</span>
+                          <span className="stat-lbl">GC</span>
+                        </button>
+                        <button className="stat-dec" onClick={() => updateJogador(partidaRegistro, "B", jog.id, "golContra", -1)}>−</button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
