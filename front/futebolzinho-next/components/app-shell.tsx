@@ -12,6 +12,7 @@ const navItems = [
   { href: "/estatisticas", label: "Estatisticas" },
   { href: "/desculpas", label: "Desculpas" },
   { href: "/partidas-avulsas", label: "Avulsas", requiresAuth: true },
+  { href: "/ajuda", label: "Ajuda" },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {

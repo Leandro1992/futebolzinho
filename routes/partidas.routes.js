@@ -45,4 +45,15 @@ router.put('/', async (req, res) => {
     }
 });
 
+router.delete('/:id', authenticate, async (req, res) => {
+    try {
+        const { id } = req.params;
+        await Partidas.deletarPartida(id);
+        res.status(200).json({ message: 'Partida deletada com sucesso' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Erro ao deletar partida ' + error.message });
+    }
+});
+
 module.exports = router; 

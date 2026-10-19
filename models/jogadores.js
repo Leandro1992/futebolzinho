@@ -2,6 +2,21 @@
 const FirebaseConnection = require('../db');
 const cache = require('./cache');
 
+function nomeExibicao(nome) {
+    return String(nome ?? '').normalize('NFKC').trim().replace(/\s+/g, ' ');
+}
+
+function nomeChave(nome) {
+    return nomeExibicao(nome).toLocaleLowerCase('pt-BR').replace(/\//g, '-');
+}
+
+class NomeDuplicadoError extends Error {
+    constructor() {
+        super('Já existe um jogador com esse nome');
+        this.statusCode = 409;
+    }
+}
+
 class Jogador {
     constructor({ nome, mensalista }) {
         this.nome = nome;
@@ -9,57 +24,88 @@ class Jogador {
     }
 
     async salvar() {
+        const nome = nomeExibicao(this.nome);
+        const chave = nomeChave(nome);
+        if (!chave) {
+            const error = new Error('Nome do jogador é obrigatório');
+            error.statusCode = 400;
+            throw error;
+        }
+
         try {
             const db = FirebaseConnection.getInstance().db;
-            const jogadorRef = await db.collection('jogadores').add({
-                nome: this.nome,
-                mensalista: this.mensalista
+            const jogadorRef = db.collection('jogadores').doc();
+            const lockRef = db.collection('jogadores_nomes').doc(chave);
+            const mensalista = Boolean(this.mensalista);
+
+            await db.runTransaction(async (transaction) => {
+                const lock = await transaction.get(lockRef);
+                if (lock.exists) {
+                    throw new NomeDuplicadoError();
+                }
+
+                transaction.set(jogadorRef, { nome, nomeChave: chave, mensalista });
+                transaction.set(lockRef, { jogadorId: jogadorRef.id, nome });
             });
-             const jogadorDoc = await jogadorRef.get();
-             if (jogadorDoc.exists) {
-                 const jogadorData = jogadorDoc.data();
-                 jogadorData.id = jogadorRef.id;
 
-                // Atualizar cache
-                const jogadores = cache.get('jogadores') || [];
-                jogadores.push(jogadorData);
-                cache.set('jogadores', jogadores);
-
-                return jogadorData
-             } else {
-                 console.log('Documento não encontrado.');
-             }
-
+            cache.delete('jogadores');
+            cache.delete('partidas');
+            cache.deletePrefix('estatisticasPartidas:');
+            return { id: jogadorRef.id, nome, nomeChave: chave, mensalista };
         } catch (error) {
+            if (error.statusCode) throw error;
             throw new Error('Erro ao salvar jogador: ' + error.message);
         }
     }
 
     async atualizarDados({ id, nome, mensalista }) {
+        const nomeLimpo = nomeExibicao(nome);
+        const chave = nomeChave(nomeLimpo);
+        if (!id || !chave) {
+            const error = new Error('Nome do jogador é obrigatório');
+            error.statusCode = 400;
+            throw error;
+        }
+
         try {
             const db = FirebaseConnection.getInstance().db;
-            await db.collection('jogadores').doc(id).update({
-                nome: nome,
-                mensalista: mensalista
+            const jogadorRef = db.collection('jogadores').doc(id);
+            const lockRef = db.collection('jogadores_nomes').doc(chave);
+            const mensalistaAtual = Boolean(mensalista);
+
+            await db.runTransaction(async (transaction) => {
+                const atual = await transaction.get(jogadorRef);
+                if (!atual.exists) {
+                    const error = new Error('Jogador não encontrado');
+                    error.statusCode = 404;
+                    throw error;
+                }
+
+                const dadosAtuais = atual.data();
+                const chaveAntiga = dadosAtuais.nomeChave || nomeChave(dadosAtuais.nome);
+                const lock = await transaction.get(lockRef);
+                if (lock.exists && lock.data().jogadorId !== id) {
+                    throw new NomeDuplicadoError();
+                }
+
+                if (chaveAntiga && chaveAntiga !== chave) {
+                    transaction.delete(db.collection('jogadores_nomes').doc(chaveAntiga));
+                }
+
+                transaction.set(lockRef, { jogadorId: id, nome: nomeLimpo });
+                transaction.update(jogadorRef, {
+                    nome: nomeLimpo,
+                    nomeChave: chave,
+                    mensalista: mensalistaAtual,
+                });
             });
 
-            const jogadorDoc = await db.collection('jogadores').doc(id).get();
-
-            if (jogadorDoc.exists) {
-                const jogadorData = jogadorDoc.data();
-                // Atualizar cache
-                const jogadores = cache.get('jogadores') || [];
-                const index = jogadores.findIndex(j => j.id === id);
-                if (index !== -1) {
-                    jogadores[index] = { id, nome, mensalista };
-                }
-                cache.set('jogadores', jogadores);
-
-                return jogadorData;
-            } else {
-                console.log('Documento não encontrado.');
-            }
+            cache.delete('jogadores');
+            cache.delete('partidas');
+            cache.deletePrefix('estatisticasPartidas:');
+            return { id, nome: nomeLimpo, nomeChave: chave, mensalista: mensalistaAtual };
         } catch (error) {
+            if (error.statusCode) throw error;
             throw new Error('Erro ao atualizar dados do jogador: ' + error.message);
         }
     }

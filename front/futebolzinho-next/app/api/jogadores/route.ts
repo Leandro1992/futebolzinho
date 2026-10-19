@@ -13,6 +13,14 @@ export async function GET() {
   }
 }
 
+function statusDe(error: unknown) {
+  if (typeof error === "object" && error && "statusCode" in error) {
+    const statusCode = (error as { statusCode?: unknown }).statusCode;
+    if (typeof statusCode === "number") return statusCode;
+  }
+  return 500;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -20,10 +28,9 @@ export async function POST(request: NextRequest) {
     const data = await jogador.salvar();
     return NextResponse.json({ data }, { status: 201 });
   } catch (error) {
-    return NextResponse.json(
-      { error: `Erro ao criar jogador ${getErrorMessage(error)}` },
-      { status: 500 }
-    );
+    const status = statusDe(error);
+    const message = status === 500 ? `Erro ao criar jogador ${getErrorMessage(error)}` : getErrorMessage(error);
+    return NextResponse.json({ error: message }, { status });
   }
 }
 
@@ -34,6 +41,6 @@ export async function PUT(request: NextRequest) {
     const data = await jogador.atualizarDados(body);
     return NextResponse.json({ data }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error: getErrorMessage(error) }, { status: 500 });
+    return NextResponse.json({ error: getErrorMessage(error) }, { status: statusDe(error) });
   }
 }

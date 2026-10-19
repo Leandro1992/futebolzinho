@@ -63,6 +63,16 @@
     font-size: 10px;
     padding: 3px 5px;
   }
+  .registro-acao {
+    min-height: 52px;
+    font-size: 16px;
+  }
+  .registro-jogador {
+    min-height: 48px;
+  }
+  .registro-jogador-nome {
+    font-size: 14px;
+  }
 }
 :root {
   --bg: #eef0f8;
@@ -206,6 +216,50 @@ a {
   margin: 0 0 12px;
   font-size: 19px;
 }
+
+.ajuda-video {
+  display: block;
+  width: 100%;
+  max-height: 70vh;
+  margin-top: 10px;
+  border-radius: 12px;
+  background: #0f1c33;
+}
+
+.ajuda-lista {
+  margin: 0 0 8px;
+  padding-left: 18px;
+}
+
+.ajuda-lista li + li {
+  margin-top: 6px;
+}
+
+.ajuda-legenda {
+  list-style: none;
+  margin: 8px 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+}
+
+.ajuda-legenda li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+}
+
+.ajuda-legenda i {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+}
+
+.ajuda-legenda i.gol { background: #1e7b3c; }
+.ajuda-legenda i.assistencia { background: #e2b100; }
+.ajuda-legenda i.contra { background: #c41e2a; }
 
 .meta {
   color: var(--muted);
@@ -610,7 +664,7 @@ textarea {
   background: rgba(8, 12, 10, 0.55);
   display: grid;
   place-items: center;
-  z-index: 60;
+  z-index: 100;
   padding: 12px;
 }
 
@@ -751,6 +805,14 @@ textarea {
   color: #c41e2a;
 }
 
+.tela-acordada {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .registro-overlay {
   position: fixed;
   inset: 0;
@@ -758,6 +820,281 @@ textarea {
   background: #f2f5fc;
   padding: 8px;
   overflow: auto;
+}
+
+.registro-overlay.modo-marcacao {
+  display: flex;
+  height: 100dvh;
+  overflow: hidden;
+  padding: 8px;
+  background:
+    radial-gradient(circle at top, #ffffff 0, #f4f7fb 42%, #e7eef8 100%);
+}
+
+.marcacao-shell {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.marcacao-topo {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 8px 10px;
+  box-shadow: 0 8px 24px rgba(20, 40, 80, 0.06);
+}
+
+.marcacao-placar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.marcacao-placar .team-score {
+  min-width: 42px;
+  padding: 6px 10px;
+  font-size: 22px;
+  text-align: center;
+}
+
+.marcacao-dica {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.marcacao-fechar {
+  min-height: 36px;
+  padding: 6px 10px;
+}
+
+.marcacao-times {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+}
+
+.marcacao-time {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  padding: 8px;
+}
+
+.marcacao-time-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin: 0 2px 6px;
+}
+
+.marcacao-time h3 {
+  margin: 0;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.marcacao-legenda {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.marcacao-legenda i {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+}
+
+.marcacao-legenda i.gol { background: #1e7b3c; }
+.marcacao-legenda i.assistencia { background: #e2b100; }
+.marcacao-legenda i.contra { background: #c41e2a; }
+
+.marcacao-time.time-a {
+  background: linear-gradient(180deg, #f4faff 0%, #e7f3ff 100%);
+}
+
+.marcacao-time.time-b {
+  background: linear-gradient(180deg, #fff8f2 0%, #ffefdf 100%);
+}
+
+.marcacao-lista {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.marcacao-linha {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: 0 1px 0 rgba(20, 28, 46, 0.05);
+}
+
+.marcacao-nome {
+  position: relative;
+  overflow: hidden;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  padding: 2px 4px;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.marcacao-nome.segurando {
+  background: linear-gradient(#d9f5e3, #d9f5e3) left center / 0 100% no-repeat;
+  animation: marcacao-segurar 3s linear forwards;
+}
+
+@keyframes marcacao-segurar {
+  to { background-size: 100% 100%; }
+}
+
+.marcacao-botoes {
+  flex: 1 1 auto;
+  min-height: 28px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.marcacao-btn {
+  border: 0;
+  border-radius: 10px;
+  padding: 0;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.12);
+}
+
+.marcacao-btn.gol {
+  background: #1e7b3c;
+  color: #fff;
+}
+
+.marcacao-btn.assistencia {
+  background: #e2b100;
+  color: #3d2e00;
+}
+
+.marcacao-btn.contra {
+  background: #c41e2a;
+  color: #fff;
+}
+
+.marcacao-encerrar {
+  min-height: 48px;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.marcacao-ajuste {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  padding: 12px;
+  background: rgba(16, 24, 40, 0.46);
+}
+
+.marcacao-ajuste-card {
+  width: min(100%, 380px);
+  background: #fff;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 18px 50px rgba(16, 24, 40, 0.24);
+}
+
+.marcacao-ajuste-card h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.ajuste-linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 8px;
+  border-radius: 12px;
+  background: #f6f8fc;
+}
+
+.ajuste-linha span {
+  font-weight: 700;
+}
+
+.ajuste-controles {
+  display: grid;
+  grid-template-columns: 40px 36px 40px;
+  align-items: center;
+  justify-items: center;
+}
+
+.ajuste-controles button {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 10px;
+  background: #fff;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.ajuste-controles strong {
+  font-size: 20px;
+}
+
+.ajuste-linha.gol .ajuste-controles button {
+  color: #1e7b3c;
+}
+
+.ajuste-linha.assistencia .ajuste-controles button {
+  color: #8a5a00;
+}
+
+.ajuste-linha.contra .ajuste-controles button {
+  color: #c41e2a;
 }
 
 .registro-shell {
@@ -962,4 +1299,199 @@ textarea {
   .stat-val {
     font-size: 20px;
   }
+}
+
+.registro-modo {
+  display: flex;
+  gap: 4px;
+}
+
+.registro-modo .btn.ativo {
+  background: var(--brand);
+  color: #fff;
+}
+
+.registro-overlay.modo-rapido {
+  overflow: hidden;
+  display: flex;
+  padding: 8px;
+}
+
+.registro-overlay.modo-rapido .registro-shell {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  grid-template-rows: auto auto minmax(0, 1fr);
+}
+
+.registro-rapido {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.registro-acoes {
+  display: grid;
+  grid-template-columns: 1.2fr 1.2fr 1fr;
+  gap: 6px;
+}
+
+.registro-acao {
+  min-height: 52px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  font-weight: 700;
+}
+
+.registro-acao.acao-gol.ativa {
+  background: #1e7b3c;
+  color: #fff;
+  border-color: #1e7b3c;
+}
+
+.registro-acao.acao-assistencia.ativa {
+  background: #8a5a00;
+  color: #fff;
+  border-color: #8a5a00;
+}
+
+.registro-acao.acao-golContra.ativa {
+  background: #a61b24;
+  color: #fff;
+  border-color: #a61b24;
+}
+
+.registro-dica {
+  margin: 0;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.registro-rapido-times {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+}
+
+.registro-rapido-time {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  padding: 8px;
+}
+
+.registro-rapido-time h3 {
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+
+.registro-rapido-time.time-a {
+  background: #f1f9ff;
+}
+
+.registro-rapido-time.time-b {
+  background: #fff7ef;
+}
+
+.registro-rapido-lista {
+  min-height: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.registro-jogador {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 2px;
+  border: 0;
+  border-radius: 12px;
+  background: #fff;
+  padding: 6px 8px;
+  text-align: left;
+  box-shadow: 0 1px 0 rgba(20, 28, 46, 0.06);
+}
+
+.registro-jogador.flash-gol {
+  background: #d9f5e3;
+}
+
+.registro-jogador.flash-assistencia {
+  background: #ffe8b8;
+}
+
+.registro-jogador.flash-golContra {
+  background: #ffd6d8;
+}
+
+.registro-jogador-nome {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.registro-stat-linha {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.registro-stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 3px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #8b95a8;
+}
+
+.registro-stat small {
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.registro-rapido.acao-gol .registro-stat.stat-gol.ativa,
+.registro-rapido.acao-assistencia .registro-stat.stat-assistencia.ativa,
+.registro-rapido.acao-golContra .registro-stat.stat-golContra.ativa {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.registro-rapido.acao-gol .registro-stat.stat-gol.ativa {
+  color: #1e7b3c;
+  background: #e5f6eb;
+}
+
+.registro-rapido.acao-assistencia .registro-stat.stat-assistencia.ativa {
+  color: #8a5a00;
+  background: #fff1d6;
+}
+
+.registro-rapido.acao-golContra .registro-stat.stat-golContra.ativa {
+  color: #a61b24;
+  background: #ffe4e6;
+}
+
+.registro-desfazer {
+  min-height: 44px;
+}
+
+.registro-desfazer:disabled {
+  opacity: 0.55;
 }
