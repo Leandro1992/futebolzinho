@@ -20,7 +20,9 @@ router.post('/', async (req, res) => {
         res.status(201).json({ data });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Erro ao criar jogador ' + error.message });
+        const status = error.statusCode || 500;
+        const message = status === 500 ? 'Erro ao criar jogador ' + error.message : error.message;
+        res.status(status).json({ error: message });
     }
 });
 
@@ -31,7 +33,7 @@ router.put('/', async (req, res) => {
         res.status(200).json({ data: mensagem });
     } catch (error) {
         console.error('Erro ao atualizar dados do jogador:', error.message);
-        res.status(500).json({ error: error.message });
+        res.status(error.statusCode || 500).json({ error: error.message });
     }
 });
 

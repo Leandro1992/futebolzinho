@@ -16,6 +16,9 @@ export class JogadoresComponent {
   filtro: string = '';
   campoOrdenacao: string = 'nome';
   direcaoOrdenacao: string = 'asc';
+  carregandoLista = true;
+  listaPronta = false;
+  salvando = false;
 
   constructor(private jogadorService: JogadorService) { }
 
@@ -31,13 +34,15 @@ export class JogadoresComponent {
   filtrarEOrdenarJogadores(): any[] {
     return this.jogadores
       .filter(jogador => jogador.nome.toLowerCase().includes(this.filtro.toLowerCase()))
-      .sort((a, b) => {
-        const campoA = a[this.campoOrdenacao];
-        const campoB = b[this.campoOrdenacao];
-        const comparacao = campoA.localeCompare(campoB);
+      .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR', { sensitivity: 'base' }));
+  }
 
-        return this.direcaoOrdenacao === 'asc' ? comparacao : -comparacao;
-      });
+  jogadoresMensalistas(): any[] {
+    return this.filtrarEOrdenarJogadores().filter((jogador) => jogador.mensalista);
+  }
+
+  jogadoresAvulsos(): any[] {
+    return this.filtrarEOrdenarJogadores().filter((jogador) => !jogador.mensalista);
   }
 
 
@@ -51,19 +56,23 @@ export class JogadoresComponent {
 
 
   salvarJogador() {
-    console.log(this.jogador)
-    this.jogadorService.criarJogador(this.jogador).subscribe({
+    if (!this.listaPronta || this.carregandoLista || this.salvando) return;
+    const nome = (this.jogador?.nome || '').trim();
+    if (!nome) return;
+
+    this.salvando = true;
+    this.jogadorService.criarJogador({ ...this.jogador, nome }).subscribe({
       next: (novo_jogador: any) => {
-        console.log("novo jogador", novo_jogador);
         this.jogador = novo_jogador.data;
         this.atualizarLista();
+        this.salvando = false;
+        this.fecharModal();
       },
       error: (error) => {
-        console.log("Erro ao carregar jogadores", error);
+        this.salvando = false;
         console.error('Erro ao carregar jogadores:', error);
       }
     });
-    this.fecharModal();
   }
 
   salvarEdicaoJogador() {
@@ -108,13 +117,17 @@ export class JogadoresComponent {
 
 
   carregarJogadores(): void {
+    this.carregandoLista = true;
+    this.listaPronta = false;
     this.jogadorService.getJogadores().subscribe({
       next: (jogadores: any) => {
-        console.log("jogadores?", jogadores);
         this.jogadores = jogadores.data;
+        this.listaPronta = true;
+        this.carregandoLista = false;
       },
       error: (error) => {
-        console.log("Erro ao carregar jogadores", error);
+        this.listaPronta = false;
+        this.carregandoLista = false;
         console.error('Erro ao carregar jogadores:', error);
       }
     });

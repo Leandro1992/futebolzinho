@@ -61,15 +61,21 @@ export default function PartidaFormPage() {
     setDisponiveis((prev) => [...prev, jogador].sort((a, b) => a.nome.localeCompare(b.nome)));
   }
 
-  function moverJogador(jogador: Jogador, de: "A" | "B", para: "A" | "B") {
-    if (de === para) return;
+  function moverJogador(jogador: Jogador, de: "A" | "B") {
+    const destinoCheio = de === "A" ? timeB.length >= 10 : timeA.length >= 10;
+    if (destinoCheio) {
+      setError("Limite maximo de 10 jogadores por time.");
+      return;
+    }
+
+    setError(null);
     if (de === "A") {
       setTimeA((prev) => prev.filter((j) => j.id !== jogador.id));
       setTimeB((prev) => [...prev, jogador]);
-    } else {
-      setTimeB((prev) => prev.filter((j) => j.id !== jogador.id));
-      setTimeA((prev) => [...prev, jogador]);
+      return;
     }
+    setTimeB((prev) => prev.filter((j) => j.id !== jogador.id));
+    setTimeA((prev) => [...prev, jogador]);
   }
 
   function preencherMensalistas() {
@@ -265,8 +271,8 @@ export default function PartidaFormPage() {
                 <button className="btn ghost" onClick={() => setTimeA((prev) => prev.map((j) => j.id === jogador.id ? { ...j, fixo: !j.fixo } : j))}>
                   Fixar
                 </button>
-                <button className="btn ghost" onClick={() => moverJogador(jogador, "A", "B")}>
-                  → B
+                <button className="btn ghost" onClick={() => moverJogador(jogador, "A")}>
+                  Mover para B
                 </button>
                 <button className="btn danger" onClick={() => removerJogador(jogador, "A")}>
                   Remover
@@ -284,8 +290,8 @@ export default function PartidaFormPage() {
                 {jogador.nome} {jogador.fixo ? "[FIXO]" : ""}
               </div>
               <div className="inline-actions">
-                <button className="btn ghost" onClick={() => moverJogador(jogador, "B", "A")}>
-                  A →
+                <button className="btn ghost" onClick={() => moverJogador(jogador, "B")}>
+                  Mover para A
                 </button>
                 <button className="btn ghost" onClick={() => setTimeB((prev) => prev.map((j) => j.id === jogador.id ? { ...j, fixo: !j.fixo } : j))}>
                   Fixar

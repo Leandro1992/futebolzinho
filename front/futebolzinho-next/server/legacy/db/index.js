@@ -27,6 +27,11 @@ function normalizePrivateKey(value) {
 }
 
 function findCredentialFile() {
+  const override = process.env.FIREBASE_CREDENTIALS_FILE;
+  if (override && fs.existsSync(override)) {
+    return override;
+  }
+
   let currentDir = process.cwd();
 
   while (true) {

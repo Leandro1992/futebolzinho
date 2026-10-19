@@ -4,20 +4,36 @@ class Cache {
     }
   
     get(key) {
-      if(this.data[key] === ""){
-        console.log("usou dados do cache", key)
+      const entry = this.data[key];
+      if (!entry) return null;
+      if (entry.expiresAt && entry.expiresAt < Date.now()) {
+        delete this.data[key];
+        return null;
       }
-        return this.data[key];
+      return entry.value;
     }
     
-    set(key, value) {
-        console.log("atualizou cache", key)
-        this.data[key] = value;
+    set(key, value, ttlMs = 5 * 60 * 1000) {
+        this.data[key] = {
+          value,
+          expiresAt: ttlMs ? Date.now() + ttlMs : null,
+        };
     }
     
     clear() {
-        console.log("limpou cache")
       this.data = {};
+    }
+
+    delete(key) {
+      delete this.data[key];
+    }
+
+    deletePrefix(prefix) {
+      Object.keys(this.data).forEach((key) => {
+        if (key.startsWith(prefix)) {
+          delete this.data[key];
+        }
+      });
     }
   }
   

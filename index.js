@@ -56,7 +56,7 @@ app.use(limiter);
 
 // Servir frontend estático (Next export/legacy build)
 if (staticDir) {
-    app.use(express.static(staticDir));
+    app.use(express.static(staticDir, { extensions: ['html'] }));
 } else {
     logger.warn('Nenhum build de frontend encontrado.');
 }

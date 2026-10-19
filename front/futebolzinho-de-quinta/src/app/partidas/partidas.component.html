@@ -141,9 +141,9 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="selectBolaMurcha" class="form-label">Selecione o "Bola Murcha" (pior da partida):</label>
+            <label for="selectBolaMurcha" class="form-label">Bola murcha (opcional):</label>
             <select class="form-select" id="selectBolaMurcha" [(ngModel)]="jogadorBolaMurchaSelecionado">
-              <option value="">Selecione...</option>
+              <option value="">Nenhum</option>
               <option *ngFor="let jogador of melhorDaPartidaTemp" [value]="jogador.id">{{ jogador.nome }}</option>
             </select>
           </div>
