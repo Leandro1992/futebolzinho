@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Desculpa = require('../models/desculpas');
-const { authenticate } = require('../middlewares/auth');
+const { requireUser } = require('../middlewares/auth');
 
 // Obter todas as desculpas com filtros opcionais
 router.get('/', async (req, res) => {
@@ -40,7 +40,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Criar nova desculpa
-router.post('/', async (req, res) => {
+router.post('/', requireUser, async (req, res) => {
     try {
         const desculpa = new Desculpa(req.body);
         const data = await desculpa.salvar();
@@ -52,7 +52,7 @@ router.post('/', async (req, res) => {
 });
 
 // Atualizar desculpa
-router.put('/:id', async (req, res) => {
+router.put('/:id', requireUser, async (req, res) => {
     try {
         const desculpa = await Desculpa.atualizar(req.params.id, req.body);
         res.status(200).json({ data: desculpa });
@@ -63,7 +63,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Excluir desculpa
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', requireUser, async (req, res) => {
     try {
         const resultado = await Desculpa.excluir(req.params.id);
         res.status(200).json(resultado);

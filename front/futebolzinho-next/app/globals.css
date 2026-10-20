@@ -314,6 +314,11 @@ textarea {
   cursor: pointer;
 }
 
+a.btn {
+  display: inline-flex;
+  align-items: center;
+}
+
 .btn.primary {
   background: var(--brand);
   color: white;
@@ -347,6 +352,46 @@ textarea {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+}
+
+.team-row-actions {
+  gap: 4px;
+  flex-wrap: nowrap;
+}
+
+.team-row-actions .btn {
+  padding: 5px 8px;
+  font-size: 12px;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.jogador-edicao-nome {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.lance-campos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.lance-campo {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.lance-campo input {
+  width: 52px;
+  padding: 4px 6px;
+  text-align: center;
 }
 
 .team-box {

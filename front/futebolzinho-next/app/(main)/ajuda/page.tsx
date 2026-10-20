@@ -27,7 +27,7 @@ export default function AjudaPage() {
           <li>Informe e-mail e senha e toque em <strong>Entrar</strong>.</li>
         </ol>
         <p className="meta">O nome aparece no canto da tela. Para sair, abra esse menu e toque em <strong>Sair</strong>.</p>
-        <p className="meta">É preciso estar logado para cadastrar jogador, criar partida e marcar o jogo. Estatísticas e desculpas podem ser vistas sem login.</p>
+        <p className="meta">É preciso estar logado para cadastrar jogador, criar partida, marcar o jogo e corrigir uma partida encerrada. Estatísticas e desculpas podem ser vistas sem login.</p>
       </section>
 
       <section className="card">
@@ -52,7 +52,7 @@ export default function AjudaPage() {
             Monte os times: escolha o jogador e o time, ou toque em <strong>Preencher com mensalistas</strong>.
           </li>
           <li>Cada time precisa ter pelo menos 5 jogadores e no máximo 10.</li>
-          <li>Se alguém ficou no lado errado, use <strong>Mover para A</strong> ou <strong>Mover para B</strong>.</li>
+          <li>Se alguém ficou no lado errado, use <strong>A</strong> ou <strong>B</strong> para trocar de time. <strong>X</strong> tira o jogador da lista.</li>
           <li>
             <strong>Fixar</strong> segura o jogador naquele time quando você usar <strong>Equilibrar times</strong>. O equilíbrio reparte os demais pela média do ano.
           </li>
@@ -86,6 +86,22 @@ export default function AjudaPage() {
         </ol>
         <p className="meta">
           A partida passa a encerrada. O placar, o melhor da partida e a bola murcha aparecem no card. <strong>Fechar</strong>, no alto da tela cheia, sai da marcação sem encerrar. O que já foi marcado continua salvo.
+        </p>
+        <h3>Corrigir uma partida encerrada</h3>
+        <p className="meta">Na lista de <strong>Partidas</strong>, a partida encerrada tem o botão <strong>Editar</strong>.</p>
+        <ol className="ajuda-lista">
+          <li>Toque em <strong>Editar</strong>.</li>
+          <li>Ajuste a <strong>data</strong>, o <strong>local</strong> e os jogadores.</li>
+          <li>
+            Em cada jogador, <strong>G</strong> é gol, <strong>A</strong> é assistência e <strong>GC</strong> é gol contra. O placar no alto soma os gols e os gols contra do outro time.
+          </li>
+          <li>
+            <strong>A</strong> ou <strong>B</strong> troca o jogador de time e leva os números junto. <strong>X</strong> tira o jogador. Para incluir alguém, escolha o nome na lista e o time.
+          </li>
+          <li>Toque em <strong>Salvar alterações</strong>.</li>
+        </ol>
+        <p className="meta">
+          A partida continua encerrada. <strong>Melhor</strong> e <strong>Bola murcha</strong> permanecem com quem já tinha, desde que a pessoa continue na partida.
         </p>
       </section>
 

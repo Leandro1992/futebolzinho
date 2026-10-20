@@ -4,11 +4,19 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ??
 
 type Envelope<T> = { data: T };
 
+function authHeader(): Record<string, string> {
+  if (typeof window === "undefined") return {};
+  const accessToken = window.localStorage.getItem("accessToken");
+  if (!accessToken) return {};
+  return { Authorization: `Bearer ${accessToken}` };
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...init,
     headers: {
       "Content-Type": "application/json",
+      ...authHeader(),
       ...(init?.headers ?? {}),
     },
     cache: "no-store",
@@ -24,7 +32,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
 export const api = {
   login: (email: string, password: string) =>
-    request<{ success: boolean; token: { email: string } }>("/api/auth/login", {
+    request<{ success: boolean; token: { email: string; accessToken: string } }>("/api/auth/login", {
       method: "POST",
       body: JSON.stringify({ email, password }),
     }),
