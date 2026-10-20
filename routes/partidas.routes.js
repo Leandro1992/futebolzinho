@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Partidas = require('../models/partidas');
-const { authenticate } = require('../middlewares/auth');
+const { requireUser } = require('../middlewares/auth');
 
 router.get('/', async (req, res) => {
     try {
@@ -24,7 +24,7 @@ router.get('/estatisticas', async (req, res) => {
     }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', requireUser, async (req, res) => {
     try {
         let partida = new Partidas(req.body);
         const data = await partida.salvar();
@@ -35,7 +35,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.put('/', async (req, res) => {
+router.put('/', requireUser, async (req, res) => {
     try {
         let partida = await Partidas.atualizarPartida(req.body);
         res.status(201).json({ data: partida });
@@ -45,7 +45,7 @@ router.put('/', async (req, res) => {
     }
 });
 
-router.delete('/:id', authenticate, async (req, res) => {
+router.delete('/:id', requireUser, async (req, res) => {
     try {
         const { id } = req.params;
         await Partidas.deletarPartida(id);

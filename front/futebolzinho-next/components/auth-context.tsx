@@ -27,9 +27,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const stored = window.localStorage.getItem("token");
-    if (stored) {
+    const accessToken = window.localStorage.getItem("accessToken");
+    if (stored && accessToken) {
       setIsLoggedIn(true);
       setUserEmail(stored);
+    } else {
+      window.localStorage.removeItem("token");
+      window.localStorage.removeItem("accessToken");
     }
     setLoading(false);
   }, []);
@@ -43,11 +47,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const response = await api.login(email, password);
         const tokenEmail = response.token.email;
         window.localStorage.setItem("token", tokenEmail);
+        window.localStorage.setItem("accessToken", response.token.accessToken);
         setUserEmail(tokenEmail);
         setIsLoggedIn(true);
       },
       logout() {
         window.localStorage.removeItem("token");
+        window.localStorage.removeItem("accessToken");
         setUserEmail(null);
         setIsLoggedIn(false);
       },

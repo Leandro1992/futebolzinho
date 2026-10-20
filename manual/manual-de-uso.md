@@ -2,7 +2,7 @@
 
 No sistema, abra a aba **Ajuda**. O vídeo e este passo a passo ficam lá. O arquivo também está em `manual/como-marcar-uma-partida.mp4`.
 
-Guia rápido para quem organiza a pelada. É preciso estar logado para cadastrar jogador, criar partida e marcar o jogo. Estatísticas e desculpas podem ser vistas sem login.
+Guia rápido para quem organiza a pelada. É preciso estar logado para cadastrar jogador, criar partida, marcar o jogo e corrigir uma partida encerrada. Estatísticas e desculpas podem ser vistas sem login.
 
 ## 1. Entrar
 
@@ -32,7 +32,7 @@ Use **Filtrar** para achar alguém na lista. Mensalistas e avulsos ficam em list
    - escolha o jogador, escolha **Time A** ou **Time B**, e ele entra no time;
    - ou toque em **Preencher com mensalistas**, que distribui os mensalistas entre os dois times.
 4. Cada time precisa ter pelo menos 5 jogadores e no máximo 10.
-5. Se alguém ficou no lado errado, use **Mover para A** ou **Mover para B**.
+5. Se alguém ficou no lado errado, use **A** ou **B** para trocar de time. **X** tira o jogador da lista.
 6. **Fixar** segura o jogador naquele time quando você usar **Equilibrar times**. O equilíbrio reparte os demais pela média do ano (gols, assistências, destaques e vitórias).
 7. Toque em **Salvar partida**.
 
@@ -64,6 +64,18 @@ Segure o **nome** do jogador por 3 segundos. Abre o ajuste de gols, assistência
 A partida passa a **Encerrada**. O placar, o melhor da partida e a bola murcha aparecem no card. Dá para abrir o card e ver os números de cada jogador.
 
 **Fechar**, no alto da tela cheia, sai da marcação sem encerrar a partida. O que já foi marcado continua salvo.
+
+### Corrigir uma partida encerrada
+
+Na lista de **Partidas**, a partida **Encerrada** tem o botão **Editar**.
+
+1. Toque em **Editar**.
+2. Ajuste a **data**, o **local** e os jogadores.
+3. Em cada jogador, **G** é gol, **A** é assistência e **GC** é gol contra. O placar no alto soma os gols e os gols contra do outro time.
+4. **A** ou **B** troca o jogador de time e leva os números junto. **X** tira o jogador. Para incluir alguém, escolha o nome na lista e o time.
+5. Toque em **Salvar alterações**.
+
+A partida continua encerrada. **Melhor** e **Bola murcha** permanecem com quem já tinha, desde que a pessoa continue na partida.
 
 ## 5. Estatísticas e desculpas
 

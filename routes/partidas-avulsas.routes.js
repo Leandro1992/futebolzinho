@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const PartidasAvulsas = require('../models/partida-avulsa');
-const { authenticate } = require('../middlewares/auth');
+const { requireUser } = require('../middlewares/auth');
 
-router.get('/', async (req, res) => {
+router.get('/', requireUser, async (req, res) => {
     try {
         let todos = await PartidasAvulsas.obterTodas()
         res.status(200).json({ data: todos });
@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', requireUser, async (req, res) => {
     try {
         let partida = new PartidasAvulsas(req.body);
         await partida.salvar();
@@ -24,7 +24,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.put('/', async (req, res) => {
+router.put('/', requireUser, async (req, res) => {
     try {
         let partida = await PartidasAvulsas.atualizarPartida(req.body);
         res.status(200).json({ data: partida });

@@ -496,19 +496,26 @@ export default function PartidasPage() {
                   {partida.status === 1 ? "Encerrada" : "Em aberto"}
                 </span>
                 {isLoggedIn && partida.status === 0 ? (
-                  <>
-                    <span
-                      className="btn ghost registro-inline-btn"
-                      onClick={(event) => {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        void abrirModoRegistro(partida.id);
-                      }}
-                      role="button"
-                    >
-                      Tela cheia
-                    </span>
-                  </>
+                  <span
+                    className="btn ghost registro-inline-btn"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      void abrirModoRegistro(partida.id);
+                    }}
+                    role="button"
+                  >
+                    Tela cheia
+                  </span>
+                ) : null}
+                {isLoggedIn && partida.status === 1 ? (
+                  <a
+                    className="btn ghost registro-inline-btn"
+                    href={`/partida-form?id=${encodeURIComponent(partida.id)}`}
+                    onClick={(event) => event.stopPropagation()}
+                  >
+                    Editar
+                  </a>
                 ) : null}
                 <span className="accordion-chevron" aria-hidden="true">{expanded ? "−" : "+"}</span>
               </div>

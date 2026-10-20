@@ -1,14 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
-const { authenticate } = require('../middlewares/auth');
+const { authenticate, emitirTokenUsuario } = require('../middlewares/auth');
 const logger = require('../utils/logger');
 
 router.post('/login', async (req, res) => {
     try {
-        const token = await User.login(req.body);
+        const user = await User.login(req.body);
         logger.info('Login bem-sucedido');
-        res.status(200).json({ success: true, token });
+        res.status(200).json({
+            success: true,
+            token: {
+                email: user.email,
+                accessToken: emitirTokenUsuario(user.email),
+            },
+        });
     } catch (error) {
         logger.error('Erro no login:', error);
         res.status(400).json({ success: false, error: error.message });

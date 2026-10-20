@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Jogadores = require('../models/jogadores');
-const { authenticate } = require('../middlewares/auth');
+const { requireUser } = require('../middlewares/auth');
 
 router.get('/', async (req, res) => {
     try {
@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', requireUser, async (req, res) => {
     try {
         let jogador = new Jogadores(req.body);
         const data = await jogador.salvar();
@@ -26,7 +26,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.put('/', async (req, res) => {
+router.put('/', requireUser, async (req, res) => {
     try {
         const jogador = new Jogadores(req.body);
         const mensagem = await jogador.atualizarDados(req.body);
