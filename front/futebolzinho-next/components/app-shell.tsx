@@ -10,6 +10,7 @@ const navItems = [
   { href: "/jogadores", label: "Jogadores", requiresAuth: true },
   { href: "/partida-form", label: "Nova Partida", requiresAuth: true },
   { href: "/estatisticas", label: "Estatisticas" },
+  { href: "/lances", label: "Lances" },
   { href: "/desculpas", label: "Desculpas" },
   { href: "/partidas-avulsas", label: "Avulsas", requiresAuth: true },
   { href: "/ajuda", label: "Ajuda" },
