@@ -8,11 +8,15 @@ const URL_EXPIRES_SECONDS = 60 * 60;
 let client: S3Client | null = null;
 let cache: { at: number; videos: ListedVideo[]; total: number } | null = null;
 
+function readEnv(name: string): string {
+  return process.env[name]?.trim() ?? "";
+}
+
 export function r2Config(): { endpoint: string; bucket: string; accessKeyId: string; secretAccessKey: string } | null {
-  const endpoint = process.env.R2_ENDPOINT?.trim() ?? "";
-  const accessKeyId = process.env.R2_ACCESS_KEY_ID?.trim() ?? "";
-  const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY?.trim() ?? "";
-  const bucket = (process.env.R2_BUCKET?.trim() || "videos-futebolzinho-quinta").trim();
+  const endpoint = readEnv("R2_ENDPOINT");
+  const accessKeyId = readEnv("R2_ACCESS_KEY_ID");
+  const secretAccessKey = readEnv("R2_SECRET_ACCESS_KEY");
+  const bucket = readEnv("R2_BUCKET");
   if (!endpoint || !accessKeyId || !secretAccessKey || !bucket) return null;
   return { endpoint, bucket, accessKeyId, secretAccessKey };
 }
@@ -39,7 +43,7 @@ export async function listLatestLances(): Promise<{ videos: ListedVideo[]; total
   }
 
   const s3 = getClient(config);
-  const prefix = process.env.R2_PREFIX?.trim() || undefined;
+  const prefix = readEnv("R2_PREFIX") || undefined;
   const objects: ListedVideo[] = [];
   let token: string | undefined;
   do {
