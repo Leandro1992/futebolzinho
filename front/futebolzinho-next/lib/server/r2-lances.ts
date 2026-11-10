@@ -12,7 +12,7 @@ export function r2Config(): { endpoint: string; bucket: string; accessKeyId: str
   const endpoint = process.env.R2_ENDPOINT?.trim() ?? "";
   const accessKeyId = process.env.R2_ACCESS_KEY_ID?.trim() ?? "";
   const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY?.trim() ?? "";
-  const bucket = (process.env.R2_BUCKET?.trim() || "videos-futebolzinho-quinta").trim();
+  const bucket = process.env.R2_BUCKET?.trim() ?? "";
   if (!endpoint || !accessKeyId || !secretAccessKey || !bucket) return null;
   return { endpoint, bucket, accessKeyId, secretAccessKey };
 }
