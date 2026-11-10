@@ -1537,6 +1537,64 @@ a.btn {
   min-height: 44px;
 }
 
+.lances-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.lances-grid {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.lance-card {
+  display: grid;
+  gap: 10px;
+}
+
+.lance-poster {
+  min-height: 160px;
+  border: 0;
+  border-radius: 12px;
+  background: #102018;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.lance-player {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  background: #102018;
+}
+
+.lance-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.lance-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.lances-error {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+@media (min-width: 768px) {
+  .lances-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 .registro-desfazer:disabled {
   opacity: 0.55;
 }

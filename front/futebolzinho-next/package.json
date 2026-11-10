@@ -11,6 +11,8 @@
     "deploy:netlify:preview": "netlify deploy --build"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1165.0",
+    "@aws-sdk/s3-request-presigner": "^3.1165.0",
     "bcryptjs": "^2.4.3",
     "firebase-admin": "^11.0.0",
     "next": "14.2.7",
